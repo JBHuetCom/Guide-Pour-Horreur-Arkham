@@ -24,7 +24,7 @@ unit AH.Tests.Moteur;
         procedure TearDown;
 
         [Test]
-        procedure Suivant_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+        procedure Suivant_AvecUnJoueurHumain_AvecUnInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
 
         [Test]
         procedure Suivant_ApresDerniereInstruction_RetourneNil;
@@ -80,11 +80,11 @@ unit AH.Tests.Moteur;
         FContexte.Free;
       end;
 
-    procedure TTestMoteurSequenceur.Suivant_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+    procedure TTestMoteurSequenceur.Suivant_AvecUnJoueurHumain_AvecUnInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
       var
         Premier, Second : TNoeudEtape;
       begin
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
         FRacine := ConstruireSequenceDeuxInstructions;
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
