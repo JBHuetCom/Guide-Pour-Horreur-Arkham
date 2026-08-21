@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{49E4B8E1-C941-4A8F-AF35-33A5EC2F43C5}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="UI - VCL version\ArkhamHorrorGuide.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Tests\ArkhamHorrorGuideTests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ArkhamHorrorGuide">
+        <MSBuild Projects="UI - VCL version\ArkhamHorrorGuide.dproj"/>
+    </Target>
+    <Target Name="ArkhamHorrorGuide:Clean">
+        <MSBuild Projects="UI - VCL version\ArkhamHorrorGuide.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ArkhamHorrorGuide:Make">
+        <MSBuild Projects="UI - VCL version\ArkhamHorrorGuide.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ArkhamHorrorGuideTests">
+        <MSBuild Projects="Tests\ArkhamHorrorGuideTests.dproj"/>
+    </Target>
+    <Target Name="ArkhamHorrorGuideTests:Clean">
+        <MSBuild Projects="Tests\ArkhamHorrorGuideTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ArkhamHorrorGuideTests:Make">
+        <MSBuild Projects="Tests\ArkhamHorrorGuideTests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ArkhamHorrorGuide;ArkhamHorrorGuideTests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ArkhamHorrorGuide:Clean;ArkhamHorrorGuideTests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ArkhamHorrorGuide:Make;ArkhamHorrorGuideTests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

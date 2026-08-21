@@ -1,0 +1,267 @@
+unit AH.Tests.Moteur;
+
+  interface
+
+    uses
+      DUnitX.TestFramework,
+      AH.Core.Moteur, AH.Core.Contexte, AH.Core.Noeud, AH.Core.Types;
+
+    type
+
+      [TestFixture]
+      TTestMoteurSequenceur = class
+      private
+        FContexte : TContextePartie;
+        FRacine : TNoeudEtape;
+        FMoteur : TMoteurSequenceur;
+
+        function Investigateur(const ANom : string; AIndexJoueur : Integer) : TInvestigateurJoue;
+
+        /// <summary>Construit une racine ntSequence à deux instructions, pour les cas simples.</summary>
+        function ConstruireSequenceDeuxInstructions : TNoeudEtape;
+      public
+        [TearDown]
+        procedure TearDown;
+
+        [Test]
+        procedure Suivant_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+
+        [Test]
+        procedure Suivant_ApresDerniereInstruction_RetourneNil;
+
+        [Test]
+        procedure Suivant_SurNtCondition_ResoutAutomatiquementSansExposerLeNoeudCondition;
+
+        [Test]
+        procedure Suivant_SurNtChoixSansReponse_LeveEInvalidOpException;
+
+        [Test]
+        procedure Suivant_SurNtChoixApresReponse_DescendDansLaBrancheChoisie;
+
+        [Test]
+        procedure Suivant_SurNtBouclePorInvestigateur_RepeteLesEnfantsParInvestigateurEtEnchaineLesInvestigateursDUnMemeJoueur;
+
+        [Test]
+        procedure Precedent_ApresUnSuivant_RestitueLeNoeudPrecedent;
+
+        [Test]
+        procedure Precedent_SansHistorique_RetourneNil;
+      end;
+
+  implementation
+
+    uses
+      System.SysUtils, System.Variants;
+
+    function TTestMoteurSequenceur.Investigateur(const ANom : string; AIndexJoueur : Integer) : TInvestigateurJoue;
+      begin
+        Result.NomInvestigateur := ANom;
+        Result.IndexJoueurHumain := AIndexJoueur;
+      end;
+
+    function TTestMoteurSequenceur.ConstruireSequenceDeuxInstructions : TNoeudEtape;
+      var
+        Racine, Etape1, Etape2 : TNoeudEtape;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Etape1 := TNoeudEtape.Create('etape1', ntInstruction);
+        Etape1.Texte := 'Première étape';
+        Etape2 := TNoeudEtape.Create('etape2', ntInstruction);
+        Etape2.Texte := 'Deuxième étape';
+        Racine.AjouterEnfant(Etape1);
+        Racine.AjouterEnfant(Etape2);
+        Result := Racine;
+      end;
+
+    procedure TTestMoteurSequenceur.TearDown;
+      begin
+        FMoteur.Free;
+        FRacine.Free;
+        FContexte.Free;
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+      var
+        Premier, Second : TNoeudEtape;
+      begin
+        FContexte := TContextePartie.Create(['Alice']);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Premier := FMoteur.Suivant;
+        Second := FMoteur.Suivant;
+
+        Assert.AreEqual('etape1', Premier.Id);
+        Assert.AreEqual('etape2', Second.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_ApresDerniereInstruction_RetourneNil;
+      begin
+        FContexte := TContextePartie.Create(['Alice']);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        FMoteur.Suivant; // etape1
+        FMoteur.Suivant; // etape2
+        Assert.IsNull(FMoteur.Suivant); // Arbre épuisé
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_SurNtCondition_ResoutAutomatiquementSansExposerLeNoeudCondition;
+      var
+        Racine, Condition, BrancheVraie, BrancheFausse : TNoeudEtape;
+        Branche : TBrancheEtape;
+        Resultat : TNoeudEtape;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Condition := TNoeudEtape.Create('condition', ntCondition);
+        Condition.ChampContexte := 'ArkhamEnvahie';
+
+        BrancheVraie := TNoeudEtape.Create('envahie', ntInstruction);
+        BrancheVraie.Texte := 'Arkham est envahie';
+        Branche.ValeurDeclenchante := True;
+        Branche.Noeud := BrancheVraie;
+        Condition.AjouterBranche(Branche);
+
+        BrancheFausse := TNoeudEtape.Create('calme', ntInstruction);
+        BrancheFausse.Texte := 'Arkham est calme';
+        Branche.ValeurDeclenchante := False;
+        Branche.Noeud := BrancheFausse;
+        Condition.AjouterBranche(Branche);
+
+        Racine.AjouterEnfant(Condition);
+        FRacine := Racine;
+
+        FContexte := TContextePartie.Create(['Alice']);
+        FContexte.NiveauTerreur := 10; // ArkhamEnvahie = True
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Resultat := FMoteur.Suivant;
+
+        Assert.AreEqual('envahie', Resultat.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_SurNtChoixSansReponse_LeveEInvalidOpException;
+      var
+        Racine, Choix, Branche1 : TNoeudEtape;
+        Branche : TBrancheEtape;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Choix := TNoeudEtape.Create('choix', ntChoix);
+        Branche1 := TNoeudEtape.Create('option1', ntInstruction);
+        Branche1.Texte := 'Option 1';
+        Branche.ValeurDeclenchante := 'option1';
+        Branche.Libelle := 'Option 1';
+        Branche.Noeud := Branche1;
+        Choix.AjouterBranche(Branche);
+        Racine.AjouterEnfant(Choix);
+        FRacine := Racine;
+
+        FContexte := TContextePartie.Create(['Alice']);
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+        FMoteur.Suivant; // Retourne le nœud "choix", en attente de réponse
+
+        Assert.WillRaise(
+          procedure
+            begin
+              FMoteur.Suivant;
+            end,
+          EInvalidOpException);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_SurNtChoixApresReponse_DescendDansLaBrancheChoisie;
+      var
+        Racine, Choix, Branche1, Branche2 : TNoeudEtape;
+        Branche : TBrancheEtape;
+        Resultat : TNoeudEtape;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Choix := TNoeudEtape.Create('choix', ntChoix);
+
+        Branche1 := TNoeudEtape.Create('option1', ntInstruction);
+        Branche1.Texte := 'Option 1';
+        Branche.ValeurDeclenchante := 'option1';
+        Branche.Libelle := 'Option 1';
+        Branche.Noeud := Branche1;
+        Choix.AjouterBranche(Branche);
+
+        Branche2 := TNoeudEtape.Create('option2', ntInstruction);
+        Branche2.Texte := 'Option 2';
+        Branche.ValeurDeclenchante := 'option2';
+        Branche.Libelle := 'Option 2';
+        Branche.Noeud := Branche2;
+        Choix.AjouterBranche(Branche);
+
+        Racine.AjouterEnfant(Choix);
+        FRacine := Racine;
+
+        FContexte := TContextePartie.Create(['Alice']);
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        FMoteur.Suivant; // Retourne "choix"
+        FMoteur.EnregistrerReponse('option2');
+        Resultat := FMoteur.Suivant;
+
+        Assert.AreEqual('option2', Resultat.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_SurNtBouclePorInvestigateur_RepeteLesEnfantsParInvestigateurEtEnchaineLesInvestigateursDUnMemeJoueur;
+      var
+        Racine, Boucle, Etape : TNoeudEtape;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Boucle := TNoeudEtape.Create('boucle', ntBouclePorInvestigateur);
+        Etape := TNoeudEtape.Create('etape_investigateur', ntInstruction);
+        Etape.Texte := 'Restaurez vos cartes déchargées';
+        Boucle.AjouterEnfant(Etape);
+        Racine.AjouterEnfant(Boucle);
+        FRacine := Racine;
+
+        // Alice contrôle Amanda ET Harvey (2 investigateurs), Bob contrôle Jenny (1 investigateur).
+        // Ordre de jeu attendu : Amanda, Harvey (Alice), puis Jenny (Bob).
+        FContexte := TContextePartie.Create(
+          ['Alice', 'Bob'],
+          [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 1)]);
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        FMoteur.Suivant;
+        Assert.AreEqual('Amanda', FContexte.NomInvestigateurCourant);
+        Assert.AreEqual('Alice', FContexte.NomJoueurHumainCourant);
+
+        FMoteur.Suivant;
+        Assert.AreEqual('Harvey', FContexte.NomInvestigateurCourant);
+        Assert.AreEqual('Alice', FContexte.NomJoueurHumainCourant);
+
+        FMoteur.Suivant;
+        Assert.AreEqual('Jenny', FContexte.NomInvestigateurCourant);
+        Assert.AreEqual('Bob', FContexte.NomJoueurHumainCourant);
+
+        Assert.IsNull(FMoteur.Suivant); // Boucle épuisée après le troisième investigateur
+      end;
+
+    procedure TTestMoteurSequenceur.Precedent_ApresUnSuivant_RestitueLeNoeudPrecedent;
+      var
+        Premier : TNoeudEtape;
+      begin
+        FContexte := TContextePartie.Create(['Alice']);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Premier := FMoteur.Suivant;  // etape1
+        FMoteur.Suivant;             // etape2
+
+        Assert.AreEqual(Premier.Id, FMoteur.Precedent.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Precedent_SansHistorique_RetourneNil;
+      begin
+        FContexte := TContextePartie.Create(['Alice']);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Assert.IsNull(FMoteur.Precedent);
+      end;
+
+  initialization
+    TDUnitX.RegisterTestFixture(TTestMoteurSequenceur);
+
+end.
