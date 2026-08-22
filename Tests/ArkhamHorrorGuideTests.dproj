@@ -61,7 +61,7 @@
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_UnitSearchPath>D:\Jean-Bernard\Documents\Delphi\FastMM5\FastMM5;D:\Jean-Bernard\Documents\Projets\App Assistant Horreur à Arkham\Guide pour Horreur à Arkham\Core;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>D:\Jean-Bernard\Documents\Delphi\FastMM5\FastMM5;D:\Jean-Bernard\Documents\Projets\App Assistant Horreur à Arkham\Guide pour Horreur à Arkham\Core;D:\Jean-Bernard\Documents\Delphi\SuperObject\SuperObject.Delphi\Lib;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Manifest_File>(vide)</Manifest_File>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
@@ -81,8 +81,6 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <Manifest_File>(vide)</Manifest_File>
-        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -98,6 +96,9 @@
         <DCCReference Include="AH.Tests.EvaluateurCondition.pas"/>
         <DCCReference Include="AH.Tests.ChargeurContenu.pas"/>
         <DCCReference Include="AH.Tests.Contexte.pas"/>
+        <DCCReference Include="AH.Tests.Conseils.pas"/>
+        <DCCReference Include="AH.Tests.Capacites.pas"/>
+        <DCCReference Include="AH.Tests.Parametres.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

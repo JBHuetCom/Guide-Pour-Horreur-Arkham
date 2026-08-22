@@ -25,6 +25,12 @@ unit AH.Tests.Moteur;
 
         [Test]
         procedure Suivant_AvecUnJoueurHumain_AvecUnInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+        [Test]
+        procedure Suivant_AvecUnJoueurHumain_AvecDeuxInvestigateurs_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+        [Test]
+        procedure Suivant_AvecDeuxJoueursHumains_AvecDeuxInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+        [Test]
+        procedure Suivant_AvecDeuxJoueursHumains_AvecQuatreInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
 
         [Test]
         procedure Suivant_ApresDerniereInstruction_RetourneNil;
@@ -80,11 +86,60 @@ unit AH.Tests.Moteur;
         FContexte.Free;
       end;
 
+    procedure TTestMoteurSequenceur.Suivant_AvecDeuxJoueursHumains_AvecDeuxInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+      var
+        Premier, Second : TNoeudEtape;
+      begin
+        FContexte := TContextePartie.Create(['Alice', 'Bob'],
+                                            [Investigateur('Amanda', 0), Investigateur('Michael', 1)]);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Premier := FMoteur.Suivant;
+        Second := FMoteur.Suivant;
+
+        Assert.AreEqual('etape1', Premier.Id);
+        Assert.AreEqual('etape2', Second.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_AvecDeuxJoueursHumains_AvecQuatreInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+      var
+        Premier, Second : TNoeudEtape;
+      begin
+        FContexte := TContextePartie.Create(['Alice', 'Bob'],
+                                            [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 0), Investigateur('Michael', 1)]);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Premier := FMoteur.Suivant;
+        Second := FMoteur.Suivant;
+
+        Assert.AreEqual('etape1', Premier.Id);
+        Assert.AreEqual('etape2', Second.Id);
+      end;
+
+    procedure TTestMoteurSequenceur.Suivant_AvecUnJoueurHumain_AvecDeuxInvestigateurs_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
+      var
+        Premier, Second : TNoeudEtape;
+      begin
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0), Investigateur('Harvey', 0)]);
+        FRacine := ConstruireSequenceDeuxInstructions;
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Premier := FMoteur.Suivant;
+        Second := FMoteur.Suivant;
+
+        Assert.AreEqual('etape1', Premier.Id);
+        Assert.AreEqual('etape2', Second.Id);
+      end;
+
     procedure TTestMoteurSequenceur.Suivant_AvecUnJoueurHumain_AvecUnInvestigateur_SurSequenceDeDeuxInstructions_LesRetourneDansLOrdre;
       var
         Premier, Second : TNoeudEtape;
       begin
-        FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FRacine := ConstruireSequenceDeuxInstructions;
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
@@ -97,7 +152,8 @@ unit AH.Tests.Moteur;
 
     procedure TTestMoteurSequenceur.Suivant_ApresDerniereInstruction_RetourneNil;
       begin
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FRacine := ConstruireSequenceDeuxInstructions;
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
@@ -131,7 +187,8 @@ unit AH.Tests.Moteur;
         Racine.AjouterEnfant(Condition);
         FRacine := Racine;
 
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FContexte.NiveauTerreur := 10; // ArkhamEnvahie = True
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
@@ -156,7 +213,8 @@ unit AH.Tests.Moteur;
         Racine.AjouterEnfant(Choix);
         FRacine := Racine;
 
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
         FMoteur.Suivant; // Retourne le nœud "choix", en attente de réponse
 
@@ -194,7 +252,8 @@ unit AH.Tests.Moteur;
         Racine.AjouterEnfant(Choix);
         FRacine := Racine;
 
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
         FMoteur.Suivant; // Retourne "choix"
@@ -242,7 +301,8 @@ unit AH.Tests.Moteur;
       var
         Premier : TNoeudEtape;
       begin
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FRacine := ConstruireSequenceDeuxInstructions;
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
@@ -254,7 +314,8 @@ unit AH.Tests.Moteur;
 
     procedure TTestMoteurSequenceur.Precedent_SansHistorique_RetourneNil;
       begin
-        FContexte := TContextePartie.Create(['Alice']);
+        FContexte := TContextePartie.Create(['Alice'],
+                                            [Investigateur('Amanda', 0)]);
         FRacine := ConstruireSequenceDeuxInstructions;
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 

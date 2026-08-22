@@ -1,0 +1,14 @@
+{
+  "Conseils": [
+    {
+      "IdEtape": "phase1_ajustement_competences",
+      "Texte": "Anticipez la phase à venir avant de déplacer vos pions de compétence : un ajustement trop optimiste sur une paire peut vous laisser sans marge ailleurs ce tour-ci.",
+      "Source": "Wiki Horreur à Arkham - Conseils pour débuter"
+    },
+    {
+      "IdEtape": "bf_round_04_attaque_grand_ancien",
+      "Texte": "Les capacités passives du Grand Ancien restent actives durant toute la bataille finale : ne comptez pas sur une trêve de ses effets pour souffler.",
+      "Source": "Wiki Horreur à Arkham - FAQ"
+    }
+  ]
+}

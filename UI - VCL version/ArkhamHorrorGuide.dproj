@@ -158,6 +158,9 @@
         <DCCReference Include="..\Core\AH.Core.EvaluateurCondition.pas"/>
         <DCCReference Include="..\Core\AH.Core.ChargeurContenu.pas"/>
         <DCCReference Include="..\Core\AH.Core.Session.pas"/>
+        <DCCReference Include="..\Core\AH.Core.Conseils.pas"/>
+        <DCCReference Include="..\Core\AH.Core.Capacites.pas"/>
+        <DCCReference Include="..\Core\AH.Core.Parametres.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -187,6 +190,18 @@
                 <DeployFile LocalName="Win32\Debug\ArkhamHorrorGuide.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ArkhamHorrorGuide.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\ArkhamHorrorGuide.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>ArkhamHorrorGuide.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\ArkhamHorrorGuide.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>ArkhamHorrorGuide.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

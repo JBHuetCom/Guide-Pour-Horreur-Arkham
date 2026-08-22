@@ -6,22 +6,25 @@ program ArkhamHorrorGuideTests;
 
   {$STRONGLINKTYPES ON}
   uses
-    FastMM5,
-    DUnitX.MemoryLeakMonitor.FastMM5,
-    System.SysUtils,
-    {$IFDEF TESTINSIGHT}
-    TestInsight.DUnitX,
-    {$ELSE}
-    DUnitX.Loggers.Console,
-    DUnitX.Loggers.Xml.NUnit,
-    {$ENDIF }
-    DUnitX.TestFramework,
-    AH.Tests.Moteur in 'AH.Tests.Moteur.pas',
-    AH.Tests.EvaluateurCondition in 'AH.Tests.EvaluateurCondition.pas',
-    AH.Tests.ChargeurContenu in 'AH.Tests.ChargeurContenu.pas',
-    AH.Tests.Contexte in 'AH.Tests.Contexte.pas';
+  FastMM5,
+  DUnitX.MemoryLeakMonitor.FastMM5,
+  System.SysUtils,
+  {$IFDEF TESTINSIGHT}
+  TestInsight.DUnitX,
+  {$ELSE}
+  DUnitX.Loggers.Console,
+  DUnitX.Loggers.Xml.NUnit,
+  {$ENDIF }
+  DUnitX.TestFramework,
+  AH.Tests.Moteur in 'AH.Tests.Moteur.pas',
+  AH.Tests.EvaluateurCondition in 'AH.Tests.EvaluateurCondition.pas',
+  AH.Tests.ChargeurContenu in 'AH.Tests.ChargeurContenu.pas',
+  AH.Tests.Contexte in 'AH.Tests.Contexte.pas',
+  AH.Tests.Conseils in 'AH.Tests.Conseils.pas',
+  AH.Tests.Capacites in 'AH.Tests.Capacites.pas',
+  AH.Tests.Parametres in 'AH.Tests.Parametres.pas';
 
-  { keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
+{ keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
   {$IFNDEF TESTINSIGHT}
   var
     runner : ITestRunner;
