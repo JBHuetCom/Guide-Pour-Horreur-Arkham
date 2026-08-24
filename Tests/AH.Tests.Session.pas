@@ -69,14 +69,14 @@ unit AH.Tests.Session;
         Choix := TNoeudEtape.Create('choix', ntChoix);
         BrancheOui := TNoeudEtape.Create('branche_oui', ntInstruction);
         BrancheOui.Texte := 'Branche oui';
-        Branche.ValeurDeclenchante := 'oui';
-        Branche.Noeud := BrancheOui;
-        Choix.AjouterBranche(Branche);
+
+        Choix.AjouterBranche('oui', 'Branche oui', BrancheOui);
+
         BrancheNon := TNoeudEtape.Create('branche_non', ntInstruction);
         BrancheNon.Texte := 'Branche non';
-        Branche.ValeurDeclenchante := 'non';
-        Branche.Noeud := BrancheNon;
-        Choix.AjouterBranche(Branche);
+
+        Choix.AjouterBranche('non', 'Branche non', BrancheNon);
+
         Racine.AjouterEnfant(Choix);
 
         Saisie := TNoeudEtape.Create('saisie', ntSaisie);
@@ -100,6 +100,8 @@ unit AH.Tests.Session;
       begin
         if TFile.Exists(FCheminTemp) then
           TFile.Delete(FCheminTemp);
+
+        FCheminTemp := EmptyStr;
       end;
 
     procedure TTestGestionnaireSession.SauvegarderPuisCharger_ChampsScalaires_RestituesIdentiques;
@@ -205,14 +207,15 @@ unit AH.Tests.Session;
           end;
 
         Contexte := TGestionnaireSession.RecreerContexte(Session);
-
         try
+          with Contexte do
+            begin
               Assert.AreEqual(3, Contexte.NiveauTerreur);
               Assert.AreEqual(1, Contexte.NombrePortailsOuverts);
               Assert.AreEqual(10, Contexte.TailleEchelleDestin);
               Assert.AreEqual(4, Contexte.EchelleDestin);
-              Contexte.NomInvestigateurCourant;
               Assert.AreEqual('Amanda', Contexte.NomInvestigateurCourant);
+            end;
         finally
           Contexte.Free;
         end;
@@ -233,11 +236,14 @@ unit AH.Tests.Session;
         MoteurBrut1 := TMoteurSequenceur.Create(Racine1, Contexte1);
         Moteur1 := TMoteurSequenceurJournalise.Create(MoteurBrut1);
         try
-          Moteur1.Suivant; // etape1
-          Moteur1.Suivant; // choix
-          Moteur1.EnregistrerReponse('oui');
-          Moteur1.Suivant; // branche_oui
-          Moteur1.Suivant; // saisie (en attente de réponse)
+          with Moteur1 do
+            begin
+              Suivant; // etape1
+              Suivant; // choix
+              EnregistrerReponse('oui');
+              Suivant; // branche_oui
+              Suivant; // saisie (en attente de réponse)
+            end;
 
           Assert.AreEqual('saisie', Moteur1.NoeudCourant.Id);
 
@@ -287,12 +293,14 @@ unit AH.Tests.Session;
         MoteurBrut := TMoteurSequenceur.Create(Racine, Contexte);
         Moteur := TMoteurSequenceurJournalise.Create(MoteurBrut);
         try
-          Moteur.Suivant; // etape1
-          Moteur.Suivant; // choix
-          Moteur.EnregistrerReponse('oui');
-          Moteur.Suivant; // branche_oui
-
-          Moteur.Precedent; // retour sur "choix", la réponse 'oui' doit être retirée du journal
+          with Moteur do
+            begin
+              Suivant; // etape1
+              Suivant; // choix
+              EnregistrerReponse('oui');
+              Suivant; // branche_oui
+              Precedent; // retour sur "choix", la réponse 'oui' doit être retirée du journal
+            end;
 
           Session := Moteur.CapturerSession(Contexte, 'test');
           Assert.AreEqual(2, Session.NombreEtapesTraversees); // etape1, choix — plus branche_oui
@@ -308,7 +316,10 @@ unit AH.Tests.Session;
     procedure TTestGestionnaireSession.ChargerDepuisFichier_FichierInexistant_LeveEFileNotFoundException;
       begin
         Assert.WillRaise(
-          procedure begin TGestionnaireSession.ChargerDepuisFichier('chemin_inexistant.json'); end,
+          procedure
+            begin
+              TGestionnaireSession.ChargerDepuisFichier('chemin_inexistant.json');
+            end,
           EFileNotFoundException);
       end;
 

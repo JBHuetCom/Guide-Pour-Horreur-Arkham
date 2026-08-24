@@ -71,7 +71,8 @@ unit AH.Core.Capacites;
               else
                 if SameText(AText, 'Autre') then
                   ADomaine := dcAutre
-                else Result := False;
+                else
+                  Result := False;
     end;
 
     { TGestionnaireCapacites }

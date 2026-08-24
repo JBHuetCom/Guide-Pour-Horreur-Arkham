@@ -165,7 +165,6 @@ unit AH.Tests.Moteur;
     procedure TTestMoteurSequenceur.Suivant_SurNtCondition_ResoutAutomatiquementSansExposerLeNoeudCondition;
       var
         Racine, Condition, BrancheVraie, BrancheFausse : TNoeudEtape;
-        Branche : TBrancheEtape;
         Resultat : TNoeudEtape;
       begin
         Racine := TNoeudEtape.Create('racine', ntSequence);
@@ -174,15 +173,13 @@ unit AH.Tests.Moteur;
 
         BrancheVraie := TNoeudEtape.Create('envahie', ntInstruction);
         BrancheVraie.Texte := 'Arkham est envahie';
-        Branche.ValeurDeclenchante := True;
-        Branche.Noeud := BrancheVraie;
-        Condition.AjouterBranche(Branche);
+
+        Condition.AjouterBranche(True, EmptyStr, BrancheVraie);
 
         BrancheFausse := TNoeudEtape.Create('calme', ntInstruction);
         BrancheFausse.Texte := 'Arkham est calme';
-        Branche.ValeurDeclenchante := False;
-        Branche.Noeud := BrancheFausse;
-        Condition.AjouterBranche(Branche);
+
+        Condition.AjouterBranche(False, EmptyStr, BrancheFausse);
 
         Racine.AjouterEnfant(Condition);
         FRacine := Racine;
@@ -200,16 +197,14 @@ unit AH.Tests.Moteur;
     procedure TTestMoteurSequenceur.Suivant_SurNtChoixSansReponse_LeveEInvalidOpException;
       var
         Racine, Choix, Branche1 : TNoeudEtape;
-        Branche : TBrancheEtape;
       begin
         Racine := TNoeudEtape.Create('racine', ntSequence);
         Choix := TNoeudEtape.Create('choix', ntChoix);
         Branche1 := TNoeudEtape.Create('option1', ntInstruction);
         Branche1.Texte := 'Option 1';
-        Branche.ValeurDeclenchante := 'option1';
-        Branche.Libelle := 'Option 1';
-        Branche.Noeud := Branche1;
-        Choix.AjouterBranche(Branche);
+
+        Choix.AjouterBranche('option1', 'Option 1', Branche1);
+
         Racine.AjouterEnfant(Choix);
         FRacine := Racine;
 
@@ -229,7 +224,6 @@ unit AH.Tests.Moteur;
     procedure TTestMoteurSequenceur.Suivant_SurNtChoixApresReponse_DescendDansLaBrancheChoisie;
       var
         Racine, Choix, Branche1, Branche2 : TNoeudEtape;
-        Branche : TBrancheEtape;
         Resultat : TNoeudEtape;
       begin
         Racine := TNoeudEtape.Create('racine', ntSequence);
@@ -237,17 +231,13 @@ unit AH.Tests.Moteur;
 
         Branche1 := TNoeudEtape.Create('option1', ntInstruction);
         Branche1.Texte := 'Option 1';
-        Branche.ValeurDeclenchante := 'option1';
-        Branche.Libelle := 'Option 1';
-        Branche.Noeud := Branche1;
-        Choix.AjouterBranche(Branche);
+
+        Choix.AjouterBranche('option1', 'Option 1', Branche1);
 
         Branche2 := TNoeudEtape.Create('option2', ntInstruction);
         Branche2.Texte := 'Option 2';
-        Branche.ValeurDeclenchante := 'option2';
-        Branche.Libelle := 'Option 2';
-        Branche.Noeud := Branche2;
-        Choix.AjouterBranche(Branche);
+
+        Choix.AjouterBranche('option2', 'Option 2', Branche2);
 
         Racine.AjouterEnfant(Choix);
         FRacine := Racine;

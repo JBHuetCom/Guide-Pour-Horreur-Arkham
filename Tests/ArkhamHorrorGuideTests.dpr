@@ -8,8 +8,11 @@ program ArkhamHorrorGuideTests;
   uses
   FastMM5,
   DUnitX.MemoryLeakMonitor.FastMM5,
+  System.Classes,
   System.SysUtils,
   System.Generics.Collections,
+  System.IOUtils,
+  superobject,
   AH.Core.Types,
   AH.Core.Noeud,
   AH.Core.Moteur,
@@ -38,6 +41,9 @@ program ArkhamHorrorGuideTests;
     results : IRunResults;
     logger : ITestLogger;
     nunitLogger : ITestLogger;
+    GFastMMLogFileName : string;
+    GFastMMStateFileName : string;
+	CurrentThread: TThread;
   {$ENDIF}
 
   procedure AmorcerLesSpecialisationsGeneriques;
@@ -55,9 +61,23 @@ program ArkhamHorrorGuideTests;
       ListeConseils : TList<TConseil>;
       Pile : TList<TFrameParcours>;
       Historique : TStack<TInstantane>;
+      TemporaryFilePath : string;
+      Utf8Encoding : TEncoding;
+      Utf8ByteCount : Integer;
+      JsonWarmup : ISuperObject;
     begin
-      NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);
+	  // L'accès au thread courant peut créer paresseusement un TExternalThread
+	  // global de la RTL. Son initialisation est effectuée avant le runner afin
+	  // que DUnitX ne l'attribue pas au premier test qui manipule des fichiers,
+	  // du JSON ou des assertions.
+	  CurrentThread := TThread.Current;
+	  if not Assigned(CurrentThread) then
+		raise EInvalidOpException.Create(
+		  'Impossible d''amorcer l''enveloppe RTL du thread principal.');
+		  
+	  NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);	  
       NoeudSequence.Free;
+	  
       NoeudCondition := TNoeudEtape.Create('amorce_condition', ntCondition);
       NoeudCondition.Free;
 
@@ -75,13 +95,99 @@ program ArkhamHorrorGuideTests;
 
       Historique := TStack<TInstantane>.Create;
       Historique.Free;
+
+      // TPath et TFile peuvent initialiser des ressources internes à leur première
+      // utilisation. L'amorçage est volontairement réalisé avant l'exécution des
+      // tests afin que FastMM5 ne l'attribue pas au premier test utilisateur.
+      TemporaryFilePath := TPath.Combine(
+        TPath.GetTempPath,
+        'arkham_horror_guide_warmup_file_does_not_exist.tmp');
+
+      TFile.Exists(TemporaryFilePath);
+
+      // TFile.WriteAllText utilise l'encodage UTF-8 par défaut. Cette initialisation
+      // est également effectuée hors de la fenêtre de surveillance des tests.
+      Utf8Encoding := TEncoding.UTF8;
+      Utf8ByteCount := Utf8Encoding.GetByteCount(EmptyStr);
+
+      if Utf8ByteCount <> 0 then
+        raise EInvalidOpException.Create(
+          'L''amorçage UTF-8 a produit une taille inattendue.');
+
+      // SuperObject initialise certaines ressources internes lors de la première
+        // analyse JSON. Cette initialisation est effectuée avant la surveillance
+        // DUnitX/FastMM5 afin de ne pas être attribuée au premier test utilisateur.
+        JsonWarmup := SO('{"Warmup":true}');
+
+        if not Assigned(JsonWarmup) or not JsonWarmup.B['Warmup'] then
+          raise EInvalidOpException.Create(
+            'L''amorçage du parseur SuperObject a échoué.');
     end;
+
+	/// <summary>
+	/// Retourne le répertoire contenant l'exécutable de tests.
+	/// Ce répertoire existe avant l'exécution et sert de destination stable pour
+	/// les diagnostics FastMM5.
+	/// </summary>
+	/// <returns>Chemin absolu du répertoire de l'exécutable de tests, sans séparateur final.</returns>
+	/// <exception cref="System.SysUtils.EInvalidOp">
+	/// Levée si le chemin de l'exécutable ne permet pas de déterminer un répertoire de diagnostic exploitable.
+	/// </exception>
+	function GetFastMMDiagnosticsDirectory: string;
+		begin
+		  Result := ExcludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+
+		  if Result = EmptyStr then
+			raise EInvalidOpException.Create(
+			  'Impossible de déterminer le répertoire de diagnostic FastMM5.');
+		end;
+
+	/// <summary>
+	/// Configure temporairement FastMM5 pour produire des rapports de diagnostic
+	/// dans le même répertoire que l'exécutable de tests.
+	/// Cette configuration est réservée aux investigations et ne doit pas être
+	/// activée dans les builds de livraison.
+	/// </summary>
+	procedure ConfigureFastMMDiagnostics;
+		var
+		  DiagnosticsDirectory: string;
+		begin
+		  DiagnosticsDirectory := GetFastMMDiagnosticsDirectory;
+
+		  GFastMMLogFileName := TPath.Combine(
+			DiagnosticsDirectory,
+			'ArkhamHorrorGuideTests.FastMM.Events.log');
+
+		  GFastMMStateFileName := TPath.Combine(
+			DiagnosticsDirectory,
+			'ArkhamHorrorGuideTests.FastMM.State.log');
+
+		  // Les chaînes sont globales afin que les pointeurs transmis à FastMM restent
+		  // valides pendant toute l'exécution du processus.
+		  FastMM_SetEventLogFilename(PWideChar(GFastMMLogFileName));
+		  FastMM_DeleteEventLogFile;
+
+		  FastMM_LogToFileEvents := FastMM_LogToFileEvents +
+			[mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
+
+		  FastMM_OutputDebugStringEvents := FastMM_OutputDebugStringEvents +
+			[mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
+
+		  FastMM_EnterDebugMode;
+		  FastMM_SetDebugModeStackTraceEntryCount(32);
+
+		  System.Writeln('FastMM working directory: ' + GetCurrentDir);
+		  System.Writeln('FastMM event log: ' + GFastMMLogFileName);
+		  System.Writeln('FastMM state log: ' + GFastMMStateFileName);
+		end;
 
 begin
   {$IFDEF TESTINSIGHT}
+  ConfigureFastMMDiagnostics;
   TestInsight.DUnitX.RunRegisteredTests;
  {$ELSE}
   try
+    ConfigureFastMMDiagnostics;
     AmorcerLesSpecialisationsGeneriques;
 
     //Pause par défaut en sortie ; CheckCommandLine peut écraser cette valeur si un
@@ -109,6 +215,15 @@ begin
 
     //Run tests
     results := runner.Execute;
+
+	if not FastMM_LogStateToFile(PWideChar(GFastMMStateFileName)) then
+	  System.Writeln('FastMM n''a pas pu écrire le rapport d''état : ' + GFastMMStateFileName)
+	else 
+	  if not TFile.Exists(GFastMMStateFileName) then
+	    System.Writeln('FastMM a retourné True, mais le fichier est introuvable : ' + GFastMMStateFileName)
+	  else
+	    System.Writeln('Rapport d''état FastMM créé : ' + GFastMMStateFileName);
+
     if not results.AllPassed then
       System.ExitCode := EXIT_ERRORS;
 

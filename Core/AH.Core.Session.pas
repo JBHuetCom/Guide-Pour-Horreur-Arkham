@@ -55,6 +55,15 @@ unit AH.Core.Session;
           FMoteur : TMoteurSequenceur;
           FNombreEtapesTraversees : Integer;
           FReponsesEnregistrees : TList<Variant>;
+
+          // Parallèle à chaque étape traversée : True si le Suivant qui l'a produite était
+          // immédiatement précédé d'un EnregistrerReponse (donc si Precedent doit dépiler
+          // une réponse en l'annulant), False sinon.
+          FEtapesAvecReponse: TList<Boolean>;
+
+          // Vrai entre un appel à EnregistrerReponse et le prochain Suivant qui en tient compte.
+          FReponseEnAttente: Boolean;
+
           function GetNoeudCourant : TNoeudEtape;
         public
           /// <param name="AMoteur">Moteur à décorer. Conservé par référence, non libéré par ce décorateur.</param>
@@ -129,15 +138,56 @@ unit AH.Core.Session;
     constructor TMoteurSequenceurJournalise.Create(AMoteur : TMoteurSequenceur);
       begin
         inherited Create;
+
         FMoteur := AMoteur;
         FReponsesEnregistrees := TList<Variant>.Create;
+        FEtapesAvecReponse := TList<Boolean>.Create;
       end;
 
     destructor TMoteurSequenceurJournalise.Destroy;
       begin
+        FEtapesAvecReponse.Free;
         FReponsesEnregistrees.Free;
 
         inherited;
+      end;
+
+    function TMoteurSequenceurJournalise.Suivant : TNoeudEtape;
+      begin
+        Result := FMoteur.Suivant;
+        if Assigned(Result) then
+          begin
+            Inc(FNombreEtapesTraversees);
+            FEtapesAvecReponse.Add(FReponseEnAttente);
+            FReponseEnAttente := False;
+          end;
+      end;
+
+    function TMoteurSequenceurJournalise.Precedent : TNoeudEtape;
+      var
+        ConsommeReponse : Boolean;
+      begin
+        Result := FMoteur.Precedent;
+        if Assigned(Result) then
+          begin
+            Dec(FNombreEtapesTraversees);
+            if FEtapesAvecReponse.Count > 0 then
+              begin
+                ConsommeReponse := FEtapesAvecReponse[FEtapesAvecReponse.Count - 1];
+                FEtapesAvecReponse.Delete(FEtapesAvecReponse.Count - 1);
+                if ConsommeReponse
+                   and (FReponsesEnregistrees.Count > 0)
+                then
+                  FReponsesEnregistrees.Delete(FReponsesEnregistrees.Count - 1);
+              end;
+          end;
+        end;
+
+    procedure TMoteurSequenceurJournalise.EnregistrerReponse(const AValeur : Variant);
+      begin
+        FMoteur.EnregistrerReponse(AValeur);
+        FReponsesEnregistrees.Add(AValeur);
+        FReponseEnAttente := True;
       end;
 
     function TMoteurSequenceurJournalise.GetNoeudCourant : TNoeudEtape;
@@ -145,38 +195,8 @@ unit AH.Core.Session;
         Result := FMoteur.NoeudCourant;
       end;
 
-    function TMoteurSequenceurJournalise.Suivant : TNoeudEtape;
-      begin
-        Result := FMoteur.Suivant;
-        if Assigned(Result) then
-          Inc(FNombreEtapesTraversees);
-      end;
-
-    function TMoteurSequenceurJournalise.Precedent : TNoeudEtape;
-      var
-        NoeudQuitte : TNoeudEtape;
-      begin
-        NoeudQuitte := FMoteur.NoeudCourant;
-        Result := FMoteur.Precedent;
-        if Assigned(Result) then
-          begin
-            Dec(FNombreEtapesTraversees);
-            if Assigned(NoeudQuitte)
-               and (NoeudQuitte.TypeNoeud in [ntChoix, ntSaisie])
-               and (FReponsesEnregistrees.Count > 0)
-            then
-              FReponsesEnregistrees.Delete(FReponsesEnregistrees.Count - 1);
-          end;
-      end;
-
-    procedure TMoteurSequenceurJournalise.EnregistrerReponse(const AValeur : Variant);
-      begin
-        FMoteur.EnregistrerReponse(AValeur);
-        FReponsesEnregistrees.Add(AValeur);
-      end;
-
     function TMoteurSequenceurJournalise.CapturerSession(AContexte : TContextePartie;
-                                                         const AFichierContenuActif: string) : TSessionPartie;
+                                                         const AFichierContenuActif : string) : TSessionPartie;
       begin
         with Result do
           begin

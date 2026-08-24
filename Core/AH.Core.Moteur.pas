@@ -13,7 +13,7 @@ unit AH.Core.Moteur;
       /// index du prochain enfant à visiter, et nombre de passages restants pour une boucle par investigateur.
       /// </summary>
       TFrameParcours = record
-        Noeud: TNoeudEtape;
+        Noeud : TNoeudEtape;
         IndexProchainEnfant : Integer;
         InvestigateursRestants : Integer; // Non significatif hors ntBouclePorInvestigateur.
       end;
@@ -92,7 +92,7 @@ unit AH.Core.Moteur;
     System.SysUtils,
     AH.Core.EvaluateurCondition, AH.Core.Types;
 
-  { TMoteurSequenceur }
+  {$REGION 'TMoteurSequenceur'}
 
   constructor TMoteurSequenceur.Create(ARacine : TNoeudEtape; AContexte : TContextePartie);
     begin
@@ -121,7 +121,7 @@ unit AH.Core.Moteur;
       FPile.Add(Frame);
     end;
 
-  function TMoteurSequenceur.TraiterNoeud(ANoeud: TNoeudEtape): TNoeudEtape;
+  function TMoteurSequenceur.TraiterNoeud(ANoeud : TNoeudEtape) : TNoeudEtape;
     var
       NoeudResolu : TNoeudEtape;
     begin
@@ -164,43 +164,47 @@ unit AH.Core.Moteur;
         end;
 
       while FPile.Count > 0 do
-      begin
-        Frame := FPile[FPile.Count - 1];
-        if Frame.IndexProchainEnfant < Frame.Noeud.Enfants.Count then
-          begin
-            EnfantSuivant := Frame.Noeud.Enfants[Frame.IndexProchainEnfant];
-            Frame.IndexProchainEnfant := Frame.IndexProchainEnfant + 1;
-            FPile[FPile.Count - 1] := Frame;
-            Trouve := TraiterNoeud(EnfantSuivant);
-            if Assigned(Trouve) then
-              Exit(Trouve);
-            // Sinon TraiterNoeud a poussé une frame : la boucle continue et y redescend.
-          end
-        else
         begin
-          if (Frame.Noeud.TypeNoeud = ntBouclePorInvestigateur)
-             and (Frame.InvestigateursRestants > 1)
-          then
+          Frame := FPile[FPile.Count - 1];
+          if Frame.IndexProchainEnfant < Frame.Noeud.Enfants.Count then
             begin
-              Frame.InvestigateursRestants := Frame.InvestigateursRestants - 1;
-              Frame.IndexProchainEnfant := 0;
+              EnfantSuivant := Frame.Noeud.Enfants[Frame.IndexProchainEnfant];
+              Frame.IndexProchainEnfant := Frame.IndexProchainEnfant + 1;
               FPile[FPile.Count - 1] := Frame;
-              FContexte.PasserAlInvestigateurSuivant;
+              Trouve := TraiterNoeud(EnfantSuivant);
+              if Assigned(Trouve) then
+                Exit(Trouve);
+
+              // Sinon TraiterNoeud a poussé une frame : la boucle continue et y redescend.
             end
           else
-            FPile.Delete(FPile.Count - 1);
+          begin
+            if (Frame.Noeud.TypeNoeud = ntBouclePorInvestigateur)
+               and (Frame.InvestigateursRestants > 1)
+            then
+              begin
+                Frame.InvestigateursRestants := Frame.InvestigateursRestants - 1;
+                Frame.IndexProchainEnfant := 0;
+                FPile[FPile.Count - 1] := Frame;
+                FContexte.PasserAlInvestigateurSuivant;
+              end
+            else
+              FPile.Delete(FPile.Count - 1);
+          end;
         end;
-      end;
       Result := nil; // Pile vide : arbre entièrement parcouru.
     end;
 
   function TMoteurSequenceur.CapturerInstantane: TInstantane;
     begin
-      Result.NoeudCourant := FNoeudCourant;
-      Result.Pile := FPile.ToArray;
-      Result.BrancheChoisieEnAttente := FBrancheChoisieEnAttente;
-      Result.IndexInvestigateurCourant := FContexte.IndexInvestigateurCourant;
-      Result.EnAttenteReponse := FEnAttenteReponse;
+      with Result do
+        begin
+          NoeudCourant := FNoeudCourant;
+          Pile := FPile.ToArray;
+          BrancheChoisieEnAttente := FBrancheChoisieEnAttente;
+          IndexInvestigateurCourant := FContexte.IndexInvestigateurCourant;
+          EnAttenteReponse := FEnAttenteReponse;
+        end;
     end;
 
   procedure TMoteurSequenceur.RestaurerInstantane(const AInstantane: TInstantane);
@@ -213,7 +217,7 @@ unit AH.Core.Moteur;
       FEnAttenteReponse := AInstantane.EnAttenteReponse;
     end;
 
-  function TMoteurSequenceur.Suivant: TNoeudEtape;
+  function TMoteurSequenceur.Suivant : TNoeudEtape;
     begin
       if FEnAttenteReponse then
         raise EInvalidOpException.CreateFmt(
@@ -230,6 +234,7 @@ unit AH.Core.Moteur;
     begin
       if FHistorique.Count = 0 then
         Exit(nil);
+
       RestaurerInstantane(FHistorique.Pop);
       Result := FNoeudCourant;
     end;
@@ -268,5 +273,7 @@ unit AH.Core.Moteur;
 
       FEnAttenteReponse := False;
     end;
+
+  {$ENDREGION}
 
 end.

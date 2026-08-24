@@ -31,16 +31,14 @@ unit AH.Core.EvaluateurCondition;
     class function TEvaluateurCondition.ResoudreBranche(ANoeud : TNoeudEtape; AContexte : TContextePartie) : TNoeudEtape;
       var
         ValeurCourante: Variant;
-        Branche: TBrancheEtape;
+        BrancheIndex: Integer;
       begin
         ValeurCourante := AContexte.LireChamp(ANoeud.ChampContexte);
-        for Branche in ANoeud.Branches do
-          if Branche.ValeurDeclenchante = ValeurCourante then
-            Exit(Branche.Noeud);
+        for BrancheIndex := 0 to ANoeud.Branches.Count - 1 do
+          if ANoeud.Branches[BrancheIndex].ValeurDeclenchante = ValeurCourante then
+            Exit(ANoeud.Branches[BrancheIndex].Noeud);
 
-        raise EArgumentException.CreateFmt(
-          'Aucune branche du nœud "%s" ne correspond à la valeur courante (%s) du champ "%s".',
-          [ANoeud.Id, VarToStr(ValeurCourante), ANoeud.ChampContexte]);
+        Result := nil;
       end;
 
 end.

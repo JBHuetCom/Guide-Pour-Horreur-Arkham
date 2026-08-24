@@ -46,9 +46,12 @@ unit AH.Tests.Conseils;
 
     procedure TTestGestionnaireConseils.TearDown;
       begin
-        FGestionnaire.Free;
+        FreeAndNil(FGestionnaire);
+
         if TFile.Exists(FCheminTemp) then
           TFile.Delete(FCheminTemp);
+
+        FCheminTemp := EmptyStr;
       end;
 
     procedure TTestGestionnaireConseils.EcrireFichierTemp(const AContenu: string);

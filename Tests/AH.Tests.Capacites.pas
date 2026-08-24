@@ -45,9 +45,12 @@ unit AH.Tests.Capacites;
 
     procedure TTestGestionnaireCapacites.TearDown;
       begin
-        FGestionnaire.Free;
+        FreeAndNil(FGestionnaire);
+
         if TFile.Exists(FCheminTemp) then
           TFile.Delete(FCheminTemp);
+
+        FCheminTemp := EmptyStr;
       end;
 
     procedure TTestGestionnaireCapacites.EcrireFichierTemp(const AContenu : string);
@@ -59,12 +62,24 @@ unit AH.Tests.Capacites;
       begin
         EcrireFichierTemp(
           '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Inexistant","Description":"..."}]}');
-        Assert.WillRaise(
-          procedure
-            begin
-              FGestionnaire.ChargerDepuisFichier(FCheminTemp);
-            end,
-          ECapacitesInvalidesException);
+//        Assert.WillRaise(
+//          procedure
+//            begin
+//              FGestionnaire.ChargerDepuisFichier(FCheminTemp);
+//            end,
+//          ECapacitesInvalidesException);
+
+        try
+          FGestionnaire.ChargerDepuisFichier(FCheminTemp);
+
+          Assert.Fail(
+            'ECapacitesInvalidesException était attendue pour un domaine inconnu.');
+        except
+          on E: ECapacitesInvalidesException do
+            // L'exception attendue confirme que la validation du domaine est active.
+          else
+            raise;
+        end;
       end;
 
     procedure TTestGestionnaireCapacites.TryObtenirCapacite_InvestigateurConnu_RetourneTrueEtLaDescription;

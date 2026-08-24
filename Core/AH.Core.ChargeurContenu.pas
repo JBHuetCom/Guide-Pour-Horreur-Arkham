@@ -3,6 +3,7 @@ unit AH.Core.ChargeurContenu;
   interface
 
     uses
+
       System.SysUtils,
       SuperObject,
       AH.Core.Noeud;
@@ -48,6 +49,7 @@ unit AH.Core.ChargeurContenu;
       begin
         if AJSON = nil then
           Exit(Null);
+
         case AJSON.DataType of
           stBoolean: Result := AJSON.AsBoolean;
           stInt:     Result := AJSON.AsInteger;
@@ -80,12 +82,11 @@ unit AH.Core.ChargeurContenu;
 
     class function TChargeurContenu.ChargerNoeud(const AJSON : ISuperObject) : TNoeudEtape;
       var
-        TypeNoeud : TTypeNoeud;
+        i : Integer;
         Id, TypeTexte : string;
         Enfants, Branches : ISuperArray;
-        i : Integer;
         BrancheJSON : ISuperObject;
-        Branche : TBrancheEtape;
+        TypeNoeud : TTypeNoeud;
       begin
         Id := AJSON.S['Id'];
         if Id = EmptyStr then
@@ -99,10 +100,13 @@ unit AH.Core.ChargeurContenu;
 
         Result := TNoeudEtape.Create(Id, TypeNoeud);
         try
-          Result.Titre := AJSON.S['Titre'];
-          Result.Texte := AJSON.S['Texte'];
-          Result.Illustration := AJSON.S['Illustration'];
-          Result.ChampContexte := AJSON.S['Champ'];
+          with Result do
+            begin
+              Titre := AJSON.S['Titre'];
+              Texte := AJSON.S['Texte'];
+              Illustration := AJSON.S['Illustration'];
+              ChampContexte := AJSON.S['Champ'];
+            end;
 
           case TypeNoeud of
             ntSequence, ntBouclePorInvestigateur:
@@ -125,10 +129,10 @@ unit AH.Core.ChargeurContenu;
                 for i := 0 to Branches.Length - 1 do
                   begin
                     BrancheJSON := Branches.O[i];
-                    Branche.ValeurDeclenchante := ValeurVariantDepuisJSON(BrancheJSON['Valeur']);
-                    Branche.Libelle := BrancheJSON.S['Libelle'];
-                    Branche.Noeud := ChargerNoeud(BrancheJSON.O['Noeud']);
-                    Result.AjouterBranche(Branche);
+                    Result.AjouterBranche(
+                      ValeurVariantDepuisJSON(BrancheJSON['Valeur']),
+                      BrancheJSON.S['Libelle'],
+                      ChargerNoeud(BrancheJSON.O['Noeud']));
                   end;
               end;
           end;

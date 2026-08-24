@@ -41,6 +41,8 @@ unit AH.Tests.Parametres;
       begin
         if TFile.Exists(FCheminTemp) then
           TFile.Delete(FCheminTemp);
+
+        FCheminTemp := EmptyStr;
       end;
 
     procedure TTestParametresApplication.Create_ValeursParDefaut_AfficherConseilsEstVrai;

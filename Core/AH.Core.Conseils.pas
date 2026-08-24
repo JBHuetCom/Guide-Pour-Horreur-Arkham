@@ -65,11 +65,11 @@ unit AH.Core.Conseils;
 
     procedure TGestionnaireConseils.ChargerDepuisFichier(const ACheminFichier : string);
       var
-        Racine, Entree : ISuperObject;
-        Entrees : ISuperArray;
         i : Integer;
         IdEtape : string;
         Liste : TList<TConseil>;
+        Racine, Entree : ISuperObject;
+        Entrees : ISuperArray;
         Conseil : TConseil;
       begin
         try
