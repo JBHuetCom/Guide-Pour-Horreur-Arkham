@@ -54,7 +54,7 @@ unit AH.Core.Capacites;
     function TryStrToDomaineCapacite(const AText : string; out ADomaine : TDomaineCapacite) : Boolean;
     begin
       Result := True;
-      if SameText(AText, 'Enquete') then
+      if SameText(AText, 'Enquête') then
          ADomaine := dcEnquete
       else
         if SameText(AText, 'Combat') then
@@ -118,7 +118,7 @@ unit AH.Core.Capacites;
           begin
             Entree := Entrees.O[i];
             Capacite.NomInvestigateur := Entree.S['NomInvestigateur'];
-            if Capacite.NomInvestigateur = '' then
+            if Capacite.NomInvestigateur = EmptyStr then
               raise ECapacitesInvalidesException.CreateFmt(
                 'Une capacité sans "NomInvestigateur" a été rencontrée dans "%s".',
                 [ACheminFichier]);
@@ -131,14 +131,14 @@ unit AH.Core.Capacites;
 
             Capacite.Description := Entree.S['Description'];
 
-            FCapacitesParInvestigateur.AddOrSetValue(LowerCase(Capacite.NomInvestigateur), Capacite);
+            FCapacitesParInvestigateur.AddOrSetValue(AnsiLowerCase(Capacite.NomInvestigateur), Capacite);
           end;
-    end;
+      end;
 
     function TGestionnaireCapacites.TryObtenirCapacite(const ANomInvestigateur : string;
-                                                       out ACapacite: TCapaciteInvestigateur): Boolean;
+                                                       out ACapacite : TCapaciteInvestigateur): Boolean;
       begin
-        Result := FCapacitesParInvestigateur.TryGetValue(LowerCase(ANomInvestigateur), ACapacite);
+        Result := FCapacitesParInvestigateur.TryGetValue(AnsiLowerCase(ANomInvestigateur), ACapacite);
       end;
 
 end.

@@ -191,7 +191,7 @@
                                   {
                                     "Id": "phase3_scellement_choix",
                                     "Type": "ntChoix",
-                                    "Titre": "Souhaite-t-il sceller ce portail (5 pions Indice dépensés, ou un Signe des Anciens) ?",
+                                    "Titre": "Souhaite-t-il sceller ce portail (5 pions Indice dépensés, ou un Signe des Anciens) ? Rappel : un portail ouvert dans un lieu stable (diamant vert) ou dans une rue ne peut jamais être scellé, seulement fermé.",
                                     "Branches": [
                                       {
                                         "Valeur": "non",
@@ -413,7 +413,7 @@
         {
           "Id": "phase5_indice",
           "Type": "ntInstruction",
-          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice."
+          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide)."
         },
         {
           "Id": "phase5_terreur_changement",
@@ -434,41 +434,60 @@
               "Libelle": "Oui",
               "Noeud": {
                 "Id": "phase5_terreur_augmente",
-                "Type": "ntSequence",
-                "Enfants": [
+                "Type": "ntCondition",
+                "Champ": "ArkhamEnvahie",
+                "Branches": [
                   {
-                    "Id": "phase5_terreur_rappel_effets",
-                    "Type": "ntInstruction",
-                    "Texte": "Pour chaque point d'augmentation, retirez un Allié au hasard du paquet Allié et retirez-le du jeu. Rappel des paliers de fermeture de boutique : niveau 3 → le Magasin ferme ; niveau 6 → la Boutique de Souvenirs ferme ; niveau 9 → la Vieille Échoppe de Magie ferme ; niveau 10 → Arkham est envahie (plus de limite de monstres) et un pion Destin est ajouté à l'échelle du destin. Appliquez la ou les fermetures nouvellement atteintes en déplaçant les investigateurs et monstres présents vers la zone de rues indiquée par la règle."
+                    "Valeur": true,
+                    "Noeud": {
+                      "Id": "phase5_terreur_deja_max",
+                      "Type": "ntSaisie",
+                      "Champ": "EchelleDestin",
+                      "Texte": "Le niveau de Terreur est déjà à son maximum (10) : il ne bouge plus. Pour chaque point d'augmentation qu'aurait normalement subi la Terreur, ajoutez directement un pion Destin à l'échelle du destin du Grand Ancien à la place. Indiquez le nombre total de pions Destin désormais présents."
+                    }
                   },
                   {
-                    "Id": "phase5_terreur_saisie",
-                    "Type": "ntSaisie",
-                    "Champ": "NiveauTerreur",
-                    "Texte": "Indiquez le nouveau niveau de Terreur."
-                  },
-                  {
-                    "Id": "phase5_condition_arkham_envahie",
-                    "Type": "ntCondition",
-                    "Champ": "ArkhamEnvahie",
-                    "Branches": [
-                      {
-                        "Valeur": true,
-                        "Noeud": {
-                          "Id": "phase5_arkham_envahie_rappel",
+                    "Valeur": false,
+                    "Noeud": {
+                      "Id": "phase5_terreur_normale",
+                      "Type": "ntSequence",
+                      "Enfants": [
+                        {
+                          "Id": "phase5_terreur_rappel_effets",
                           "Type": "ntInstruction",
-                          "Texte": "Arkham est envahie : il n'y a plus de limite de monstres pour le reste de la partie. Un pion Destin est ajouté à l'échelle du destin (voir étape précédente si ce n'est pas déjà fait). Vérifiez à chaque tour, tant que ce niveau est maintenu, si le nombre de monstres en jeu atteint le double de la limite normale de monstres : si oui, le Grand Ancien s'éveille immédiatement."
+                          "Texte": "Pour chaque point d'augmentation, retirez un Allié au hasard du paquet Allié et retirez-le du jeu. Rappel des paliers de fermeture de boutique : niveau 3 → le Magasin ferme ; niveau 6 → la Boutique de Souvenirs ferme ; niveau 9 → la Vieille Échoppe de Magie ferme. Appliquez la ou les fermetures nouvellement atteintes en déplaçant les investigateurs et monstres présents vers la zone de rues indiquée par la règle."
+                        },
+                        {
+                          "Id": "phase5_terreur_saisie",
+                          "Type": "ntSaisie",
+                          "Champ": "NiveauTerreur",
+                          "Texte": "Indiquez le nouveau niveau de Terreur."
+                        },
+                        {
+                          "Id": "phase5_condition_arkham_envahie",
+                          "Type": "ntCondition",
+                          "Champ": "ArkhamEnvahie",
+                          "Branches": [
+                            {
+                              "Valeur": true,
+                              "Noeud": {
+                                "Id": "phase5_arkham_envahie_rappel",
+                                "Type": "ntInstruction",
+                                "Texte": "Arkham est envahie : il n'y a plus de limite de monstres pour le reste de la partie. Ajoutez un pion Destin à l'échelle du destin. Vérifiez à chaque tour, tant que ce niveau est maintenu, si le nombre de monstres en jeu atteint le double de la limite normale de monstres : si oui, le Grand Ancien s'éveille immédiatement."
+                              }
+                            },
+                            {
+                              "Valeur": false,
+                              "Noeud": {
+                                "Id": "phase5_arkham_pas_envahie",
+                                "Type": "ntInstruction",
+                                "Texte": "Le niveau de Terreur n'a pas atteint 10 : rien de plus à vérifier ici."
+                              }
+                            }
+                          ]
                         }
-                      },
-                      {
-                        "Valeur": false,
-                        "Noeud": {
-                          "Id": "phase5_arkham_pas_envahie",
-                          "Type": "ntInstruction",
-                          "Texte": "Le niveau de Terreur n'a pas atteint 10 : rien de plus à vérifier ici."
-                        }
-                      }
-                    ]
+                      ]
+                    }
                   }
                 ]
               }

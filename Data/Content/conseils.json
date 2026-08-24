@@ -1,14 +1,69 @@
 {
   "Conseils": [
     {
-      "IdEtape": "phase1_ajustement_competences",
-      "Texte": "Anticipez la phase à venir avant de déplacer vos pions de compétence : un ajustement trop optimiste sur une paire peut vous laisser sans marge ailleurs ce tour-ci.",
-      "Source": "Wiki Horreur à Arkham - Conseils pour débuter"
+      "IdEtape": "prep04_prend_feuille",
+      "Texte": "Envisagez une répartition de rôles complémentaires entre vos investigateurs : un profil rapide et discret pour explorer les portails, un profil robuste pour protéger le groupe, un profil orienté Savoir pour la magie et la fermeture de portails, un profil polyvalent pour collecter les indices et redistribuer l'équipement. Ce n'est pas une règle du jeu, seulement une organisation qui fonctionne bien quel que soit le nombre d'investigateurs en jeu.",
+      "Source": "Guide du débutant (synthèse)"
     },
     {
-      "IdEtape": "bf_round_04_attaque_grand_ancien",
-      "Texte": "Les capacités passives du Grand Ancien restent actives durant toute la bataille finale : ne comptez pas sur une trêve de ses effets pour souffler.",
-      "Source": "Wiki Horreur à Arkham - FAQ"
+      "IdEtape": "phase1_ajustement_competences",
+      "Texte": "Anticipez la phase à venir avant de déplacer vos pions de compétence : un déplacement trop optimiste sur une paire peut vous laisser démuni sur l'autre. Sacrifier votre Vitesse pour la Discrétion vous rend plus difficile à surprendre, mais ralentit d'autant vos déplacements.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase2_mouvement_arkham",
+      "Texte": "Un déplacement efficace vise généralement un objectif précis : un indice à ramasser, un portail à explorer ou refermer, une boutique utile, ou un coéquipier à retrouver. Les déplacements sans destination précise font perdre un temps que la partie ne rend jamais.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase3_situation",
+      "Texte": "Un portail ouvert est presque toujours plus dangereux et plus urgent qu'un monstre isolé : chaque tour où il reste ouvert peut faire apparaître de nouveaux monstres et rapproche le réveil du Grand Ancien. Ne combattez que si un monstre bloque effectivement un portail, menace directement un équipier, ou empêche une action critique — sinon, l'évasion est presque toujours la meilleure option.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase3_pas_portail",
+      "Texte": "Un pion Indice non dépensé ne sert à rien : n'hésitez pas à en utiliser un ou plusieurs après un test raté (ou réussi de justesse) pour sécuriser un résultat important. Les garder « pour plus tard » a un coût d'opportunité réel.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase3_fermer_portail_choix",
+      "Texte": "Choisissez le test (Savoir ou Vigueur) sur lequel votre investigateur est le plus fort à ce moment précis : vos pions coulissants de compétence évoluent d'un tour à l'autre, le meilleur choix n'est pas toujours le même.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase3_scellement_choix",
+      "Texte": "Un portail scellé vaut presque toujours mieux qu'un portail simplement fermé : un portail fermé peut se rouvrir plus tard, un portail scellé ne le peut plus jamais. Rappel des deux méthodes : dépenser 5 pions Indice, mais uniquement juste après avoir réussi le test de fermeture ce même tour ; ou utiliser une carte Signe des Anciens, qui scelle sans nécessiter de test mais coûte 1 point de Santé Mentale et 1 point de Résistance, et ne peut être utilisée qu'une seule fois par carte.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase4_rencontre",
+      "Texte": "Les rencontres dans les Autres Mondes sont en moyenne plus dangereuses que celles d'Arkham : assurez-vous d'avoir de la marge en Santé Mentale et en Résistance avant d'entrer dans un portail, surtout si votre investigateur risque d'y rester bloqué plusieurs tours.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase5_evenement",
+      "Texte": "La phase du Mythe est celle qui fait réellement progresser la menace : c'est elle qui ouvre les portails, fait avancer l'échelle du destin et peut augmenter la terreur. Gardez un œil sur son évolution tour après tour plutôt que de vous concentrer uniquement sur vos propres actions.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase5_terreur_changement",
+      "Texte": "Le niveau de Terreur ne redescend jamais : chaque hausse est définitive. Si vous approchez d'un palier de fermeture de boutique (3, 6 ou 9), envisagez de vous y approvisionner par avance plutôt que de risquer d'en être privé.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "phase5_mouvement_monstres",
+      "Texte": "La capacité de déplacement d'un monstre (rapide, volant, immobile...) est souvent plus déterminante pour votre stratégie que sa seule force de combat : un monstre immobile peut être ignoré indéfiniment, un monstre rapide ou volant peut vous rattraper avant que vous ne l'ayez anticipé.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "bf01_defausser_environnement_rumeur",
+      "Texte": "Une fois la Bataille Finale commencée, vous ne pouvez plus acheter d'équipement ni gagner de pions Indice : assurez-vous d'avoir vos meilleures armes et sorts en main avant d'en arriver là.",
+      "Source": "Guide du débutant (synthèse)"
+    },
+    {
+      "IdEtape": "bf_investigateurs_attaquent",
+      "Texte": "Un pion Indice non dépensé avant la Bataille Finale reste utilisable pour améliorer vos tests de Combat contre le Grand Ancien : ne les gardez pas indéfiniment « au cas où », ils ne se transforment en rien d'autre.",
+      "Source": "Guide du débutant (synthèse)"
     }
   ]
 }

@@ -3,18 +3,18 @@ unit AH.Core.Contexte;
   interface
 
     uses
+
       System.SysUtils, System.Variants;
 
     const
-      /// <summary>Nombre de cases de l'échelle du destin (règle page 19, feuille Grand Ancien).</summary>
-      EchelleDestinTailleMax = 13;
+
       /// <summary>Nombre maximum de joueurs humains autour de la table (règle maison).</summary>
-      NombreMaxJoueursHumains = 6;
+      NombreMaxJoueursHumains = 8;
       /// <summary>
       /// Nombre maximum d'investigateurs en jeu (règle maison), qu'ils soient répartis entre
       /// plusieurs joueurs humains ou cumulés par un seul.
       /// </summary>
-      NombreMaxInvestigateurs = 6;
+      NombreMaxInvestigateurs = 8;
 
     type
 
@@ -35,31 +35,33 @@ unit AH.Core.Contexte;
       TContextePartie = class
         private
           FNomsJoueursHumains : TArray<string>;
-          /// <summary>
-          /// Investigateurs en jeu, dans l'ordre de résolution des phases I à IV : ordre horaire
-          /// des joueurs humains depuis le premier joueur, et pour un même joueur humain, ses
-          /// investigateurs consécutifs dans cet ordre. Cet ordre est déterminé par l'appelant
-          /// (assistant de configuration de partie), pas recalculé ici.
-          /// </summary>
           FInvestigateurs : TArray<TInvestigateurJoue>;
           FNiveauTerreur : Integer;
           FNombrePortailsOuverts : Integer;
           FNombreSignesDesAnciens : Integer;
-          FEchelleDestin : Integer;
+          FEchelleDestin: Integer;
+          /// <summary>
+          /// Nombre total de cases de l'échelle du destin du Grand Ancien affronté cette partie
+          /// (varie selon le Grand Ancien : imprimé sur sa feuille). Vaut 0 tant qu'il n'a pas
+          /// été renseigné, ce qui doit se produire lors de la révélation du Grand Ancien
+          /// pendant la préparation, avant toute résolution d'un nœud ntCondition sur
+          /// EchelleDestinPleine.
+          /// </summary>
+          FTailleEchelleDestin : Integer;
           FTourCourant : Integer;
           FIndexInvestigateurCourant : Integer;
           FIndexPremierInvestigateur : Integer;
         public
           /// <param name="ANomsJoueursHumains">
-          /// Prénoms des joueurs humains autour de la table. Entre 1 et NombreMaxJoueursHumains (6) éléments.
+          /// Prénoms des joueurs humains autour de la table. Entre 1 et NombreMaxJoueursHumains (8) éléments.
           /// </param>
           /// <param name="AInvestigateurs">
-          /// Investigateurs en jeu, déjà ordonnés (voir remarque sur le champ FInvestigateurs). Entre 1 et
-          /// NombreMaxInvestigateurs (6) éléments. Chaque IndexJoueurHumain doit être un index valide de
-          /// ANomsJoueursHumains.
+          /// Investigateurs en jeu, déjà ordonnés (ordre horaire des joueurs humains depuis le premier
+          /// joueur, investigateurs d'un même joueur consécutifs). Entre 1 et NombreMaxInvestigateurs (8)
+          /// éléments. Chaque IndexJoueurHumain doit être un index valide de ANomsJoueursHumains.
           /// </param>
           /// <exception cref="EArgumentOutOfRangeException">
-          /// Levée si le nombre de joueurs humains ou d'investigateurs est hors de l'intervalle [1;6],
+          /// EArgumentOutOfRangeException levée si le nombre de joueurs humains ou d'investigateurs est hors de l'intervalle [1;8],
           /// ou si un IndexJoueurHumain référence un joueur humain inexistant.
           /// </exception>
           constructor Create(const ANomsJoueursHumains : TArray<string>; const AInvestigateurs : TArray<TInvestigateurJoue>);
@@ -79,14 +81,20 @@ unit AH.Core.Contexte;
           /// <summary>Indique si le niveau de terreur a atteint la valeur maximale de l'échelle (10).</summary>
           function ArkhamEnvahie : Boolean;
 
-          /// <summary>Indique si la dernière case de l'échelle du destin est occupée (le Grand Ancien se réveille).</summary>
+          /// <summary>
+          /// Indique si la dernière case de l'échelle du destin est occupée (le Grand Ancien se réveille).
+          /// </summary>
+          /// <exception cref="EInvalidOpException">
+          /// Levée si TailleEchelleDestin n'a pas encore été renseigné (n'a pas dû être résolu lors
+          /// de la révélation du Grand Ancien avant cet appel — erreur d'ordonnancement du contenu).
+          /// </exception>
           function EchelleDestinPleine : Boolean;
 
           /// <summary>Investigateur actuellement actif dans une boucle ntBouclePorInvestigateur.</summary>
           function InvestigateurCourant : TInvestigateurJoue;
 
           /// <summary>Nom de l'investigateur actuellement actif.</summary>
-          function NomInvestigateurCourant : string;
+          function NomInvestigateurCourant  : string;
 
           /// <summary>Prénom du joueur humain qui contrôle l'investigateur actuellement actif.</summary>
           function NomJoueurHumainCourant : string;
@@ -101,7 +109,7 @@ unit AH.Core.Contexte;
           /// Affecte par nom un champ modifiable du contexte, utilisé par le moteur pour résoudre
           /// les nœuds ntSaisie sans connaître statiquement la liste des champs.
           /// </summary>
-          /// <param name="ANomChamp">Nom du champ ciblé (ex. "NiveauTerreur"). Insensible à la casse.</param>
+          /// <param name="ANomChamp">Nom du champ ciblé (ex. "NiveauTerreur", "TailleEchelleDestin"). Insensible à la casse.</param>
           /// <param name="AValeur">Valeur à affecter, convertie selon le type réel du champ.</param>
           /// <exception cref="EArgumentException">
           /// Levée si ANomChamp ne correspond à aucun champ modifiable connu.
@@ -119,12 +127,22 @@ unit AH.Core.Contexte;
           /// </exception>
           function LireChamp(const ANomChamp : string) : Variant;
 
-          /// <summary>Index (base 0) de l'investigateur courant. Exposé pour la sauvegarde d'historique du moteur.</summary>
+          /// <summary>Copie des prénoms des joueurs humains, dans l'ordre fourni à la création.</summary>
+          function NomsJoueursHumains: TArray<string>;
+
+          /// <summary>Copie des investigateurs en jeu, dans l'ordre de résolution des phases.</summary>
+          function Investigateurs: TArray<TInvestigateurJoue>;          /// <summary>Index (base 0) de l'investigateur courant. Exposé pour la sauvegarde d'historique du moteur.</summary>
+
           property IndexInvestigateurCourant : Integer read FIndexInvestigateurCourant write FIndexInvestigateurCourant;
           property NiveauTerreur : Integer read FNiveauTerreur write FNiveauTerreur;
           property NombrePortailsOuverts : Integer read FNombrePortailsOuverts write FNombrePortailsOuverts;
           property NombreSignesDesAnciens : Integer read FNombreSignesDesAnciens write FNombreSignesDesAnciens;
           property EchelleDestin : Integer read FEchelleDestin write FEchelleDestin;
+          /// <summary>
+          /// Nombre total de cases de l'échelle du destin du Grand Ancien affronté cette partie.
+          /// À renseigner lors de sa révélation (valeur imprimée sur sa feuille) ; vaut 0 tant que non renseigné.
+          /// </summary>
+          property TailleEchelleDestin : Integer read FTailleEchelleDestin write FTailleEchelleDestin;
           property TourCourant : Integer read FTourCourant write FTourCourant;
       end;
 
@@ -132,22 +150,22 @@ unit AH.Core.Contexte;
 
     { TContextePartie }
 
-    constructor TContextePartie.Create(const ANomsJoueursHumains : TArray<string>;
-                                       const AInvestigateurs : TArray<TInvestigateurJoue>);
+    constructor TContextePartie.Create(const ANomsJoueursHumains: TArray<string>;
+                                       const AInvestigateurs: TArray<TInvestigateurJoue>);
       var
         Investigateur: TInvestigateurJoue;
       begin
         inherited Create;
 
         if (Length(ANomsJoueursHumains) < 1)
-          or (Length(ANomsJoueursHumains) > NombreMaxJoueursHumains)
+           or (Length(ANomsJoueursHumains) > NombreMaxJoueursHumains)
         then
           raise EArgumentOutOfRangeException.CreateFmt(
             'Le nombre de joueurs humains doit être compris entre 1 et %d (valeur reçue : %d).',
             [NombreMaxJoueursHumains, Length(ANomsJoueursHumains)]);
 
         if (Length(AInvestigateurs) < 1)
-          or (Length(AInvestigateurs) > NombreMaxInvestigateurs)
+           or (Length(AInvestigateurs) > NombreMaxInvestigateurs)
         then
           raise EArgumentOutOfRangeException.CreateFmt(
             'Le nombre d''investigateurs doit être compris entre 1 et %d (valeur reçue : %d).',
@@ -155,7 +173,7 @@ unit AH.Core.Contexte;
 
         for Investigateur in AInvestigateurs do
           if (Investigateur.IndexJoueurHumain < 0)
-            or (Investigateur.IndexJoueurHumain >= Length(ANomsJoueursHumains))
+             or (Investigateur.IndexJoueurHumain >= Length(ANomsJoueursHumains))
           then
             raise EArgumentOutOfRangeException.CreateFmt(
               'L''investigateur "%s" référence un joueur humain inexistant (index %d).',
@@ -166,29 +184,29 @@ unit AH.Core.Contexte;
         FTourCourant := 1;
       end;
 
-    function TContextePartie.NombreJoueursHumains : Integer;
+    function TContextePartie.NombreJoueursHumains: Integer;
       begin
         Result := Length(FNomsJoueursHumains);
       end;
 
-    function TContextePartie.NombreInvestigateurs : Integer;
+    function TContextePartie.NombreInvestigateurs: Integer;
       begin
         Result := Length(FInvestigateurs);
       end;
 
-    function TContextePartie.LimiteMonstres : Integer;
+    function TContextePartie.LimiteMonstres: Integer;
       begin
         Result := NombreInvestigateurs + 3;
       end;
 
-    function TContextePartie.SeuilReveilPortailsOuverts : Integer;
+    function TContextePartie.SeuilReveilPortailsOuverts: Integer;
       begin
-        // Table page 19, bornée au maximum de 6 investigateurs autorisé par la règle maison
-        // (les cas 7-8 joueurs du livret original sont structurellement inatteignables ici).
+        // Table page 19
         case NombreInvestigateurs of
-          1..2: Result := 8;
-          3..4: Result := 7;
-          5..6: Result := 6;
+          1..2 : Result := 8;
+          3..4 : Result := 7;
+          5..6 : Result := 6;
+          7..8 : Result := 5;
         else
           raise EInvalidOpException.CreateFmt(
             'Nombre d''investigateurs hors limite (%d) : la validation du constructeur aurait dû l''empêcher.',
@@ -196,27 +214,31 @@ unit AH.Core.Contexte;
         end;
       end;
 
-    function TContextePartie.ArkhamEnvahie : Boolean;
+    function TContextePartie.ArkhamEnvahie: Boolean;
       begin
         Result := FNiveauTerreur >= 10;
       end;
 
-    function TContextePartie.EchelleDestinPleine : Boolean;
+    function TContextePartie.EchelleDestinPleine: Boolean;
       begin
-        Result := FEchelleDestin >= EchelleDestinTailleMax;
+        if FTailleEchelleDestin <= 0 then
+          raise EInvalidOpException.Create(
+            'La taille de l''échelle du destin du Grand Ancien n''a pas encore été renseignée ' +
+            '(le nœud ntSaisie "TailleEchelleDestin" doit être résolu lors de la révélation du Grand Ancien, avant tout appel à EchelleDestinPleine).');
+        Result := FEchelleDestin >= FTailleEchelleDestin;
       end;
 
-    function TContextePartie.InvestigateurCourant : TInvestigateurJoue;
+    function TContextePartie.InvestigateurCourant: TInvestigateurJoue;
       begin
         Result := FInvestigateurs[FIndexInvestigateurCourant];
       end;
 
-    function TContextePartie.NomInvestigateurCourant : string;
+    function TContextePartie.NomInvestigateurCourant: string;
       begin
         Result := InvestigateurCourant.NomInvestigateur;
       end;
 
-    function TContextePartie.NomJoueurHumainCourant : string;
+    function TContextePartie.NomJoueurHumainCourant: string;
       begin
         Result := FNomsJoueursHumains[InvestigateurCourant.IndexJoueurHumain];
       end;
@@ -231,7 +253,7 @@ unit AH.Core.Contexte;
         FIndexInvestigateurCourant := FIndexPremierInvestigateur;
       end;
 
-    procedure TContextePartie.AffecterChamp(const ANomChamp : string; const AValeur : Variant);
+    procedure TContextePartie.AffecterChamp(const ANomChamp: string; const AValeur: Variant);
       begin
         if SameText(ANomChamp, 'NiveauTerreur') then
           FNiveauTerreur := AValeur
@@ -244,36 +266,52 @@ unit AH.Core.Contexte;
             else
               if SameText(ANomChamp, 'EchelleDestin') then
                 FEchelleDestin := AValeur
-              else raise EArgumentException.CreateFmt(
-                     'Champ de contexte inconnu ou non modifiable via ntSaisie : "%s".',
-                     [ANomChamp]);
+              else
+                if SameText(ANomChamp, 'TailleEchelleDestin') then
+                  FTailleEchelleDestin := AValeur
+                else raise EArgumentException.CreateFmt(
+                       'Champ de contexte inconnu ou non modifiable via ntSaisie : "%s".',
+                       [ANomChamp]);
       end;
 
-    function TContextePartie.LireChamp(const ANomChamp : string) : Variant;
+    function TContextePartie.LireChamp(const ANomChamp: string): Variant;
       begin
         if SameText(ANomChamp, 'NiveauTerreur') then
           Result := FNiveauTerreur
-        else
-          if SameText(ANomChamp, 'NombrePortailsOuverts') then
-            Result := FNombrePortailsOuverts
           else
-            if SameText(ANomChamp, 'NombreSignesDesAnciens') then
-              Result := FNombreSignesDesAnciens
+            if SameText(ANomChamp, 'NombrePortailsOuverts') then
+              Result := FNombrePortailsOuverts
             else
-              if SameText(ANomChamp, 'EchelleDestin') then
-                Result := FEchelleDestin
+              if SameText(ANomChamp, 'NombreSignesDesAnciens') then
+                Result := FNombreSignesDesAnciens
               else
-                if SameText(ANomChamp, 'ArkhamEnvahie') then
-                  Result := ArkhamEnvahie
+                if SameText(ANomChamp, 'EchelleDestin') then
+                  Result := FEchelleDestin
                 else
-                  if SameText(ANomChamp, 'EchelleDestinPleine') then
-                    Result := EchelleDestinPleine
+                  if SameText(ANomChamp, 'TailleEchelleDestin') then
+                    Result := FTailleEchelleDestin
                   else
-                    if SameText(ANomChamp, 'SeuilReveilPortailsOuvertsAtteint') then
-                      Result := FNombrePortailsOuverts >= SeuilReveilPortailsOuverts
-                    else raise EArgumentException.CreateFmt(
-                           'Champ de contexte inconnu : "%s".',
-                           [ANomChamp]);
+                    if SameText(ANomChamp, 'ArkhamEnvahie') then
+                      Result := ArkhamEnvahie
+                    else
+                      if SameText(ANomChamp, 'EchelleDestinPleine') then
+                        Result := EchelleDestinPleine
+                      else
+                        if SameText(ANomChamp, 'SeuilReveilPortailsOuvertsAtteint') then
+                          Result := FNombrePortailsOuverts >= SeuilReveilPortailsOuverts
+                        else raise EArgumentException.CreateFmt(
+                               'Champ de contexte inconnu : "%s".',
+                               [ANomChamp]);
+      end;
+
+    function TContextePartie.NomsJoueursHumains : TArray<string>;
+      begin
+        Result := Copy(FNomsJoueursHumains);
+      end;
+
+    function TContextePartie.Investigateurs : TArray<TInvestigateurJoue>;
+      begin
+        Result := Copy(FInvestigateurs);
       end;
 
 end.

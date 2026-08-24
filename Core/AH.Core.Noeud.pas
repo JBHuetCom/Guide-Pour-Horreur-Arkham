@@ -79,6 +79,7 @@ unit AH.Core.Noeud;
     constructor TNoeudEtape.Create(const AId : string; ATypeNoeud : TTypeNoeud);
       begin
         inherited Create;
+
         FId := AId;
         FTypeNoeud := ATypeNoeud;
         if ATypeNoeud in [ntSequence, ntBouclePorInvestigateur] then
@@ -89,7 +90,7 @@ unit AH.Core.Noeud;
 
     destructor TNoeudEtape.Destroy;
       var
-        Branche: TBrancheEtape;
+        Branche : TBrancheEtape;
       begin
         FEnfants.Free;
         if Assigned(FBranches) then

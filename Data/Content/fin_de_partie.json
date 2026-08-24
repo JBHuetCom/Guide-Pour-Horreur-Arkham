@@ -1,0 +1,65 @@
+{
+  "Id": "fin_racine",
+  "Type": "ntChoix",
+  "Titre": "Fin de la partie",
+  "Branches": [
+    {
+      "Valeur": "fermeture",
+      "Libelle": "Victoire par fermeture totale des portails",
+      "Noeud": {
+        "Id": "fin_fermeture",
+        "Type": "ntSequence",
+        "Enfants": [
+          {
+            "Id": "fin_fermeture_rappel",
+            "Type": "ntInstruction",
+            "Texte": "Vérifiez que les deux conditions sont bien réunies : plus aucun portail n'est ouvert sur le plateau, ET le groupe possède un nombre de trophées portail non dépensés au moins égal au nombre d'investigateurs en jeu (le trophée gagné en fermant ce dernier portail compte dans ce total)."
+          },
+          {
+            "Id": "fin_fermeture_message",
+            "Type": "ntInstruction",
+            "Texte": "Le calme revient à Arkham. Le Grand Ancien replonge dans son sommeil pour quelques millénaires de plus. Les investigateurs ont gagné la partie !"
+          }
+        ]
+      }
+    },
+    {
+      "Valeur": "scellement",
+      "Libelle": "Victoire par scellement (6 Signes des Anciens)",
+      "Noeud": {
+        "Id": "fin_scellement",
+        "Type": "ntSequence",
+        "Enfants": [
+          {
+            "Id": "fin_scellement_rappel",
+            "Type": "ntInstruction",
+            "Texte": "Vérifiez qu'au moins six lieux du plateau portent désormais un pion Destin face Signe des Anciens visible. Cette condition s'applique dès qu'elle est atteinte, à n'importe quel moment de la partie — peu importe l'état des autres portails."
+          },
+          {
+            "Id": "fin_scellement_message",
+            "Type": "ntInstruction",
+            "Texte": "Le Grand Ancien est repoussé : trop de passages vers notre monde lui sont désormais fermés à jamais. La paix revient sur Arkham. Les investigateurs ont gagné la partie !"
+          }
+        ]
+      }
+    },
+    {
+      "Valeur": "bataille_finale_victoire",
+      "Libelle": "Victoire à l'issue de la Bataille Finale",
+      "Noeud": {
+        "Id": "fin_bataille_victoire",
+        "Type": "ntInstruction",
+        "Texte": "Le Grand Ancien s'était réveillé, mais les investigateurs l'ont vaincu au terme de la Bataille Finale. Il est condamné à errer dans le temps et l'espace. Les investigateurs ont gagné la partie !"
+      }
+    },
+    {
+      "Valeur": "defaite",
+      "Libelle": "Défaite",
+      "Noeud": {
+        "Id": "fin_defaite",
+        "Type": "ntInstruction",
+        "Texte": "Le Grand Ancien s'est réveillé et a triomphé des investigateurs lors de la Bataille Finale. Il y a une rupture du continuum espace-temps et le Grand Ancien est relâché sur le monde. La partie est perdue."
+      }
+    }
+  ]
+}

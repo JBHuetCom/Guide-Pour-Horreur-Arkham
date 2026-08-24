@@ -72,40 +72,45 @@ unit AH.Core.Conseils;
         Liste : TList<TConseil>;
         Conseil : TConseil;
       begin
-        if not FileExists(ACheminFichier) then
-          raise EFileNotFoundException.CreateFmt('Fichier de conseils introuvable : "%s".',
-                                                 [ACheminFichier]);
+        try
+          if not FileExists(ACheminFichier) then
+            raise EFileNotFoundException.CreateFmt('Fichier de conseils introuvable : "%s".',
+                                                   [ACheminFichier]);
 
-        Racine := TSuperObject.ParseFile(ACheminFichier, False);
-        if Racine = nil then
-          raise EConseilsInvalidesException.CreateFmt('JSON invalide dans le fichier "%s".',
-                                                      [ACheminFichier]);
+          Racine := TSuperObject.ParseFile(ACheminFichier, False);
+          if Racine = nil then
+            raise EConseilsInvalidesException.CreateFmt('JSON invalide dans le fichier "%s".',
+                                                        [ACheminFichier]);
 
-        Entrees := Racine.A['Conseils'];
-        if Entrees = nil then
-          raise EConseilsInvalidesException.CreateFmt(
-            'Le fichier "%s" ne contient pas de tableau racine "Conseils".',
-            [ACheminFichier]);
+          Entrees := Racine.A['Conseils'];
+          if Entrees = nil then
+            raise EConseilsInvalidesException.CreateFmt(
+              'Le fichier "%s" ne contient pas de tableau racine "Conseils".',
+              [ACheminFichier]);
 
-        FConseilsParEtape.Clear;
-        for i := 0 to Entrees.Length - 1 do
-          begin
-            Entree := Entrees.O[i];
-            IdEtape := Entree.S['IdEtape'];
-            if IdEtape = '' then
-              raise EConseilsInvalidesException.CreateFmt(
-                'Un conseil sans "IdEtape" a été rencontré dans "%s".', [ACheminFichier]);
+          FConseilsParEtape.Clear;
+          for i := 0 to Entrees.Length - 1 do
+            begin
+              Entree := Entrees.O[i];
+              IdEtape := Entree.S['IdEtape'];
+              if IdEtape = EmptyStr then
+                raise EConseilsInvalidesException.CreateFmt(
+                  'Un conseil sans "IdEtape" a été rencontré dans "%s".',
+                  [ACheminFichier]);
 
-            Conseil.Texte := Entree.S['Texte'];
-            Conseil.Source := Entree.S['Source'];
+              Conseil.Texte := Entree.S['Texte'];
+              Conseil.Source := Entree.S['Source'];
 
-            if not FConseilsParEtape.TryGetValue(IdEtape, Liste) then
-              begin
-                Liste := TList<TConseil>.Create;
-                FConseilsParEtape.Add(IdEtape, Liste);
-              end;
-            Liste.Add(Conseil);
-          end;
+              if not FConseilsParEtape.TryGetValue(IdEtape, Liste) then
+                begin
+                  Liste := TList<TConseil>.Create;
+                  FConseilsParEtape.Add(IdEtape, Liste);
+                end;
+              Liste.Add(Conseil);
+            end;
+        finally
+          Liste := nil;
+        end;
       end;
 
     function TGestionnaireConseils.ConseilsPour(const AIdEtape : string): TArray<TConseil>;

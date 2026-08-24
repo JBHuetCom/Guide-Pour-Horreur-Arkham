@@ -29,53 +29,65 @@
         }
       ]
     },
-    {
-      "Id": "prep05_grand_ancien",
-      "Type": "ntChoix",
-      "Titre": "Comment déterminez-vous le Grand Ancien qui menace Arkham cette partie ?",
-      "Branches": [
-        {
-          "Valeur": "hasard",
-          "Libelle": "Tirage au hasard",
-          "Noeud": {
-            "Id": "prep05_hasard",
-            "Type": "ntSequence",
-            "Enfants": [
-              {
-                "Id": "prep05_hasard_tirage",
-                "Type": "ntInstruction",
-                "Texte": "Mélangez les 8 feuilles Grand Ancien et, sans les regarder, tirez-en une au hasard. Posez-la face visible à côté du plateau."
-              },
-              {
-                "Id": "prep05_action_debut_partie",
-                "Type": "ntInstruction",
-                "Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
-              }
-            ]
-          }
-        },
-        {
-          "Valeur": "manuel",
-          "Libelle": "Choix manuel",
-          "Noeud": {
-            "Id": "prep05_manuel",
-            "Type": "ntSequence",
-            "Enfants": [
-              {
-                "Id": "prep05_manuel_choix",
-                "Type": "ntInstruction",
-                "Texte": "Choisissez ensemble le Grand Ancien à affronter et posez sa feuille face visible à côté du plateau. Yig convient pour une partie courte, Cthulhu pour une partie plus longue et difficile."
-              },
-              {
-                "Id": "prep05_action_debut_partie_bis",
-                "Type": "ntInstruction",
-                "Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
-              }
-            ]
-          }
-        }
-      ]
-    },
+	{
+	  "Id": "prep05_grand_ancien",
+	  "Type": "ntChoix",
+	  "Titre": "Comment déterminez-vous le Grand Ancien qui menace Arkham cette partie ?",
+	  "Branches": [
+		{
+		  "Valeur": "hasard",
+		  "Libelle": "Tirage au hasard",
+		  "Noeud": {
+			"Id": "prep05_hasard",
+			"Type": "ntSequence",
+			"Enfants": [
+			  {
+				"Id": "prep05_hasard_tirage",
+				"Type": "ntInstruction",
+				"Texte": "Mélangez les 8 feuilles Grand Ancien et, sans les regarder, tirez-en une au hasard. Posez-la face visible à côté du plateau."
+			  },
+			  {
+				"Id": "prep05_hasard_saisie_taille_destin",
+				"Type": "ntSaisie",
+				"Champ": "TailleEchelleDestin",
+				"Texte": "Indiquez le nombre total de cases de l'échelle du destin imprimée sur la feuille de ce Grand Ancien."
+			  },
+			  {
+				"Id": "prep05_action_debut_partie",
+				"Type": "ntInstruction",
+				"Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
+			  }
+			]
+		  }
+		},
+		{
+		  "Valeur": "manuel",
+		  "Libelle": "Choix manuel",
+		  "Noeud": {
+			"Id": "prep05_manuel",
+			"Type": "ntSequence",
+			"Enfants": [
+			  {
+				"Id": "prep05_manuel_choix",
+				"Type": "ntInstruction",
+				"Texte": "Choisissez ensemble le Grand Ancien à affronter et posez sa feuille face visible à côté du plateau. Yig convient pour une partie courte, Cthulhu pour une partie plus longue et difficile."
+			  },
+			  {
+				"Id": "prep05_manuel_saisie_taille_destin",
+				"Type": "ntSaisie",
+				"Champ": "TailleEchelleDestin",
+				"Texte": "Indiquez le nombre total de cases de l'échelle du destin imprimée sur la feuille de ce Grand Ancien."
+			  },
+			  {
+				"Id": "prep05_action_debut_partie_bis",
+				"Type": "ntInstruction",
+				"Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
+			  }
+			]
+		  }
+		}
+	  ]
+	},
     {
       "Id": "prep06_separation_paquets",
       "Type": "ntInstruction",
@@ -172,7 +184,7 @@
         {
           "Id": "prep14_piocher",
           "Type": "ntInstruction",
-          "Texte": "Piochez la première carte du paquet Mythe. Si elle indique une Rumeur, défaussez-la face cachée sous le paquet et repiochez, jusqu'à obtenir une carte qui n'en est pas une."
+          "Texte": "Piochez la première carte du paquet Mythe. Si elle indique une Rumeur, défaussez-la face cachée sous le paquet et repiochez. Si elle n'indique aucun lieu où un portail doit s'ouvrir, défaussez-la également et repiochez. Continuez jusqu'à obtenir une carte qui ne soit ni une Rumeur, ni dépourvue de portail."
         },
         {
           "Id": "prep14_etat_lieu",
@@ -316,7 +328,7 @@
         {
           "Id": "prep14_indice",
           "Type": "ntInstruction",
-          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice."
+          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide)."
         },
         {
           "Id": "prep14_debut_premier_tour",

@@ -6,7 +6,7 @@
     {
       "Id": "bf01_defausser_environnement_rumeur",
       "Type": "ntInstruction",
-      "Texte": "Défaussez les cartes Environnement et Rumeur actuellement en jeu. À partir de maintenant, vous ne pouvez plus percevoir d'argent des cartes Acompte ou Prêt Bancaire."
+      "Texte": "Défaussez les cartes Environnement et Rumeur actuellement en jeu. À partir de maintenant, vous ne pouvez plus percevoir d'argent des cartes Acompte ou Prêt Bancaire, ni gagner de nouveaux pions Indice."
     },
     {
       "Id": "bf02_investigateurs_perdus_devores",
@@ -69,9 +69,10 @@
             "Type": "ntSequence",
             "Enfants": [
               {
-                "Id": "bf_round_03_retirer_pion",
-                "Type": "ntInstruction",
-                "Texte": "Retirez un pion Destin de l'échelle du destin du Grand Ancien et remettez le compteur de succès du groupe à zéro (le succès excédentaire, s'il y en a, est conservé pour le prochain seuil)."
+                "Id": "bf_round_03_saisie_destin",
+                "Type": "ntSaisie",
+                "Champ": "EchelleDestin",
+                "Texte": "Retirez un pion Destin par tranche complète de succès égale au nombre d'investigateurs en jeu (le reliquat de succès sous ce seuil est conservé pour le round suivant). Si le cumul est très élevé, plusieurs pions peuvent être retirés d'un coup. Indiquez le nombre de pions Destin restant sur l'échelle du Grand Ancien."
               },
               {
                 "Id": "bf_round_03_destin_restant",

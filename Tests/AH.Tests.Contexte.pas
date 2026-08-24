@@ -17,10 +17,10 @@ unit AH.Tests.Contexte;
           procedure Create_AvecZeroJoueurHumain_LeveEArgumentOutOfRangeException;
 
           [Test]
-          procedure Create_AvecSeptJoueursHumains_LeveEArgumentOutOfRangeException;
+          procedure Create_AvecNeufJoueursHumains_LeveEArgumentOutOfRangeException;
 
           [Test]
-          procedure Create_AvecSeptInvestigateurs_LeveEArgumentOutOfRangeException;
+          procedure Create_AvecNeufInvestigateurs_LeveEArgumentOutOfRangeException;
 
           [Test]
           procedure Create_AvecIndexJoueurHumainInvalide_LeveEArgumentOutOfRangeException;
@@ -42,10 +42,19 @@ unit AH.Tests.Contexte;
           procedure NomJoueurHumainCourant_RefleteLeControleurDeLInvestigateurCourant;
 
           [Test]
-          procedure EchelleDestinPleine_AvantMax_RetourneFalse;
+          procedure EchelleDestinPleine_SansTailleRenseignee_LeveEInvalidOpException;
 
           [Test]
-          procedure EchelleDestinPleine_AMax_RetourneTrue;
+          procedure EchelleDestinPleine_AvantTaille_RetourneFalse;
+
+          [Test]
+          procedure EchelleDestinPleine_ATaille_RetourneTrue;
+
+          [Test]
+          procedure EchelleDestinPleine_TaillesDifferentesSelonGrandAncien_ChacuneRespectee;
+
+          [Test]
+          procedure AffecterChamp_TailleEchelleDestin_MetAJourLeChampCorrespondant;
       end;
 
   implementation
@@ -64,24 +73,26 @@ unit AH.Tests.Contexte;
         Assert.WillRaise(
           procedure
             begin
-              TContextePartie.Create([], [Investigateur('Amanda', 0)]).Free;
-            end,
-          EArgumentOutOfRangeException);
-      end;
-
-    procedure TTestContextePartie.Create_AvecSeptJoueursHumains_LeveEArgumentOutOfRangeException;
-      begin
-        Assert.WillRaise(
-          procedure
-            begin
-              TContextePartie.Create(['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+              TContextePartie.Create([],
                                      [Investigateur('Amanda', 0)])
                              .Free;
             end,
           EArgumentOutOfRangeException);
       end;
 
-    procedure TTestContextePartie.Create_AvecSeptInvestigateurs_LeveEArgumentOutOfRangeException;
+    procedure TTestContextePartie.Create_AvecNeufJoueursHumains_LeveEArgumentOutOfRangeException;
+      begin
+        Assert.WillRaise(
+          procedure
+            begin
+              TContextePartie.Create(['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9'],
+                                     [Investigateur('Amanda', 0)])
+                             .Free;
+            end,
+          EArgumentOutOfRangeException);
+      end;
+
+    procedure TTestContextePartie.Create_AvecNeufInvestigateurs_LeveEArgumentOutOfRangeException;
       begin
         Assert.WillRaise(
           procedure
@@ -89,7 +100,7 @@ unit AH.Tests.Contexte;
               TContextePartie.Create(['Alice'],
                                      [Investigateur('Inv1', 0), Investigateur('Inv2', 0), Investigateur('Inv3', 0),
                                      Investigateur('Inv4', 0), Investigateur('Inv5', 0), Investigateur('Inv6', 0),
-                                     Investigateur('Inv7', 0)])
+                                     Investigateur('Inv7', 0), Investigateur('Inv8', 0), Investigateur('Inv9', 0)])
                              .Free;
             end,
           EArgumentOutOfRangeException);
@@ -175,27 +186,89 @@ unit AH.Tests.Contexte;
         end;
       end;
 
-    procedure TTestContextePartie.EchelleDestinPleine_AvantMax_RetourneFalse;
+    procedure TTestContextePartie.EchelleDestinPleine_SansTailleRenseignee_LeveEInvalidOpException;
       var
         Contexte: TContextePartie;
       begin
-        Contexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+        Contexte := TContextePartie.Create(['Alice'],
+                                           [Investigateur('Amanda', 0)]);
         try
-          Contexte.EchelleDestin := EchelleDestinTailleMax - 1;
+          Assert.WillRaise(
+            procedure
+              begin
+                Contexte.EchelleDestinPleine;
+              end,
+            EInvalidOpException);
+        finally
+          Contexte.Free;
+        end;
+      end;
+
+    procedure TTestContextePartie.EchelleDestinPleine_AvantTaille_RetourneFalse;
+      var
+        Contexte: TContextePartie;
+      begin
+        Contexte := TContextePartie.Create(['Alice'],
+                                           [Investigateur('Amanda', 0)]);
+        try
+          Contexte.TailleEchelleDestin := 10; // ex. Yig
+          Contexte.EchelleDestin := 9;
           Assert.IsFalse(Contexte.EchelleDestinPleine);
         finally
           Contexte.Free;
         end;
       end;
 
-    procedure TTestContextePartie.EchelleDestinPleine_AMax_RetourneTrue;
+    procedure TTestContextePartie.EchelleDestinPleine_ATaille_RetourneTrue;
       var
         Contexte: TContextePartie;
       begin
-        Contexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+        Contexte := TContextePartie.Create(['Alice'],
+                                           [Investigateur('Amanda', 0)]);
         try
-          Contexte.EchelleDestin := EchelleDestinTailleMax;
+          Contexte.TailleEchelleDestin := 10;
+          Contexte.EchelleDestin := 10;
           Assert.IsTrue(Contexte.EchelleDestinPleine);
+        finally
+          Contexte.Free;
+        end;
+      end;
+
+    procedure TTestContextePartie.EchelleDestinPleine_TaillesDifferentesSelonGrandAncien_ChacuneRespectee;
+      var
+        ContexteYig, ContexteAutre : TContextePartie;
+      begin
+        // Deux Grands Anciens différents doivent pouvoir avoir des tailles d'échelle différentes
+        // dans deux parties distinctes — c'est précisément ce que corrige le passage d'une
+        // constante globale à un champ d'instance.
+        ContexteYig := TContextePartie.Create(['Alice'],
+                                              [Investigateur('Amanda', 0)]);
+        ContexteAutre := TContextePartie.Create(['Bob'],
+                                                [Investigateur('Harvey', 0)]);
+        try
+          ContexteYig.TailleEchelleDestin := 10;
+          ContexteYig.EchelleDestin := 10;
+
+          ContexteAutre.TailleEchelleDestin := 15;
+          ContexteAutre.EchelleDestin := 10;
+
+          Assert.IsTrue(ContexteYig.EchelleDestinPleine);
+          Assert.IsFalse(ContexteAutre.EchelleDestinPleine);
+        finally
+          ContexteYig.Free;
+          ContexteAutre.Free;
+        end;
+      end;
+
+    procedure TTestContextePartie.AffecterChamp_TailleEchelleDestin_MetAJourLeChampCorrespondant;
+      var
+        Contexte : TContextePartie;
+      begin
+        Contexte := TContextePartie.Create(['Alice'],
+                                           [Investigateur('Amanda', 0)]);
+        try
+          Contexte.AffecterChamp('TailleEchelleDestin', 12);
+          Assert.AreEqual(12, Contexte.TailleEchelleDestin);
         finally
           Contexte.Free;
         end;

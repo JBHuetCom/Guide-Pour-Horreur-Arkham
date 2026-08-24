@@ -58,7 +58,7 @@ unit AH.Tests.Capacites;
     procedure TTestGestionnaireCapacites.ChargerDepuisFichier_DomaineInconnu_LeveECapacitesInvalidesException;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe","Domaine":"Inexistant","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Inexistant","Description":"..."}]}');
         Assert.WillRaise(
           procedure
             begin
@@ -72,10 +72,10 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe","Domaine":"Enquete","Description":"Pioche une carte de plus"}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"Pioche une carte de plus"}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
-        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('Amanda Sharpe', Capacite));
+        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('Amanda Sharpe (l''étudiante)', Capacite));
         Assert.AreEqual('Pioche une carte de plus', Capacite.Description);
         Assert.AreEqual(Ord(dcEnquete), Ord(Capacite.Domaine));
       end;
@@ -85,10 +85,10 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe","Domaine":"Enquete","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
-
-        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('AMANDA SHARPE', Capacite));
+        FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''ÉTUDIANTE)', Capacite);
+        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''ÉTUDIANTE)', Capacite));
       end;
 
     procedure TTestGestionnaireCapacites.TryObtenirCapacite_InvestigateurInconnu_RetourneFalse;
@@ -96,7 +96,7 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe","Domaine":"Enquete","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
         Assert.IsFalse(FGestionnaire.TryObtenirCapacite('Harvey Walters', Capacite));

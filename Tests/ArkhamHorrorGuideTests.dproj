@@ -99,6 +99,7 @@
         <DCCReference Include="AH.Tests.Conseils.pas"/>
         <DCCReference Include="AH.Tests.Capacites.pas"/>
         <DCCReference Include="AH.Tests.Parametres.pas"/>
+        <DCCReference Include="AH.Tests.Session.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
