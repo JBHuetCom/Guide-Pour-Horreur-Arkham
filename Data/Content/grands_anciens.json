@@ -5,17 +5,14 @@
             "TailleEchelleDestin": 10,
             "Regles": {
               "Etapes": [
-                "prep05_action_debut_partie": "",
                 "bf04_capacites_debut_bataille": "Chaque Investigateur est Maudit. Chaque Investigateur déjà Maudit est Dévoré.",
                 "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Vitesse(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 Santé Mentale et 1 Résistance."
               ],
-            "EnSommeil": "Yig gagne 1 pion Destin quand un Cultiste est battu, ou quand un Investigateur est Perdu Dans Le Temps Et l'Espace",
-            "Special": "",
-            "Adorateurs": "Cultistes -> Combat : +0. Dégats : 4 Résistance.",
-            "Bataille": {
-                "Combat": -3,
-                "Defense": ""
-            }
+              "EnSommeil": "Yig gagne 1 pion Destin quand un Cultiste est battu, ou quand un Investigateur est Perdu Dans Le Temps Et l'Espace",
+              "Adorateurs": "Cultistes -> Combat : +0. Dégats : 4 Résistance.",
+              "Bataille": {
+                "Combat": -3
+              }
             }
         },
         {
@@ -23,16 +20,107 @@
             "TailleEchelleDestin": 11,
             "Regles": {
               "Etapes": [
-                "prep05_action_debut_partie": "",
                 "phase5_evenement": "Les cartes Temps (Météo) sont défaussées sans effet. S'il y a des effets sur le Temps (Météo) dans les autres cartes, ils ne sont pas pris en compte.",
                 "phase5_fin_tour": "Tout Investigateur dans une Zone de Rue perd 1 Résistance.",
                 "bf04_capacites_debut_bataille": "Chaque Investigateur lance 1 dé pour chaque objet possédé : si échec, l'objet est défaussé, sauf les objets qui ne peuvent pas explicitement être perdus.",
                 "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Combat(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 2 Santé Mentale et 2 Résistance."
               ],
-            "EnSommeil": "",
-            "Special": "",
-            "Adorateurs": "Cultistes -> Force : 3."
+              "Adorateurs": "Cultistes -> Force : 3.",
+              "Bataille": {
+                "Combat": -3
+              }
             }
         },
+        {
+            "Nom": "Nyarlathotep",
+            "TailleEchelleDestin": 11,
+            "Regles": {
+              "Etapes": [
+                "prep05_action_debut_partie": "Ajouter les 5 Monstres Masque dans la tasse des Monstres.",
+                "bf04_capacites_debut_bataille": "Tout Investigateur sans pion Indice est Dévoré.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Savoir(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 pion Indice. Si un Investigateur ne possède plus de pion Indice, il est Dévoré."
+              ],
+              "Special": "Il peut y avoir plusieurs Monstres Masque en jeu au même moment.",
+              "Adorateurs": "Cultistes -> Capacité : Inepuisable.",
+              "Bataille": {
+                "Combat": -4,
+                "Defense": "Résistance magique"
+              }
+            }
+        },
+        {
+            "Nom": "Shub-Niggurath",
+            "TailleEchelleDestin": 12,
+            "Regles": {
+              "Etapes": [
+                "bf04_capacites_debut_bataille": "Tout Investigateur sans Trophée de Monstre est Dévoré.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Furtivité(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 Trophée de Monstre. Si un Investigateur ne possède plus de Trophée de Monstre, il est Dévoré."
+              ],
+              "EnSommeil": "Tous les Monstres : Force +1.",
+              "Adorateurs": "Sombres Rejetons -> Capacité : Inepuisable.",
+              "Bataille": {
+                "Combat": -5,
+                "Defense": "Immunité physique"
+              }
+            }
+        },
+        {
+            "Nom": "Yog-Sothoth",
+            "TailleEchelleDestin": 12,
+            "Regles": {
+              "Etapes": [
+                "phase3_test_fermeture": "La difficulté pour fermer ou sceller le Portail est augmentée de 1.",
+                "bf04_capacites_debut_bataille": "Tout Investigateur sans Trophée de Portail est Dévoré.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Volonté(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 Trophée de Portail. Si un Investigateur ne possède plus de Trophée de Portail, il est Dévoré."
+              ],
+              "EnSommeil": "La difficulté pour fermer ou sceller un Portail est augmentée de 1. Tout Investigateur Perdu Dans Le Temps Et l'Espace est Dévoré.",
+              "Adorateurs": "Cultistes -> Combat : -1. Capacité : Immunité magique.",
+              "Bataille": {
+                "Combat": -5,
+                "Defense": "Immunité physique"
+              }
+            }
+        },
+        {
+            "Nom": "Cthulhu",
+            "TailleEchelleDestin": 13,
+            "Regles": {
+              "Etapes": [
+                "prep10_pions_sante_resistance": "Le Maximum de Santé Mentale et de Résistance est diminué de 1.",
+                "bf04_capacites_debut_bataille": "Tout Investigateur sans Trophée de Portail est Dévoré.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur diminue son Maximum de Santé Mentale et de Résistance de 1. Si Cthulhu n'a pas été vaincu à la fin de cette Phase de Combat, ajouter 1 pion Destin sur l'Échelle de Destin si elle n'est pas déjà pleine."
+              ],
+              "Adorateurs": "Cultistes -> Horreur : -2. Dégats d'horreur : 2.",
+              "Bataille": {
+                "Combat": -6,
+                "Defense": "Immunité physique"
+              }
+            }
+        },
+        {
+            "Nom": "Hastur",
+            "TailleEchelleDestin": 13,
+            "Regles": {
+              "Etapes": [
+                "phase3_scellement_choix": "Sceller un Portail coûte 8 pions Indice (au lieu de 5).",
+                "bf04_capacites_debut_bataille": "La valeur de Combat d'Hastur est égale au Niveau de Terreur actuel.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Chance(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 2 Santé Mentale."
+              ],
+              "Adorateurs": "Cultistes -> Combat : -2. Sont des Monstres Volants (règles spéciales).",
+              "Bataille": {
+                "Defense": "Resistance physique"
+              }
+            }
+        },
+        {
+            "Nom": "Azatoth",
+            "TailleEchelleDestin": 14,
+            "Regles": {
+              "Etapes": [
+                "bf04_capacites_debut_bataille": "Le Monde est détruit : vous avez perdu !"
+              ],
+              "Adorateurs": "Maniaques -> Force : 2."
+            }
+        }
     ]
 }
