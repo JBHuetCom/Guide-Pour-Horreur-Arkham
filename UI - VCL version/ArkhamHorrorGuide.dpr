@@ -17,8 +17,7 @@ uses
   AH.Core.Capacites in '..\Core\AH.Core.Capacites.pas',
   AH.Core.Parametres in '..\Core\AH.Core.Parametres.pas',
   AH.Core.ConstructeurPartie in '..\Core\AH.Core.ConstructeurPartie.pas',
-  AH.Core.GrandsAnciens in '..\Core\AH.Core.GrandsAnciens.pas',
-  AH.UI.FrmInitialisationPartie in 'AH.UI.FrmInitialisationPartie.pas' {FrmInitialisationPartie};
+  AH.Core.GrandsAnciens in '..\Core\AH.Core.GrandsAnciens.pas';
 
 {$R *.res}
 
@@ -29,6 +28,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmNouvellePartie, FrmNouvellePartie);
-  Application.CreateForm(TFrmInitialisationPartie, FrmInitialisationPartie);
   Application.Run;
 end.

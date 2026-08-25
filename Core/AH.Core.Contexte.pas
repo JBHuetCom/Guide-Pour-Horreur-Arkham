@@ -39,7 +39,7 @@ unit AH.Core.Contexte;
           FNiveauTerreur : Integer;
           FNombrePortailsOuverts : Integer;
           FNombreSignesDesAnciens : Integer;
-          FEchelleDestin: Integer;
+          FEchelleDestin : Integer;
           /// <summary>
           /// Nombre total de cases de l'échelle du destin du Grand Ancien affronté cette partie
           /// (varie selon le Grand Ancien : imprimé sur sa feuille). Vaut 0 tant qu'il n'a pas
@@ -48,6 +48,7 @@ unit AH.Core.Contexte;
           /// EchelleDestinPleine.
           /// </summary>
           FTailleEchelleDestin : Integer;
+          FNomGrandAncien : string;
           FTourCourant : Integer;
           FIndexInvestigateurCourant : Integer;
           FIndexPremierInvestigateur : Integer;
@@ -145,6 +146,8 @@ unit AH.Core.Contexte;
           /// </summary>
           property TailleEchelleDestin : Integer read FTailleEchelleDestin write FTailleEchelleDestin;
           property TourCourant : Integer read FTourCourant write FTourCourant;
+          /// <summary>Nom du Grand Ancien affronté cette partie, renseigné lors de sa révélation. Vide tant que non renseigné.</summary>
+          property NomGrandAncien : string read FNomGrandAncien write FNomGrandAncien;
       end;
 
   implementation
@@ -270,36 +273,42 @@ unit AH.Core.Contexte;
               else
                 if SameText(ANomChamp, 'TailleEchelleDestin') then
                   FTailleEchelleDestin := AValeur
-                else raise EArgumentException.CreateFmt(
-                       'Champ de contexte inconnu ou non modifiable via ntSaisie : "%s".',
-                       [ANomChamp]);
+                else
+                  if SameText(ANomChamp, 'NomGrandAncien') then
+                    FNomGrandAncien := AValeur
+                  else raise EArgumentException.CreateFmt(
+                         'Champ de contexte inconnu ou non modifiable via ntSaisie : "%s".',
+                         [ANomChamp]);
       end;
 
     function TContextePartie.LireChamp(const ANomChamp: string): Variant;
       begin
         if SameText(ANomChamp, 'NiveauTerreur') then
           Result := FNiveauTerreur
+        else
+          if SameText(ANomChamp, 'NombrePortailsOuverts') then
+            Result := FNombrePortailsOuverts
           else
-            if SameText(ANomChamp, 'NombrePortailsOuverts') then
-              Result := FNombrePortailsOuverts
+            if SameText(ANomChamp, 'NombreSignesDesAnciens') then
+              Result := FNombreSignesDesAnciens
             else
-              if SameText(ANomChamp, 'NombreSignesDesAnciens') then
-                Result := FNombreSignesDesAnciens
+              if SameText(ANomChamp, 'EchelleDestin') then
+                Result := FEchelleDestin
               else
-                if SameText(ANomChamp, 'EchelleDestin') then
-                  Result := FEchelleDestin
+                if SameText(ANomChamp, 'TailleEchelleDestin') then
+                  Result := FTailleEchelleDestin
                 else
-                  if SameText(ANomChamp, 'TailleEchelleDestin') then
-                    Result := FTailleEchelleDestin
+                  if SameText(ANomChamp, 'ArkhamEnvahie') then
+                    Result := ArkhamEnvahie
                   else
-                    if SameText(ANomChamp, 'ArkhamEnvahie') then
-                      Result := ArkhamEnvahie
+                    if SameText(ANomChamp, 'EchelleDestinPleine') then
+                      Result := EchelleDestinPleine
                     else
-                      if SameText(ANomChamp, 'EchelleDestinPleine') then
-                        Result := EchelleDestinPleine
+                      if SameText(ANomChamp, 'SeuilReveilPortailsOuvertsAtteint') then
+                        Result := FNombrePortailsOuverts >= SeuilReveilPortailsOuverts
                       else
-                        if SameText(ANomChamp, 'SeuilReveilPortailsOuvertsAtteint') then
-                          Result := FNombrePortailsOuverts >= SeuilReveilPortailsOuverts
+                        if SameText(ANomChamp, 'NomGrandAncien') then
+                          Result := FNomGrandAncien
                         else raise EArgumentException.CreateFmt(
                                'Champ de contexte inconnu : "%s".',
                                [ANomChamp]);

@@ -46,6 +46,12 @@
 				"Type": "ntInstruction",
 				"Texte": "Mélangez les 8 feuilles Grand Ancien et, sans les regarder, tirez-en une au hasard. Posez-la face visible à côté du plateau."
 			  },
+              {
+                "Id": "prep05_hasard_saisie_nom",
+                "Type": "ntSaisie",
+                "Champ": "NomGrandAncien",
+                "Texte": "Indiquez le nom du Grand Ancien tiré."
+              },
 			  {
 				"Id": "prep05_hasard_saisie_taille_destin",
 				"Type": "ntSaisie",
@@ -72,6 +78,12 @@
 				"Type": "ntInstruction",
 				"Texte": "Choisissez ensemble le Grand Ancien à affronter et posez sa feuille face visible à côté du plateau. Yig convient pour une partie courte, Cthulhu pour une partie plus longue et difficile."
 			  },
+              {
+                "Id": "prep05_manuel_saisie_nom",
+                "Type": "ntSaisie",
+                "Champ": "NomGrandAncien",
+                "Texte": "Indiquez le nom du Grand Ancien tiré."
+              },
 			  {
 				"Id": "prep05_manuel_saisie_taille_destin",
 				"Type": "ntSaisie",

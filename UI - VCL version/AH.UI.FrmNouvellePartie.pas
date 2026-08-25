@@ -95,8 +95,7 @@ unit AH.UI.FrmNouvellePartie;
   implementation
 
     uses
-      System.UITypes,
-      AH.UI.FrmInitialisationPartie;
+      System.UITypes;
 
     {$R *.dfm}
 
@@ -384,10 +383,6 @@ unit AH.UI.FrmNouvellePartie;
                   AfficherErreur(MessageErreur);
                   Exit;
                 end;
-
-              FrmInitialisationPartie.ContextePartie := Contexte;
-              Self.Hide;
-              FrmInitialisationPartie.Show;
             end;
         end;
       end;

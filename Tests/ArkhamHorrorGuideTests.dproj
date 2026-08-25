@@ -125,6 +125,7 @@
         <DCCReference Include="AH.Tests.Parametres.pas"/>
         <DCCReference Include="AH.Tests.Session.pas"/>
         <DCCReference Include="AH.Tests.ConstructeurPartie.pas"/>
+        <DCCReference Include="AH.Tests.GrandsAnciens.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -171,6 +172,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="Win32\Debug\ArkhamHorrorGuideTests.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>ArkhamHorrorGuideTests.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Release\ArkhamHorrorGuideTests.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ArkhamHorrorGuideTests.exe</RemoteName>
                         <Overwrite>true</Overwrite>

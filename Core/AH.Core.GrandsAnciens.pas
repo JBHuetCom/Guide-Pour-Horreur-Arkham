@@ -1,70 +1,81 @@
-unit AH.Core.GrandsAnciens;
+Ôªøunit AH.Core.GrandsAnciens;
 
   interface
 
     uses
 
-      System.SysUtils, System.Generics.Collections, System.Classes;
+      System.SysUtils, System.Generics.Collections;
 
     type
 
-      /// <summary>RËgles de bataille contre un Grand Ancien.</summary>
+      EGrandsAnciensInvalidesException = class(Exception);
+
+      /// <summary>R√®gles de bataille contre un Grand Ancien.</summary>
       TReglesBataille = record
-        /// <summary>Modificateur des attaques des investigateurs (ex: -1 pour Azathoth).</summary>
+        /// <summary>Modificateur des attaques des investigateurs (ex. -3 pour Yig). 0 si non pr√©cis√©.</summary>
         Combat : Integer;
-        /// <summary>CapacitÈ spÈciale de dÈfense du Grand Ancien.</summary>
+        /// <summary>Capacit√© sp√©ciale de d√©fense du Grand Ancien (ex. "Immunit√© physique"). Vide si aucune.</summary>
         Defense : string;
       end;
 
-      /// <summary>RËgles spÈciales associÈes ‡ un Grand Ancien.</summary>
-      TReglesGrandAncien = record
-        /// <summary>Liste des Ètapes o˘ des rËgles spÈciales doivent Ítre affichÈes.</summary>
-        Etapes : TArray<string>;
-        /// <summary>RËgle affichÈe tant que le Grand Ancien est endormi.</summary>
+      /// <summary>
+      /// Repr√©sente un Grand Ancien et ses r√®gles g√©n√©rales. Ne contient PAS les r√®gles propres √†
+      /// une √©tape pr√©cise du guide (voir TGestionnaireGrandsAnciens.TryObtenirRegleEtape) : ce
+      /// record reste volontairement scalaire, sans champ de type classe, pour rester librement
+      /// copiable sans risque de possession ambigu√´ (voir la discussion sur TBrancheEtape).
+      /// </summary>
+      TGrandAncien = record
+        /// <summary>Nom du Grand Ancien (ex. "Cthulhu").</summary>
+        Nom : string;
+        /// <summary>Nom du fichier image. Vide si non pr√©cis√©.</summary>
+        Image : string;
+        /// <summary>Taille de l'√©chelle du destin propre √† ce Grand Ancien.</summary>
+        TailleEchelleDestin : Integer;
+        /// <summary>R√®gle affich√©e tant que le Grand Ancien est endormi. Vide si aucune.</summary>
         EnSommeil : string;
-        /// <summary>RËgle affichÈe en permanence.</summary>
+        /// <summary>R√®gle affich√©e en permanence. Vide si aucune.</summary>
         Special : string;
-        /// <summary>RËgle affichÈe tant que la bataille n'a pas commencÈ.</summary>
+        /// <summary>R√®gle d√©crivant ses adorateurs, affich√©e tant que la bataille finale n'a pas commenc√©. Vide si aucune.</summary>
         Adorateurs : string;
-        /// <summary>RËgles spÈcifiques ‡ la bataille finale.</summary>
+        /// <summary>R√®gles sp√©cifiques √† la bataille finale.</summary>
         Bataille : TReglesBataille;
       end;
 
       /// <summary>
-      /// ReprÈsente un Grand Ancien avec ses rËgles et son illustration.
-      /// </summary>
-      TGrandAncien = record
-        /// <summary>Nom du Grand Ancien (ex: "Azathoth").</summary>
-        Nom : string;
-        /// <summary>Nom du fichier image (ex: "azathoth.png"). Peut Ítre EmptyStr.</summary>
-        Image : string;
-        /// <summary>Taille maximale de l'Èchelle du destin.</summary>
-        TailleEchelleDestin : Integer;
-        /// <summary>RËgles spÈciales du Grand Ancien. Certains champs peuvent manquer.</summary>
-        Regles : TReglesGrandAncien;
-      end;
-
-      /// <summary>
-      /// Gestionnaire des Grands Anciens, chargÈ depuis un fichier JSON.
+      /// Charge et expose les Grands Anciens et leurs r√®gles sp√©ciales, d√©finis dans un fichier de
+      /// configuration JSON. Les r√®gles rattach√©es √† une √©tape pr√©cise du guide (IdEtape) sont
+      /// consult√©es comme les conseils (TGestionnaireConseils) : par un couple (Grand Ancien,
+      /// IdEtape), sans jamais exposer de structure interne mutable √† l'appelant.
       /// </summary>
       TGestionnaireGrandsAnciens = class
         private
           FGrandsAnciensParNom : TDictionary<string, TGrandAncien>;
+          /// <summary>Cl√© externe : nom du Grand Ancien (en minuscules). Valeur : dictionnaire IdEtape ‚Üí texte de r√®gle.</summary>
+          FReglesEtapesParGrandAncien: TObjectDictionary<string, TDictionary<string, string>>;
         public
           constructor Create;
           destructor Destroy; override;
 
           /// <param name="ACheminFichier">Chemin du fichier grands_anciens.json.</param>
-          /// <exception cref="EFileNotFoundException">LevÈ si le fichier est introuvable.</exception>
+          /// <exception cref="EFileNotFoundException">Lev√©e si le fichier est introuvable.</exception>
+          /// <exception cref="EGrandsAnciensInvalidesException">
+          /// Lev√©e si le JSON est malform√©, ou si une entr√©e n'a pas de "Nom".
+          /// </exception>
           procedure ChargerDepuisFichier(const ACheminFichier : string);
 
-          /// <summary>Liste de tous les noms de Grands Anciens chargÈs.</summary>
+          /// <summary>Noms de tous les Grands Anciens charg√©s, dans leur casse d'origine.</summary>
           function Noms : TArray<string>;
 
-          /// <param name="ANomGrandAncien">Nom du Grand Ancien recherchÈ (insensible ‡ la casse).</param>
-          /// <param name="AGrandAncien">Grand Ancien trouvÈ si la fonction retourne True.</param>
-          /// <returns>True si le Grand Ancien existe, False sinon.</returns>
+          /// <param name="ANomGrandAncien">Nom du Grand Ancien recherch√©, insensible √† la casse.</param>
+          /// <param name="AGrandAncien">Grand Ancien trouv√© si la fonction retourne True.</param>
+          /// <returns>True si ce Grand Ancien est connu, False sinon.</returns>
           function TryObtenirGrandAncien(const ANomGrandAncien : string; out AGrandAncien : TGrandAncien) : Boolean;
+
+          /// <param name="ANomGrandAncien">Nom du Grand Ancien en jeu, insensible √† la casse.</param>
+          /// <param name="AIdEtape">Identifiant du n≈ìud d'√©tape (TNoeudEtape.Id) pour lequel chercher une r√®gle sp√©ciale.</param>
+          /// <param name="ATexte">Texte de la r√®gle trouv√©e si la fonction retourne True.</param>
+          /// <returns>True si ce Grand Ancien a une r√®gle sp√©ciale d√©clar√©e pour cette √©tape, False sinon.</returns>
+          function TryObtenirRegleEtape(const ANomGrandAncien, AIdEtape : string; out ATexte : string) : Boolean;
       end;
 
   implementation
@@ -73,15 +84,19 @@ unit AH.Core.GrandsAnciens;
 
       SuperObject;
 
+    { TGestionnaireGrandsAnciens }
+
     constructor TGestionnaireGrandsAnciens.Create;
       begin
         inherited Create;
 
         FGrandsAnciensParNom := TDictionary<string, TGrandAncien>.Create;
+        FReglesEtapesParGrandAncien := TObjectDictionary<string, TDictionary<string, string>>.Create([doOwnsValues]);
       end;
 
     destructor TGestionnaireGrandsAnciens.Destroy;
       begin
+        FReglesEtapesParGrandAncien.Free;
         FGrandsAnciensParNom.Free;
 
         inherited;
@@ -89,89 +104,79 @@ unit AH.Core.GrandsAnciens;
 
     procedure TGestionnaireGrandsAnciens.ChargerDepuisFichier(const ACheminFichier : string);
       var
-        Racine : ISuperObject;
         Tableau : ISuperArray;
         i : Integer;
+        Racine, EntreeJSON, ReglesJSON, BatailleJSON, EtapesJSON : ISuperObject;
         GrandAncien : TGrandAncien;
-        ReglesObj, BatailleObj : ISuperObject;
+        NomCle : string;
+        ReglesEtapes : TDictionary<string, string>;
+        Iter : TSuperObjectIter;
       begin
         if not FileExists(ACheminFichier) then
-          raise EFileNotFoundException.CreateFmt('Fichier des Grands Anciens introuvable: "%s".',
+          raise EFileNotFoundException.CreateFmt('Fichier des Grands Anciens introuvable : "%s".',
                                                  [ACheminFichier]);
 
         Racine := TSuperObject.ParseFile(ACheminFichier, False);
-        if Racine = nil then
-          raise Exception.Create('JSON invalide dans grands_anciens.json');
+        if not Assigned(Racine) then
+          raise EGrandsAnciensInvalidesException.CreateFmt('JSON invalide dans le fichier "%s".',
+                                                           [ACheminFichier]);
 
         Tableau := Racine.A['GrandsAnciens'];
-        if Tableau = nil then
-          raise Exception.Create('Le fichier ne contient pas de tableau "GrandsAnciens".');
+        if not Assigned(Tableau) then
+          raise EGrandsAnciensInvalidesException.CreateFmt(
+            'Le fichier "%s" ne contient pas de tableau racine "GrandsAnciens".',
+            [ACheminFichier]);
 
         FGrandsAnciensParNom.Clear;
+        FReglesEtapesParGrandAncien.Clear;
+
         for i := 0 to Tableau.Length - 1 do
           begin
-            // Initialiser avec des valeurs par dÈfaut
+            EntreeJSON := Tableau.O[i];
+
+            if EntreeJSON.S['Nom'] = EmptyStr then
+              raise EGrandsAnciensInvalidesException.CreateFmt(
+                'Un Grand Ancien sans "Nom" a √©t√© rencontr√© dans "%s".', [ACheminFichier]);
+
             with GrandAncien do
               begin
-                Nom := EmptyStr;
-                Image := EmptyStr;
-                TailleEchelleDestin := 0;
-                with Regles do
-                  begin
-                    Etapes := nil;
-                    EnSommeil := EmptyStr;
-                    Special := EmptyStr;
-                    Adorateurs := EmptyStr;
-                    Bataille.Combat := 0;
-                    Bataille.Defense := EmptyStr;
-                  end;
+                Nom := EntreeJSON.S['Nom'];
+                Image := EntreeJSON.S['Image'];
+                TailleEchelleDestin := EntreeJSON.I['TailleEchelleDestin'];
+                EnSommeil := EmptyStr;
+                Special := EmptyStr;
+                Adorateurs := EmptyStr;
+                Bataille.Combat := 0;
+                Bataille.Defense := EmptyStr;
               end;
 
-            // Charger les donnÈes
-            with Tableau.O[i] do
+            ReglesEtapes := TDictionary<string, string>.Create;
+
+            ReglesJSON := EntreeJSON.O['Regles'];
+            if Assigned(ReglesJSON) then
               begin
-                GrandAncien.Nom := S['Nom'];
-                if S['Image'] <> EmptyStr then
-                  GrandAncien.Image := S['Image'];
+                GrandAncien.EnSommeil := ReglesJSON.S['EnSommeil'];
+                GrandAncien.Special := ReglesJSON.S['Special'];
+                GrandAncien.Adorateurs := ReglesJSON.S['Adorateurs'];
 
-                if not TryStrToInt(S['TailleEchelleDestin'], GrandAncien.TailleEchelleDestin) then
-                  GrandAncien.TailleEchelleDestin := 0;
-
-                // Charger les rËgles
-                ReglesObj := O['Regles'];
-                if ReglesObj <> nil then
+                BatailleJSON := ReglesJSON.O['Bataille'];
+                if Assigned(BatailleJSON) then
                   begin
-                    // Etapes
-                    if ReglesObj.A['Etapes'] <> nil then
-                      GrandAncien.Regles.Etapes := ReglesObj.A['Etapes'].AsStringArray;
-
-                    // EnSommeil
-                    if ReglesObj.S['EnSommeil'] <> EmptyStr then
-                      GrandAncien.Regles.EnSommeil := ReglesObj.S['EnSommeil'];
-
-                    // Special
-                    if ReglesObj.S['Special'] <> EmptyStr then
-                      GrandAncien.Regles.Special := ReglesObj.S['Special'];
-
-                    // Adorateurs
-                    if ReglesObj.S['Adorateurs'] <> EmptyStr then
-                      GrandAncien.Regles.Adorateurs := ReglesObj.S['Adorateurs'];
-
-                    // Bataille
-                    BatailleObj := ReglesObj.O['Bataille'];
-                    if BatailleObj <> nil then
-                      begin
-                        if TryStrToInt(BatailleObj.S['Combat'], GrandAncien.Regles.Bataille.Combat) = False then
-                          GrandAncien.Regles.Bataille.Combat := 0;
-
-                        if BatailleObj.S['DÈfense'] <> EmptyStr then
-                          GrandAncien.Regles.Bataille.Defense := BatailleObj.S['DÈfense'];
-                      end;
+                    GrandAncien.Bataille.Combat := BatailleJSON.I['Combat'];
+                    GrandAncien.Bataille.Defense := BatailleJSON.S['Defense'];
                   end;
+
+                EtapesJSON := ReglesJSON.O['Etapes'];
+                if Assigned(EtapesJSON) then
+                  if ObjectFindFirst(EtapesJSON, Iter) then
+                    repeat
+                      ReglesEtapes.AddOrSetValue(Iter.key, Iter.val.AsString);
+                    until not ObjectFindNext(Iter);
               end;
 
-            if GrandAncien.Nom <> EmptyStr then
-              FGrandsAnciensParNom.AddOrSetValue(AnsiLowerCase(GrandAncien.Nom), GrandAncien);
+            NomCle := LowerCase(GrandAncien.Nom);
+            FGrandsAnciensParNom.AddOrSetValue(NomCle, GrandAncien);
+            FReglesEtapesParGrandAncien.AddOrSetValue(NomCle, ReglesEtapes);
           end;
       end;
 
@@ -190,10 +195,19 @@ unit AH.Core.GrandsAnciens;
         end;
       end;
 
-    function TGestionnaireGrandsAnciens.TryObtenirGrandAncien(const ANomGrandAncien : string;
-                                                              out AGrandAncien : TGrandAncien) : Boolean;
+    function TGestionnaireGrandsAnciens.TryObtenirGrandAncien(const ANomGrandAncien : string; out AGrandAncien: TGrandAncien): Boolean;
       begin
-        Result := FGrandsAnciensParNom.TryGetValue(AnsiLowerCase(ANomGrandAncien), AGrandAncien);
+        Result := FGrandsAnciensParNom.TryGetValue(LowerCase(ANomGrandAncien), AGrandAncien);
+      end;
+
+    function TGestionnaireGrandsAnciens.TryObtenirRegleEtape(const ANomGrandAncien, AIdEtape : string; out ATexte : string) : Boolean;
+      var
+        ReglesEtapes : TDictionary<string, string>;
+      begin
+        Result := False;
+        ATexte := EmptyStr;
+        if FReglesEtapesParGrandAncien.TryGetValue(LowerCase(ANomGrandAncien), ReglesEtapes) then
+          Result := ReglesEtapes.TryGetValue(AIdEtape, ATexte);
       end;
 
 end.
