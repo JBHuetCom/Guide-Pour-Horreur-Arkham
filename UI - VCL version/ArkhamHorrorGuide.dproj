@@ -160,6 +160,11 @@
         <DCCReference Include="..\Core\AH.Core.Capacites.pas"/>
         <DCCReference Include="..\Core\AH.Core.Parametres.pas"/>
         <DCCReference Include="..\Core\AH.Core.ConstructeurPartie.pas"/>
+        <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas"/>
+        <DCCReference Include="AH.UI.FrmInitialisationPartie.pas">
+            <Form>FrmInitialisationPartie</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

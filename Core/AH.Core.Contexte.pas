@@ -133,6 +133,7 @@ unit AH.Core.Contexte;
           /// <summary>Copie des investigateurs en jeu, dans l'ordre de résolution des phases.</summary>
           function Investigateurs: TArray<TInvestigateurJoue>;          /// <summary>Index (base 0) de l'investigateur courant. Exposé pour la sauvegarde d'historique du moteur.</summary>
 
+          property IndexPremierInvestigateur : Integer read FIndexPremierInvestigateur write FIndexPremierInvestigateur;
           property IndexInvestigateurCourant : Integer read FIndexInvestigateurCourant write FIndexInvestigateurCourant;
           property NiveauTerreur : Integer read FNiveauTerreur write FNiveauTerreur;
           property NombrePortailsOuverts : Integer read FNombrePortailsOuverts write FNombrePortailsOuverts;

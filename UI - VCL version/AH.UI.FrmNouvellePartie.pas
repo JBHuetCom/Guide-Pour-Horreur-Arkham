@@ -95,7 +95,8 @@ unit AH.UI.FrmNouvellePartie;
   implementation
 
     uses
-      System.UITypes;
+      System.UITypes,
+      AH.UI.FrmInitialisationPartie;
 
     {$R *.dfm}
 
@@ -374,23 +375,25 @@ unit AH.UI.FrmNouvellePartie;
         MessageErreur : string;
       begin
         case FEtapeCourante of
-          eaJoueursHumains :
+          eaJoueursHumains:
             AfficherEtape(eaInvestigateurs);
-          eaInvestigateurs :
+          eaInvestigateurs:
             begin
               if not TenterCreerContextePartie(Contexte, MessageErreur) then
                 begin
                   AfficherErreur(MessageErreur);
                   Exit;
                 end;
-              FContextePartieCreee := Contexte;
-              ModalResult := mrOk;
+
+              FrmInitialisationPartie.ContextePartie := Contexte;
+              Self.Hide;
+              FrmInitialisationPartie.Show;
             end;
         end;
       end;
 
-    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte: TContextePartie;
-                                                          out OMessageErreur: string): Boolean;
+    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte : TContextePartie;
+                                                          out OMessageErreur : string) : Boolean;
       var
         InvestigateursOrdonnes : TArray<TInvestigateurJoue>;
       begin
