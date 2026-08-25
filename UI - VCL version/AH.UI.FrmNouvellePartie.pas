@@ -3,12 +3,12 @@ unit AH.UI.FrmNouvellePartie;
   interface
 
     uses
-      System.SysUtils, System.Classes, System.Generics.Collections,
+
+      Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.Generics.Collections,
       Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics, Vcl.Dialogs,
       AH.Core.Contexte, AH.Core.Capacites, AH.Core.ConstructeurPartie;
 
     type
-
       /// <summary>Étape courante de l'assistant de configuration d'une nouvelle partie.</summary>
       TEtapeAssistant = (eaJoueursHumains, eaInvestigateurs);
 
@@ -27,40 +27,15 @@ unit AH.UI.FrmNouvellePartie;
           /// <summary>Investigateurs ajoutés, dans l'ordre de saisie (réordonnés par TConstructeurPartie au moment de valider).</summary>
           FInvestigateurs : TList<TInvestigateurJoue>;
 
-          FPanelJoueurs : TPanel;
-          FPanelInvestigateurs : TPanel;
-          FLabelTitre : TLabel;
-          FLabelErreur : TLabel;
-          FBoutonPrecedent : TButton;
-          FBoutonSuivant : TButton;
-          FEditNomJoueur : TEdit;
-          FBoutonAjouterJoueur : TButton;
-          FBoutonSupprimerJoueur : TButton;
-          FListeJoueurs : TListBox;
-          FComboNomInvestigateur : TComboBox;
-          FComboJoueurControleur : TComboBox;
-          FBoutonAjouterInvestigateur : TButton;
-          FBoutonSupprimerInvestigateur : TButton;
-          FListeInvestigateurs : TListBox;
-
           FGestionnaireCapacites : TGestionnaireCapacites;
           FContextePartieCreee : TContextePartie;
 
-          procedure ConstruireControles;
-          procedure AfficherEtape(AEtape: TEtapeAssistant);
+          procedure AfficherEtape(AEtape : TEtapeAssistant);
           procedure RafraichirListeJoueurs;
           procedure RafraichirListeInvestigateurs;
           procedure RafraichirComboJoueurControleur;
           procedure RafraichirEtatBoutons;
           procedure AfficherErreur(const AMessage : string);
-
-          procedure GererClicAjouterJoueur(ASender : TObject);
-          procedure GererClicSupprimerJoueur(ASender : TObject);
-          procedure GererClicAjouterInvestigateur(ASender : TObject);
-          procedure GererClicSupprimerInvestigateur(ASender : TObject);
-          procedure GererClicPrecedent(ASender : TObject);
-          procedure GererClicSuivant(ASender : TObject);
-          procedure GererSelectionListe(ASender : TObject);
 
           /// <summary>Valide les deux étapes puis construit le TContextePartie dans l'ordre de jeu correct.</summary>
           /// <param name="OContexte">Contexte créé si la fonction retourne True. Non affecté sinon.</param>
@@ -72,7 +47,7 @@ unit AH.UI.FrmNouvellePartie;
           /// Chemin du fichier capacites_investigateurs.json, utilisé pour préremplir la liste des
           /// noms d'investigateurs proposés. Facultatif (EmptyStr pour ne pas préremplir) : un nom
           /// hors liste reste saisissable librement, mais choisir un nom de cette liste garantit la
-          /// correspondance avec le panneau de capacité affiché en jeu.
+          /// correspondance avec le panneau de capacités affiché en jeu.
           /// </param>
           constructor Create(AOwner : TComponent; const ACheminCapacitesInvestigateurs : string); reintroduce;
           destructor Destroy; override;
@@ -82,13 +57,46 @@ unit AH.UI.FrmNouvellePartie;
           /// L'appelant en devient propriétaire : ce formulaire ne la libère jamais.
           /// </summary>
           property ContextePartieCreee : TContextePartie read FContextePartieCreee;
+        published
+          LabelTitre : TLabel;
+          PanelJoueurs : TPanel;
+          PanelInvestigateurs : TPanel;
+          LabelErreur : TLabel;
+          BoutonPrecedent : TButton;
+          BoutonSuivant : TButton;
+          EditNomJoueur : TEdit;
+          BoutonAjouterJoueur : TButton;
+          BoutonSupprimerJoueur : TButton;
+          ListeJoueurs : TListBox;
+          ComboNomInvestigateur : TComboBox;
+          ComboJoueurControleur : TComboBox;
+          BoutonAjouterInvestigateur : TButton;
+          BoutonSupprimerInvestigateur : TButton;
+          ListeInvestigateurs : TListBox;
+          Label1 : TLabel;
+          Label2 : TLabel;
+
+          procedure FormShow(Sender : TObject);
+
+          procedure GererClicAjouterJoueur(ASender : TObject);
+          procedure GererClicSupprimerJoueur(ASender : TObject);
+          procedure GererClicAjouterInvestigateur(ASender : TObject);
+          procedure GererClicSupprimerInvestigateur(ASender : TObject);
+          procedure GererClicPrecedent(ASender : TObject);
+          procedure GererClicSuivant(ASender : TObject);
+          procedure GererSelectionListe(ASender : TObject);
       end;
+
+    var
+
+      FrmNouvellePartie : TFrmNouvellePartie;
 
   implementation
 
     uses
-
       System.UITypes;
+
+    {$R *.dfm}
 
     { TFrmNouvellePartie }
 
@@ -108,7 +116,7 @@ unit AH.UI.FrmNouvellePartie;
             // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
           end;
 
-        ConstruireControles;
+        // Initialiser les contrôles (remplace ConstruireControles)
         AfficherEtape(eaJoueursHumains);
       end;
 
@@ -121,129 +129,26 @@ unit AH.UI.FrmNouvellePartie;
         inherited;
       end;
 
-    procedure TFrmNouvellePartie.ConstruireControles;
-      var
-        Nom: string;
+    procedure TFrmNouvellePartie.FormShow(Sender : TObject);
       begin
-        Caption := 'Nouvelle partie';
-        Position := poScreenCenter;
-        BorderStyle := bsDialog;
-        ClientWidth := 532;
-        ClientHeight := 412;
-
-        FLabelTitre := TLabel.Create(Self);
-        FLabelTitre.Parent := Self;
-        FLabelTitre.SetBounds(12, 12, 496, 24);
-        FLabelTitre.Font.Style := [fsBold];
-        FLabelTitre.Font.Size := 14;
-
-        FPanelJoueurs := TPanel.Create(Self);
-        FPanelJoueurs.Parent := Self;
-        FPanelJoueurs.SetBounds(12, 48, 496, 280);
-        FPanelJoueurs.BevelOuter := bvNone;
-
-        FPanelInvestigateurs := TPanel.Create(Self);
-        FPanelInvestigateurs.Parent := Self;
-        FPanelInvestigateurs.SetBounds(12, 48, 496, 280);
-        FPanelInvestigateurs.BevelOuter := bvNone;
-
-        // --- Étape "Joueurs humains" ---
-        with TLabel.Create(Self) do
-          begin
-            Parent := FPanelJoueurs;
-            SetBounds(0, 0, 496, 20);
-            Caption := 'Ajoutez chaque joueur humain autour de la table.';
-          end;
-
-        FEditNomJoueur := TEdit.Create(Self);
-        FEditNomJoueur.Parent := FPanelJoueurs;
-        FEditNomJoueur.SetBounds(0, 28, 300, 24);
-
-        FBoutonAjouterJoueur := TButton.Create(Self);
-        FBoutonAjouterJoueur.Parent := FPanelJoueurs;
-        FBoutonAjouterJoueur.SetBounds(308, 27, 100, 26);
-        FBoutonAjouterJoueur.Caption := 'Ajouter';
-        FBoutonAjouterJoueur.OnClick := GererClicAjouterJoueur;
-
-        FListeJoueurs := TListBox.Create(Self);
-        FListeJoueurs.Parent := FPanelJoueurs;
-        FListeJoueurs.SetBounds(0, 64, 300, 200);
-        FListeJoueurs.OnClick := GererSelectionListe;
-
-        FBoutonSupprimerJoueur := TButton.Create(Self);
-        FBoutonSupprimerJoueur.Parent := FPanelJoueurs;
-        FBoutonSupprimerJoueur.SetBounds(308, 64, 100, 26);
-        FBoutonSupprimerJoueur.Caption := 'Supprimer';
-        FBoutonSupprimerJoueur.OnClick := GererClicSupprimerJoueur;
-
-        // --- Étape "Investigateurs" ---
-        with TLabel.Create(Self) do
-        begin
-          Parent := FPanelInvestigateurs;
-          SetBounds(0, 0, 496, 20);
-          Caption := 'Ajoutez chaque investigateur en jeu et indiquez qui le contrôle.';
-        end;
-
-        FComboNomInvestigateur := TComboBox.Create(Self);
-        FComboNomInvestigateur.Parent := FPanelInvestigateurs;
-        FComboNomInvestigateur.SetBounds(0, 28, 220, 24);
-        FComboNomInvestigateur.Style := csDropDown;
-        for Nom in FGestionnaireCapacites.NomsConnus do
-          FComboNomInvestigateur.Items.Add(Nom);
-
-        FComboJoueurControleur := TComboBox.Create(Self);
-        FComboJoueurControleur.Parent := FPanelInvestigateurs;
-        FComboJoueurControleur.SetBounds(228, 28, 150, 24);
-        FComboJoueurControleur.Style := csDropDownList;
-
-        FBoutonAjouterInvestigateur := TButton.Create(Self);
-        FBoutonAjouterInvestigateur.Parent := FPanelInvestigateurs;
-        FBoutonAjouterInvestigateur.SetBounds(388, 27, 100, 26);
-        FBoutonAjouterInvestigateur.Caption := 'Ajouter';
-        FBoutonAjouterInvestigateur.OnClick := GererClicAjouterInvestigateur;
-
-        FListeInvestigateurs := TListBox.Create(Self);
-        FListeInvestigateurs.Parent := FPanelInvestigateurs;
-        FListeInvestigateurs.SetBounds(0, 64, 380, 200);
-        FListeInvestigateurs.OnClick := GererSelectionListe;
-
-        FBoutonSupprimerInvestigateur := TButton.Create(Self);
-        FBoutonSupprimerInvestigateur.Parent := FPanelInvestigateurs;
-        FBoutonSupprimerInvestigateur.SetBounds(388, 64, 100, 26);
-        FBoutonSupprimerInvestigateur.Caption := 'Supprimer';
-        FBoutonSupprimerInvestigateur.OnClick := GererClicSupprimerInvestigateur;
-
-        // --- Pied de formulaire (commun aux deux étapes) ---
-        FLabelErreur := TLabel.Create(Self);
-        FLabelErreur.Parent := Self;
-        FLabelErreur.SetBounds(12, 336, 496, 20);
-        FLabelErreur.Font.Color := clRed;
-
-        FBoutonPrecedent := TButton.Create(Self);
-        FBoutonPrecedent.Parent := Self;
-        FBoutonPrecedent.SetBounds(12, 372, 110, 28);
-        FBoutonPrecedent.Caption := '< Précédent';
-        FBoutonPrecedent.OnClick := GererClicPrecedent;
-
-        FBoutonSuivant := TButton.Create(Self);
-        FBoutonSuivant.Parent := Self;
-        FBoutonSuivant.SetBounds(398, 372, 110, 28);
-        FBoutonSuivant.OnClick := GererClicSuivant;
-        FBoutonSuivant.Default := True;
+        // Préremplir la ComboBox des noms d'investigateurs
+        ComboNomInvestigateur.Items.Clear;
+        for var Nom in FGestionnaireCapacites.NomsConnus do
+          ComboNomInvestigateur.Items.Add(Nom);
       end;
 
     procedure TFrmNouvellePartie.AfficherEtape(AEtape : TEtapeAssistant);
       begin
         FEtapeCourante := AEtape;
 
-        FPanelJoueurs.Visible := AEtape = eaJoueursHumains;
-        FPanelInvestigateurs.Visible := AEtape = eaInvestigateurs;
+        PanelJoueurs.Visible := (AEtape = eaJoueursHumains);
+        PanelInvestigateurs.Visible := (AEtape = eaInvestigateurs);
 
         case AEtape of
-          eaJoueursHumains : FLabelTitre.Caption := 'Étape 1 / 2 — Joueurs humains';
+          eaJoueursHumains : LabelTitre.Caption := 'Étape 1 / 2 — Joueurs humains';
           eaInvestigateurs :
             begin
-              FLabelTitre.Caption := 'Étape 2 / 2 — Investigateurs';
+              LabelTitre.Caption := 'Étape 2 / 2 — Investigateurs';
               RafraichirComboJoueurControleur;
             end;
         end;
@@ -256,13 +161,13 @@ unit AH.UI.FrmNouvellePartie;
       var
         Nom : string;
       begin
-        FListeJoueurs.Items.BeginUpdate;
+        ListeJoueurs.Items.BeginUpdate;
         try
-          FListeJoueurs.Items.Clear;
+          ListeJoueurs.Items.Clear;
           for Nom in FNomsJoueursHumains do
-            FListeJoueurs.Items.Add(Nom);
+            ListeJoueurs.Items.Add(Nom);
         finally
-          FListeJoueurs.Items.EndUpdate;
+          ListeJoueurs.Items.EndUpdate;
         end;
       end;
 
@@ -270,14 +175,14 @@ unit AH.UI.FrmNouvellePartie;
       var
         Investigateur : TInvestigateurJoue;
       begin
-        FListeInvestigateurs.Items.BeginUpdate;
+        ListeInvestigateurs.Items.BeginUpdate;
         try
-          FListeInvestigateurs.Items.Clear;
+          ListeInvestigateurs.Items.Clear;
           for Investigateur in FInvestigateurs do
-            FListeInvestigateurs.Items.Add(Format('%s — joué par %s',
+            ListeInvestigateurs.Items.Add(Format('%s — joué par %s',
               [Investigateur.NomInvestigateur, FNomsJoueursHumains[Investigateur.IndexJoueurHumain]]));
         finally
-          FListeInvestigateurs.Items.EndUpdate;
+          ListeInvestigateurs.Items.EndUpdate;
         end;
       end;
 
@@ -286,47 +191,47 @@ unit AH.UI.FrmNouvellePartie;
         Nom : string;
         IndexPrecedent : Integer;
       begin
-        IndexPrecedent := FComboJoueurControleur.ItemIndex;
-        FComboJoueurControleur.Items.BeginUpdate;
+        IndexPrecedent := ComboJoueurControleur.ItemIndex;
+        ComboJoueurControleur.Items.BeginUpdate;
         try
-          FComboJoueurControleur.Items.Clear;
+          ComboJoueurControleur.Items.Clear;
           for Nom in FNomsJoueursHumains do
-            FComboJoueurControleur.Items.Add(Nom);
+            ComboJoueurControleur.Items.Add(Nom);
         finally
-          FComboJoueurControleur.Items.EndUpdate;
+          ComboJoueurControleur.Items.EndUpdate;
         end;
-        if IndexPrecedent < FComboJoueurControleur.Items.Count then
-          FComboJoueurControleur.ItemIndex := IndexPrecedent
-        else if FComboJoueurControleur.Items.Count > 0 then
-          FComboJoueurControleur.ItemIndex := 0;
+        if IndexPrecedent < ComboJoueurControleur.Items.Count then
+          ComboJoueurControleur.ItemIndex := IndexPrecedent
+        else if ComboJoueurControleur.Items.Count > 0 then
+          ComboJoueurControleur.ItemIndex := 0;
       end;
 
     procedure TFrmNouvellePartie.RafraichirEtatBoutons;
       begin
-        FBoutonPrecedent.Enabled := FEtapeCourante = eaInvestigateurs;
+        BoutonPrecedent.Enabled := FEtapeCourante = eaInvestigateurs;
 
         case FEtapeCourante of
-          eaJoueursHumains:
+          eaJoueursHumains :
             begin
-              FBoutonSuivant.Caption := 'Suivant >';
-              FBoutonSuivant.Enabled := FNomsJoueursHumains.Count > 0;
-              FBoutonAjouterJoueur.Enabled := FNomsJoueursHumains.Count < NombreMaxJoueursHumains;
+              BoutonSuivant.Caption := 'Suivant >';
+              BoutonSuivant.Enabled := FNomsJoueursHumains.Count > 0;
+              BoutonAjouterJoueur.Enabled := FNomsJoueursHumains.Count < NombreMaxJoueursHumains;
             end;
-          eaInvestigateurs:
+          eaInvestigateurs :
             begin
-              FBoutonSuivant.Caption := 'Créer la partie';
-              FBoutonSuivant.Enabled := FInvestigateurs.Count > 0;
-              FBoutonAjouterInvestigateur.Enabled := FInvestigateurs.Count < NombreMaxInvestigateurs;
+              BoutonSuivant.Caption := 'Créer la partie';
+              BoutonSuivant.Enabled := FInvestigateurs.Count > 0;
+              BoutonAjouterInvestigateur.Enabled := FInvestigateurs.Count < NombreMaxInvestigateurs;
             end;
         end;
 
-        FBoutonSupprimerJoueur.Enabled := FListeJoueurs.ItemIndex >= 0;
-        FBoutonSupprimerInvestigateur.Enabled := FListeInvestigateurs.ItemIndex >= 0;
+        BoutonSupprimerJoueur.Enabled := ListeJoueurs.ItemIndex >= 0;
+        BoutonSupprimerInvestigateur.Enabled := ListeInvestigateurs.ItemIndex >= 0;
       end;
 
     procedure TFrmNouvellePartie.AfficherErreur(const AMessage : string);
       begin
-        FLabelErreur.Caption := AMessage;
+        LabelErreur.Caption := AMessage;
       end;
 
     procedure TFrmNouvellePartie.GererSelectionListe(ASender : TObject);
@@ -336,9 +241,9 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.GererClicAjouterJoueur(ASender : TObject);
       var
-        Nom, NomExistant: string;
+        Nom, NomExistant : string;
       begin
-        Nom := Trim(FEditNomJoueur.Text);
+        Nom := Trim(EditNomJoueur.Text);
         if Nom = EmptyStr then
           begin
             AfficherErreur('Saisissez un prénom avant de l''ajouter.');
@@ -359,8 +264,8 @@ unit AH.UI.FrmNouvellePartie;
             end;
 
         FNomsJoueursHumains.Add(Nom);
-        FEditNomJoueur.Clear;
-        FEditNomJoueur.SetFocus;
+        EditNomJoueur.Clear;
+        EditNomJoueur.SetFocus;
         RafraichirListeJoueurs;
         AfficherErreur(EmptyStr);
         RafraichirEtatBoutons;
@@ -371,7 +276,7 @@ unit AH.UI.FrmNouvellePartie;
         IndexJoueurSupprime, NombreInvestigateursTouches : Integer;
         Investigateur : TInvestigateurJoue;
       begin
-        IndexJoueurSupprime := FListeJoueurs.ItemIndex;
+        IndexJoueurSupprime := ListeJoueurs.ItemIndex;
         if IndexJoueurSupprime < 0 then
           Exit;
 
@@ -400,14 +305,14 @@ unit AH.UI.FrmNouvellePartie;
         Nom : string;
         NouvelInvestigateur : TInvestigateurJoue;
       begin
-        Nom := Trim(FComboNomInvestigateur.Text);
+        Nom := Trim(ComboNomInvestigateur.Text);
         if Nom = EmptyStr then
           begin
             AfficherErreur('Saisissez ou choisissez un nom d''investigateur avant de l''ajouter.');
             Exit;
           end;
 
-        if FComboJoueurControleur.ItemIndex < 0 then
+        if ComboJoueurControleur.ItemIndex < 0 then
           begin
             AfficherErreur('Choisissez le joueur humain qui contrôle cet investigateur.');
             Exit;
@@ -426,10 +331,10 @@ unit AH.UI.FrmNouvellePartie;
           end;
 
         NouvelInvestigateur.NomInvestigateur := Nom;
-        NouvelInvestigateur.IndexJoueurHumain := FComboJoueurControleur.ItemIndex;
+        NouvelInvestigateur.IndexJoueurHumain := ComboJoueurControleur.ItemIndex;
         FInvestigateurs.Add(NouvelInvestigateur);
 
-        FComboNomInvestigateur.Text := EmptyStr;
+        ComboNomInvestigateur.Text := EmptyStr;
         RafraichirListeInvestigateurs;
         AfficherErreur(EmptyStr);
         RafraichirEtatBoutons;
@@ -437,10 +342,10 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.GererClicSupprimerInvestigateur(ASender : TObject);
       begin
-        if FListeInvestigateurs.ItemIndex < 0 then
+        if ListeInvestigateurs.ItemIndex < 0 then
           Exit;
 
-        FInvestigateurs.Delete(FListeInvestigateurs.ItemIndex);
+        FInvestigateurs.Delete(ListeInvestigateurs.ItemIndex);
         RafraichirListeInvestigateurs;
         RafraichirEtatBoutons;
       end;
@@ -471,10 +376,10 @@ unit AH.UI.FrmNouvellePartie;
         end;
       end;
 
-    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte : TContextePartie;
-                                                          out OMessageErreur : string) : Boolean;
+    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte: TContextePartie;
+                                                          out OMessageErreur: string): Boolean;
       var
-        InvestigateursOrdonnes: TArray<TInvestigateurJoue>;
+        InvestigateursOrdonnes : TArray<TInvestigateurJoue>;
       begin
         OContexte := nil;
         OMessageErreur := EmptyStr;

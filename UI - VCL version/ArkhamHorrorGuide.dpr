@@ -1,10 +1,10 @@
 program ArkhamHorrorGuide;
 
-  uses
+uses
   FastMM5,
   Vcl.Forms,
   AH.UI.FrmPrincipal in 'AH.UI.FrmPrincipal.pas' {Form1},
-  AH.UI.FrmNouvellePartie in 'AH.UI.FrmNouvellePartie.pas' {Form2},
+  AH.UI.FrmNouvellePartie in 'AH.UI.FrmNouvellePartie.pas' {FrmNouvellePartie},
   AH.UI.FrameEtape in 'AH.UI.FrameEtape.pas' {Frame1: TFrame},
   AH.Core.Types in '..\Core\AH.Core.Types.pas',
   AH.Core.Contexte in '..\Core\AH.Core.Contexte.pas',
@@ -26,7 +26,7 @@ begin
   {$ENDIF}
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-//  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TFrmNouvellePartie, FrmNouvellePartie);
   Application.CreateForm(TForm1, Form1);
   Application.Run;
 end.
