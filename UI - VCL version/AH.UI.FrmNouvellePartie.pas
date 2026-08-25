@@ -30,6 +30,9 @@ unit AH.UI.FrmNouvellePartie;
           FGestionnaireCapacites : TGestionnaireCapacites;
           FContextePartieCreee : TContextePartie;
 
+          /// <summary>Liste des noms d'investigateurs disponibles (non encore attribués à un joueur).</summary>
+          FInvestigateursDisponibles : TList<string>;
+
           procedure AfficherEtape(AEtape : TEtapeAssistant);
           procedure RafraichirListeJoueurs;
           procedure RafraichirListeInvestigateurs;
@@ -41,6 +44,12 @@ unit AH.UI.FrmNouvellePartie;
           /// <param name="OContexte">Contexte créé si la fonction retourne True. Non affecté sinon.</param>
           /// <param name="OMessageErreur">Message à afficher à l'utilisateur si la fonction retourne False.</param>
           function TenterCreerContextePartie(out OContexte : TContextePartie; out OMessageErreur : string) : Boolean;
+
+          /// <summary>
+          /// Met à jour ComboNomInvestigateur avec uniquement les investigateurs disponibles
+          /// (non encore attribués à un joueur).
+          /// </summary>
+          procedure RafraichirInvestigateursDisponibles;
         public
           /// <param name="AOwner">Propriétaire standard VCL du formulaire.</param>
           /// <param name="ACheminCapacitesInvestigateurs">
@@ -49,7 +58,7 @@ unit AH.UI.FrmNouvellePartie;
           /// hors liste reste saisissable librement, mais choisir un nom de cette liste garantit la
           /// correspondance avec le panneau de capacités affiché en jeu.
           /// </param>
-          constructor Create(AOwner : TComponent; const ACheminCapacitesInvestigateurs : string); reintroduce;
+          constructor Create(AOwner : TComponent; ACheminCapacitesInvestigateurs : string); reintroduce;
           destructor Destroy; override;
 
           /// <summary>
@@ -100,14 +109,18 @@ unit AH.UI.FrmNouvellePartie;
 
     { TFrmNouvellePartie }
 
-    constructor TFrmNouvellePartie.Create(AOwner : TComponent; const ACheminCapacitesInvestigateurs : string);
+    constructor TFrmNouvellePartie.Create(AOwner : TComponent; ACheminCapacitesInvestigateurs : string);
       begin
         inherited Create(AOwner);
 
         FNomsJoueursHumains := TList<string>.Create;
         FInvestigateurs := TList<TInvestigateurJoue>.Create;
         FGestionnaireCapacites := TGestionnaireCapacites.Create;
+        FInvestigateursDisponibles := TList<string>.Create;
 
+        if ACheminCapacitesInvestigateurs = EmptyStr then
+          ACheminCapacitesInvestigateurs := ExtractFilePath(ParamStr(0))
+                                            + 'Data\Content\capacites_investigateurs.json';
         if ACheminCapacitesInvestigateurs <> EmptyStr then
           try
             FGestionnaireCapacites.ChargerDepuisFichier(ACheminCapacitesInvestigateurs);
@@ -115,9 +128,6 @@ unit AH.UI.FrmNouvellePartie;
             // Le préremplissage des noms est un confort, pas une nécessité : un fichier absent ou
             // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
           end;
-
-        // Initialiser les contrôles (remplace ConstruireControles)
-        AfficherEtape(eaJoueursHumains);
       end;
 
     destructor TFrmNouvellePartie.Destroy;
@@ -125,16 +135,23 @@ unit AH.UI.FrmNouvellePartie;
         FGestionnaireCapacites.Free;
         FInvestigateurs.Free;
         FNomsJoueursHumains.Free;
+        FInvestigateursDisponibles.Free;
 
         inherited;
       end;
 
     procedure TFrmNouvellePartie.FormShow(Sender : TObject);
       begin
-        // Préremplir la ComboBox des noms d'investigateurs
-        ComboNomInvestigateur.Items.Clear;
-        for var Nom in FGestionnaireCapacites.NomsConnus do
-          ComboNomInvestigateur.Items.Add(Nom);
+        // Initialiser la liste des investigateurs disponibles
+        FInvestigateursDisponibles.Clear;
+        FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
+
+
+        // Initialiser les contrôles (remplace ConstruireControles)
+        AfficherEtape(eaJoueursHumains);
+
+        // Rafraîchir la combo (même si vide au début)
+        RafraichirInvestigateursDisponibles;
       end;
 
     procedure TFrmNouvellePartie.AfficherEtape(AEtape : TEtapeAssistant);
@@ -150,6 +167,7 @@ unit AH.UI.FrmNouvellePartie;
             begin
               LabelTitre.Caption := 'Étape 2 / 2 — Investigateurs';
               RafraichirComboJoueurControleur;
+              RafraichirInvestigateursDisponibles;
             end;
         end;
 
@@ -297,6 +315,7 @@ unit AH.UI.FrmNouvellePartie;
         RafraichirListeJoueurs;
         RafraichirListeInvestigateurs;
         RafraichirComboJoueurControleur;
+        RafraichirInvestigateursDisponibles;
         RafraichirEtatBoutons;
       end;
 
@@ -336,6 +355,7 @@ unit AH.UI.FrmNouvellePartie;
 
         ComboNomInvestigateur.Text := EmptyStr;
         RafraichirListeInvestigateurs;
+        RafraichirInvestigateursDisponibles;
         AfficherErreur(EmptyStr);
         RafraichirEtatBoutons;
       end;
@@ -347,6 +367,7 @@ unit AH.UI.FrmNouvellePartie;
 
         FInvestigateurs.Delete(ListeInvestigateurs.ItemIndex);
         RafraichirListeInvestigateurs;
+        RafraichirInvestigateursDisponibles;
         RafraichirEtatBoutons;
       end;
 
@@ -400,6 +421,23 @@ unit AH.UI.FrmNouvellePartie;
           FNomsJoueursHumains.ToArray, FInvestigateurs.ToArray);
         OContexte := TContextePartie.Create(FNomsJoueursHumains.ToArray, InvestigateursOrdonnes);
         Result := True;
+      end;
+
+    procedure TFrmNouvellePartie.RafraichirInvestigateursDisponibles;
+      var
+        Investigateur: TInvestigateurJoue;
+      begin
+        ComboNomInvestigateur.Items.BeginUpdate;
+        try
+          ComboNomInvestigateur.Items.Clear;
+
+          // Ajouter tous les investigateurs connus non encore attribués
+          for var Nom in FInvestigateursDisponibles do
+            if not TConstructeurPartie.NomDejaUtilise(FInvestigateurs.ToArray, Nom) then
+              ComboNomInvestigateur.Items.Add(Nom);
+        finally
+          ComboNomInvestigateur.Items.EndUpdate;
+        end;
       end;
 
 end.
