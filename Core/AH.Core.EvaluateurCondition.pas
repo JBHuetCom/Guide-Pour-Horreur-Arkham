@@ -3,6 +3,7 @@ unit AH.Core.EvaluateurCondition;
   interface
 
   uses
+
     AH.Core.Noeud, AH.Core.Contexte;
 
   type
@@ -24,6 +25,7 @@ unit AH.Core.EvaluateurCondition;
   implementation
 
     uses
+
       System.SysUtils, System.Variants;
 
     { TEvaluateurCondition }

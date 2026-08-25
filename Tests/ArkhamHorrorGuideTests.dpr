@@ -65,6 +65,7 @@ program ArkhamHorrorGuideTests;
       Utf8Encoding : TEncoding;
       Utf8ByteCount : Integer;
       JsonWarmup : ISuperObject;
+	  RttiContext : TSuperRttiContext;
     begin
 	  // L'accès au thread courant peut créer paresseusement un TExternalThread
 	  // global de la RTL. Son initialisation est effectuée avant le runner afin
@@ -115,13 +116,16 @@ program ArkhamHorrorGuideTests;
           'L''amorçage UTF-8 a produit une taille inattendue.');
 
       // SuperObject initialise certaines ressources internes lors de la première
-        // analyse JSON. Cette initialisation est effectuée avant la surveillance
-        // DUnitX/FastMM5 afin de ne pas être attribuée au premier test utilisateur.
-        JsonWarmup := SO('{"Warmup":true}');
+      // analyse JSON. Cette initialisation est effectuée avant la surveillance
+      // DUnitX/FastMM5 afin de ne pas être attribuée au premier test utilisateur.
+      JsonWarmup := SO('{"Warmup":true}');
 
-        if not Assigned(JsonWarmup) or not JsonWarmup.B['Warmup'] then
-          raise EInvalidOpException.Create(
-            'L''amorçage du parseur SuperObject a échoué.');
+      if not Assigned(JsonWarmup) or not JsonWarmup.B['Warmup'] then
+        raise EInvalidOpException.Create(
+          'L''amorçage du parseur SuperObject a échoué.');
+			
+      RttiContext := TSuperRttiContext.Create;
+      RttiContext.Free;
     end;
 
 	/// <summary>
