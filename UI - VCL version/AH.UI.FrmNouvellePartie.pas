@@ -20,8 +20,8 @@ unit AH.UI.FrmNouvellePartie;
       /// ayant retourné mrOk.
       /// </summary>
       TFrmNouvellePartie = class(TForm)
-          procedure FormOnDestroy(Sender: TObject);
-          procedure FormOnCreate(Sender: TObject);
+          procedure FormDestroy(Sender: TObject);
+          procedure FormCreate(Sender: TObject);
         private
           FEtapeCourante : TEtapeAssistant;
 
@@ -101,22 +101,28 @@ unit AH.UI.FrmNouvellePartie;
 
     { TFrmNouvellePartie }
 
-    procedure TFrmNouvellePartie.FormOnCreate(Sender : TObject);
+    procedure TFrmNouvellePartie.FormCreate(Sender : TObject);
       begin
         FNomsJoueursHumains := TList<string>.Create;
         FInvestigateurs := TList<TInvestigateurJoue>.Create;
         FGestionnaireCapacites := TGestionnaireCapacites.Create;
         FInvestigateursDisponibles := TList<string>.Create;
 
+          // Charger le JSON une seule fois
+        var CheminJSON : string := ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json';
         try
-          FGestionnaireCapacites.ChargerDepuisFichier(ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json');
+          FGestionnaireCapacites.ChargerDepuisFichier(CheminJSON);
+          FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
         except
           // Le préremplissage des noms est un confort, pas une nécessité : un fichier absent ou
           // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
         end;
+
+        // Initialiser l'UI
+        AfficherEtape(eaJoueursHumains);
       end;
 
-    procedure TFrmNouvellePartie.FormOnDestroy(Sender: TObject);
+    procedure TFrmNouvellePartie.FormDestroy(Sender: TObject);
       begin
         FGestionnaireCapacites.Free;
         FInvestigateurs.Free;
@@ -135,28 +141,6 @@ unit AH.UI.FrmNouvellePartie;
             ModalResult := mrCancel;
             Exit;
           end;
-
-        // Si aucun fichier n'a été chargé (cas CreateForm)
-        if (FInvestigateursDisponibles.Count = 0)
-           and (Length(FGestionnaireCapacites.NomsConnus) = 0)
-        then
-          begin
-            CheminDefaut := ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json';
-            if FileExists(CheminDefaut) then
-              try
-                FGestionnaireCapacites.ChargerDepuisFichier(CheminDefaut);
-              except
-                // Ignorer : le préremplissage est facultatif
-              end;
-          end;
-
-        // Initialiser la liste des investigateurs disponibles
-        FInvestigateursDisponibles.Clear;
-        if Assigned(FGestionnaireCapacites) then
-          FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
-
-        // Initialiser les contrôles
-        AfficherEtape(eaJoueursHumains);
 
         // Rafraîchir la combo
         RafraichirInvestigateursDisponibles;

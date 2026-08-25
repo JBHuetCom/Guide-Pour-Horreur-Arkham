@@ -12,8 +12,8 @@ object FrmNouvellePartie: TFrmNouvellePartie
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
-  OnCreate = FormOnCreate
-  OnDestroy = FormOnDestroy
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   TextHeight = 15
   object LabelTitre: TLabel
@@ -127,7 +127,7 @@ object FrmNouvellePartie: TFrmNouvellePartie
       Height = 26
       Caption = 'Ajouter'
       TabOrder = 2
-      OnClick = GererClicAjouterJoueur
+      OnClick = GererClicAjouterInvestigateur
     end
     object ListeInvestigateurs: TListBox
       Left = 0
@@ -145,7 +145,7 @@ object FrmNouvellePartie: TFrmNouvellePartie
       Height = 26
       Caption = 'Supprimer'
       TabOrder = 4
-      OnClick = GererClicSupprimerJoueur
+      OnClick = GererClicSupprimerInvestigateur
     end
   end
   object BoutonPrecedent: TButton
