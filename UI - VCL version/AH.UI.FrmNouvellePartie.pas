@@ -20,6 +20,8 @@ unit AH.UI.FrmNouvellePartie;
       /// ayant retourné mrOk.
       /// </summary>
       TFrmNouvellePartie = class(TForm)
+          procedure FormOnDestroy(Sender: TObject);
+          procedure FormOnCreate(Sender: TObject);
         private
           FEtapeCourante : TEtapeAssistant;
 
@@ -51,16 +53,6 @@ unit AH.UI.FrmNouvellePartie;
           /// </summary>
           procedure RafraichirInvestigateursDisponibles;
         public
-          /// <param name="AOwner">Propriétaire standard VCL du formulaire.</param>
-          /// <param name="ACheminCapacitesInvestigateurs">
-          /// Chemin du fichier capacites_investigateurs.json, utilisé pour préremplir la liste des
-          /// noms d'investigateurs proposés. Facultatif (EmptyStr pour ne pas préremplir) : un nom
-          /// hors liste reste saisissable librement, mais choisir un nom de cette liste garantit la
-          /// correspondance avec le panneau de capacités affiché en jeu.
-          /// </param>
-          constructor Create(AOwner : TComponent; ACheminCapacitesInvestigateurs : string); reintroduce;
-          destructor Destroy; override;
-
           /// <summary>
           /// Partie configurée, disponible uniquement après un ShowModal ayant retourné mrOk.
           /// L'appelant en devient propriétaire : ce formulaire ne la libère jamais.
@@ -109,48 +101,64 @@ unit AH.UI.FrmNouvellePartie;
 
     { TFrmNouvellePartie }
 
-    constructor TFrmNouvellePartie.Create(AOwner : TComponent; ACheminCapacitesInvestigateurs : string);
+    procedure TFrmNouvellePartie.FormOnCreate(Sender : TObject);
       begin
-        inherited Create(AOwner);
-
         FNomsJoueursHumains := TList<string>.Create;
         FInvestigateurs := TList<TInvestigateurJoue>.Create;
         FGestionnaireCapacites := TGestionnaireCapacites.Create;
         FInvestigateursDisponibles := TList<string>.Create;
 
-        if ACheminCapacitesInvestigateurs = EmptyStr then
-          ACheminCapacitesInvestigateurs := ExtractFilePath(ParamStr(0))
-                                            + 'Data\Content\capacites_investigateurs.json';
-        if ACheminCapacitesInvestigateurs <> EmptyStr then
-          try
-            FGestionnaireCapacites.ChargerDepuisFichier(ACheminCapacitesInvestigateurs);
-          except
-            // Le préremplissage des noms est un confort, pas une nécessité : un fichier absent ou
-            // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
-          end;
+        try
+          FGestionnaireCapacites.ChargerDepuisFichier(ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json');
+        except
+          // Le préremplissage des noms est un confort, pas une nécessité : un fichier absent ou
+          // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
+        end;
       end;
 
-    destructor TFrmNouvellePartie.Destroy;
+    procedure TFrmNouvellePartie.FormOnDestroy(Sender: TObject);
       begin
         FGestionnaireCapacites.Free;
         FInvestigateurs.Free;
         FNomsJoueursHumains.Free;
         FInvestigateursDisponibles.Free;
-
-        inherited;
       end;
 
     procedure TFrmNouvellePartie.FormShow(Sender : TObject);
+      var
+        CheminDefaut : string;
       begin
+        // Vérifier que les composants critiques existent
+        if not Assigned(ComboNomInvestigateur) then
+          begin
+            ShowMessage('Erreur: ComboNomInvestigateur non créé.');
+            ModalResult := mrCancel;
+            Exit;
+          end;
+
+        // Si aucun fichier n'a été chargé (cas CreateForm)
+        if (FInvestigateursDisponibles.Count = 0)
+           and (Length(FGestionnaireCapacites.NomsConnus) = 0)
+        then
+          begin
+            CheminDefaut := ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json';
+            if FileExists(CheminDefaut) then
+              try
+                FGestionnaireCapacites.ChargerDepuisFichier(CheminDefaut);
+              except
+                // Ignorer : le préremplissage est facultatif
+              end;
+          end;
+
         // Initialiser la liste des investigateurs disponibles
         FInvestigateursDisponibles.Clear;
-        FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
+        if Assigned(FGestionnaireCapacites) then
+          FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
 
-
-        // Initialiser les contrôles (remplace ConstruireControles)
+        // Initialiser les contrôles
         AfficherEtape(eaJoueursHumains);
 
-        // Rafraîchir la combo (même si vide au début)
+        // Rafraîchir la combo
         RafraichirInvestigateursDisponibles;
       end;
 

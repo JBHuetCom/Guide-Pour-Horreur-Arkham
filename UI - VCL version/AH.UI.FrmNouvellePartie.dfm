@@ -12,6 +12,8 @@ object FrmNouvellePartie: TFrmNouvellePartie
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
+  OnCreate = FormOnCreate
+  OnDestroy = FormOnDestroy
   OnShow = FormShow
   TextHeight = 15
   object LabelTitre: TLabel
