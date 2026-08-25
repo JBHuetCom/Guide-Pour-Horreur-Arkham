@@ -144,11 +144,9 @@
         </DCCReference>
         <DCCReference Include="AH.UI.FrmNouvellePartie.pas">
             <Form>Form2</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="AH.UI.FrameEtape.pas">
             <Form>Frame1</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Core\AH.Core.Types.pas"/>
@@ -161,6 +159,7 @@
         <DCCReference Include="..\Core\AH.Core.Conseils.pas"/>
         <DCCReference Include="..\Core\AH.Core.Capacites.pas"/>
         <DCCReference Include="..\Core\AH.Core.Parametres.pas"/>
+        <DCCReference Include="..\Core\AH.Core.ConstructeurPartie.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -7,7 +7,9 @@ program ArkhamHorrorGuideTests;
   {$STRONGLINKTYPES ON}
   uses
   FastMM5,
+  {$IFDEF DEBUG MEMOIRE}
   DUnitX.MemoryLeakMonitor.FastMM5,
+  {$ENDIF }
   System.Classes,
   System.SysUtils,
   System.Generics.Collections,
@@ -32,7 +34,8 @@ program ArkhamHorrorGuideTests;
   AH.Tests.Conseils in 'AH.Tests.Conseils.pas',
   AH.Tests.Capacites in 'AH.Tests.Capacites.pas',
   AH.Tests.Parametres in 'AH.Tests.Parametres.pas',
-  AH.Tests.Session in 'AH.Tests.Session.pas';
+  AH.Tests.Session in 'AH.Tests.Session.pas',
+  AH.Tests.ConstructeurPartie in 'AH.Tests.ConstructeurPartie.pas';
 
 { keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
   {$IFNDEF TESTINSIGHT}
@@ -65,18 +68,18 @@ program ArkhamHorrorGuideTests;
       Utf8Encoding : TEncoding;
       Utf8ByteCount : Integer;
       JsonWarmup : ISuperObject;
-	  RttiContext : TSuperRttiContext;
+	    RttiContext : TSuperRttiContext;
     begin
-	  // L'accès au thread courant peut créer paresseusement un TExternalThread
-	  // global de la RTL. Son initialisation est effectuée avant le runner afin
-	  // que DUnitX ne l'attribue pas au premier test qui manipule des fichiers,
-	  // du JSON ou des assertions.
-	  CurrentThread := TThread.Current;
-	  if not Assigned(CurrentThread) then
-		raise EInvalidOpException.Create(
-		  'Impossible d''amorcer l''enveloppe RTL du thread principal.');
+      // L'accès au thread courant peut créer paresseusement un TExternalThread
+      // global de la RTL. Son initialisation est effectuée avant le runner afin
+      // que DUnitX ne l'attribue pas au premier test qui manipule des fichiers,
+      // du JSON ou des assertions.
+      CurrentThread := TThread.Current;
+      if not Assigned(CurrentThread) then
+      raise EInvalidOpException.Create(
+        'Impossible d''amorcer l''enveloppe RTL du thread principal.');
 		  
-	  NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);	  
+	    NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);
       NoeudSequence.Free;
 	  
       NoeudCondition := TNoeudEtape.Create('amorce_condition', ntCondition);
@@ -186,13 +189,21 @@ program ArkhamHorrorGuideTests;
 		end;
 
 begin
+  {$IFDEF DEBUG MEMOIRE}
+  ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
+
   {$IFDEF TESTINSIGHT}
+  {$IFDEF DEBUG}
   ConfigureFastMMDiagnostics;
+  {$ENDIF}
   TestInsight.DUnitX.RunRegisteredTests;
  {$ELSE}
   try
+    {$IFDEF DEBUG MEMOIRE}
     ConfigureFastMMDiagnostics;
     AmorcerLesSpecialisationsGeneriques;
+    {$ENDIF}
 
     //Pause par défaut en sortie ; CheckCommandLine peut écraser cette valeur si un
     //argument de ligne de commande explicite est fourni (utile en CI).
@@ -220,13 +231,13 @@ begin
     //Run tests
     results := runner.Execute;
 
-	if not FastMM_LogStateToFile(PWideChar(GFastMMStateFileName)) then
-	  System.Writeln('FastMM n''a pas pu écrire le rapport d''état : ' + GFastMMStateFileName)
-	else 
-	  if not TFile.Exists(GFastMMStateFileName) then
-	    System.Writeln('FastMM a retourné True, mais le fichier est introuvable : ' + GFastMMStateFileName)
-	  else
-	    System.Writeln('Rapport d''état FastMM créé : ' + GFastMMStateFileName);
+    if not FastMM_LogStateToFile(PWideChar(GFastMMStateFileName)) then
+      System.Writeln('FastMM n''a pas pu écrire le rapport d''état : ' + GFastMMStateFileName)
+    else
+      if not TFile.Exists(GFastMMStateFileName) then
+        System.Writeln('FastMM a retourné True, mais le fichier est introuvable : ' + GFastMMStateFileName)
+      else
+        System.Writeln('Rapport d''état FastMM créé : ' + GFastMMStateFileName);
 
     if not results.AllPassed then
       System.ExitCode := EXIT_ERRORS;

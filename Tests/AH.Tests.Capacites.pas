@@ -30,6 +30,10 @@ unit AH.Tests.Capacites;
 
           [Test]
           procedure TryObtenirCapacite_InvestigateurInconnu_RetourneFalse;
+
+          [Test]
+          procedure NomsConnus_DeuxCapacitesChargees_RetourneLesDeuxNomsDansLeurCasseDOrigine;
+
       end;
 
   implementation
@@ -62,13 +66,6 @@ unit AH.Tests.Capacites;
       begin
         EcrireFichierTemp(
           '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Inexistant","Description":"..."}]}');
-//        Assert.WillRaise(
-//          procedure
-//            begin
-//              FGestionnaire.ChargerDepuisFichier(FCheminTemp);
-//            end,
-//          ECapacitesInvalidesException);
-
         try
           FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
@@ -115,6 +112,23 @@ unit AH.Tests.Capacites;
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
         Assert.IsFalse(FGestionnaire.TryObtenirCapacite('Harvey Walters', Capacite));
+      end;
+
+    procedure TTestGestionnaireCapacites.NomsConnus_DeuxCapacitesChargees_RetourneLesDeuxNomsDansLeurCasseDOrigine;
+      var
+        Noms : TArray<string>;
+      begin
+        EcrireFichierTemp(
+          '{"Capacites":[' +
+          '{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."},' +
+          '{"NomInvestigateur":"Dexter Drake (le magicien)","Domaine":"Magie","Description":"..."}' +
+          ']}');
+        FGestionnaire.ChargerDepuisFichier(FCheminTemp);
+
+        Noms := FGestionnaire.NomsConnus;
+
+        Assert.AreEqual(2, Length(Noms));
+        Assert.IsTrue((Noms[0] = 'Amanda Sharpe (l''étudiante)') or (Noms[1] = 'Amanda Sharpe (l''étudiante)'));
       end;
 
   initialization

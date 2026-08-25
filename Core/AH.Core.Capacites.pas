@@ -44,6 +44,9 @@ unit AH.Core.Capacites;
           /// <param name="ACapacite">Capacité trouvée si la fonction retourne True.</param>
           /// <returns>True si une capacité est déclarée pour cet investigateur, False sinon.</returns>
           function TryObtenirCapacite(const ANomInvestigateur : string; out ACapacite : TCapaciteInvestigateur) : Boolean;
+
+          /// <summary>Noms de tous les investigateurs pour lesquels une capacité est déclarée, dans leur casse d'origine.</summary>
+          function NomsConnus: TArray<string>;
       end;
 
   implementation
@@ -140,6 +143,21 @@ unit AH.Core.Capacites;
                                                        out ACapacite : TCapaciteInvestigateur): Boolean;
       begin
         Result := FCapacitesParInvestigateur.TryGetValue(AnsiLowerCase(ANomInvestigateur), ACapacite);
+      end;
+
+    function TGestionnaireCapacites.NomsConnus : TArray<string>;
+      var
+        Capacite : TCapaciteInvestigateur;
+        Resultat : TList<string>;
+      begin
+        Resultat := TList<string>.Create;
+        try
+          for Capacite in FCapacitesParInvestigateur.Values do
+            Resultat.Add(Capacite.NomInvestigateur);
+          Result := Resultat.ToArray;
+        finally
+          Resultat.Free;
+        end;
       end;
 
 end.
