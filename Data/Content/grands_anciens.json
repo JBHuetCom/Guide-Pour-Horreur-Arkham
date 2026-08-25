@@ -1,0 +1,38 @@
+{
+    "GrandAnciens": [
+        {
+            "Nom": "Yig",
+            "TailleEchelleDestin": 10,
+            "Regles": {
+              "Etapes": [
+                "prep05_action_debut_partie": "",
+                "bf04_capacites_debut_bataille": "Chaque Investigateur est Maudit. Chaque Investigateur déjà Maudit est Dévoré.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Vitesse(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 Santé Mentale et 1 Résistance."
+              ],
+            "EnSommeil": "Yig gagne 1 pion Destin quand un Cultiste est battu, ou quand un Investigateur est Perdu Dans Le Temps Et l'Espace",
+            "Special": "",
+            "Adorateurs": "Cultistes -> Combat : +0. Dégats : 4 Résistance.",
+            "Bataille": {
+                "Combat": -3,
+                "Defense": ""
+            }
+            }
+        },
+        {
+            "Nom": "Ithaqua",
+            "TailleEchelleDestin": 11,
+            "Regles": {
+              "Etapes": [
+                "prep05_action_debut_partie": "",
+                "phase5_evenement": "Les cartes Temps (Météo) sont défaussées sans effet. S'il y a des effets sur le Temps (Météo) dans les autres cartes, ils ne sont pas pris en compte.",
+                "phase5_fin_tour": "Tout Investigateur dans une Zone de Rue perd 1 Résistance.",
+                "bf04_capacites_debut_bataille": "Chaque Investigateur lance 1 dé pour chaque objet possédé : si échec, l'objet est défaussé, sauf les objets qui ne peuvent pas explicitement être perdus.",
+                "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Combat(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 2 Santé Mentale et 2 Résistance."
+              ],
+            "EnSommeil": "",
+            "Special": "",
+            "Adorateurs": "Cultistes -> Force : 3."
+            }
+        },
+    ]
+}
