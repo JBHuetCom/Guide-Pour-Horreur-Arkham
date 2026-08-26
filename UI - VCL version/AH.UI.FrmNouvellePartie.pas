@@ -20,8 +20,6 @@ unit AH.UI.FrmNouvellePartie;
       /// ayant retourné mrOk.
       /// </summary>
       TFrmNouvellePartie = class(TForm)
-          procedure FormDestroy(Sender: TObject);
-          procedure FormCreate(Sender: TObject);
         private
           FEtapeCourante : TEtapeAssistant;
 
@@ -32,7 +30,7 @@ unit AH.UI.FrmNouvellePartie;
           FGestionnaireCapacites : TGestionnaireCapacites;
           FContextePartieCreee : TContextePartie;
 
-          /// <summary>Liste des noms d'investigateurs disponibles (non encore attribués à un joueur).</summary>
+          /// <summary>Liste des noms d'investigateurs connus (issus de capacites_investigateurs.json), indépendamment de leur attribution.</summary>
           FInvestigateursDisponibles : TList<string>;
 
           procedure AfficherEtape(AEtape : TEtapeAssistant);
@@ -48,8 +46,8 @@ unit AH.UI.FrmNouvellePartie;
           function TenterCreerContextePartie(out OContexte : TContextePartie; out OMessageErreur : string) : Boolean;
 
           /// <summary>
-          /// Met à jour ComboNomInvestigateur avec uniquement les investigateurs disponibles
-          /// (non encore attribués à un joueur).
+          /// Met à jour ComboNomInvestigateur avec uniquement les investigateurs connus non encore
+          /// attribués à un joueur (FInvestigateursDisponibles filtré par FInvestigateurs).
           /// </summary>
           procedure RafraichirInvestigateursDisponibles;
         public
@@ -78,6 +76,8 @@ unit AH.UI.FrmNouvellePartie;
           Label2 : TLabel;
 
           procedure FormShow(Sender : TObject);
+          procedure FormDestroy(Sender : TObject);
+          procedure FormCreate(Sender : TObject);
 
           procedure GererClicAjouterJoueur(ASender : TObject);
           procedure GererClicSupprimerJoueur(ASender : TObject);
@@ -89,12 +89,12 @@ unit AH.UI.FrmNouvellePartie;
       end;
 
     var
-
       FrmNouvellePartie : TFrmNouvellePartie;
 
   implementation
 
     uses
+
       System.UITypes;
 
     {$R *.dfm}
@@ -102,14 +102,15 @@ unit AH.UI.FrmNouvellePartie;
     { TFrmNouvellePartie }
 
     procedure TFrmNouvellePartie.FormCreate(Sender : TObject);
+      var
+        CheminJSON: string;
       begin
         FNomsJoueursHumains := TList<string>.Create;
         FInvestigateurs := TList<TInvestigateurJoue>.Create;
         FGestionnaireCapacites := TGestionnaireCapacites.Create;
         FInvestigateursDisponibles := TList<string>.Create;
 
-          // Charger le JSON une seule fois
-        var CheminJSON : string := ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json';
+        CheminJSON := ExtractFilePath(Application.ExeName) + 'Data\Content\capacites_investigateurs.json';
         try
           FGestionnaireCapacites.ChargerDepuisFichier(CheminJSON);
           FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
@@ -118,11 +119,10 @@ unit AH.UI.FrmNouvellePartie;
           // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
         end;
 
-        // Initialiser l'UI
         AfficherEtape(eaJoueursHumains);
       end;
 
-    procedure TFrmNouvellePartie.FormDestroy(Sender: TObject);
+    procedure TFrmNouvellePartie.FormDestroy(Sender : TObject);
       begin
         FGestionnaireCapacites.Free;
         FInvestigateurs.Free;
@@ -131,18 +131,7 @@ unit AH.UI.FrmNouvellePartie;
       end;
 
     procedure TFrmNouvellePartie.FormShow(Sender : TObject);
-      var
-        CheminDefaut : string;
       begin
-        // Vérifier que les composants critiques existent
-        if not Assigned(ComboNomInvestigateur) then
-          begin
-            ShowMessage('Erreur: ComboNomInvestigateur non créé.');
-            ModalResult := mrCancel;
-            Exit;
-          end;
-
-        // Rafraîchir la combo
         RafraichirInvestigateursDisponibles;
       end;
 
@@ -150,12 +139,12 @@ unit AH.UI.FrmNouvellePartie;
       begin
         FEtapeCourante := AEtape;
 
-        PanelJoueurs.Visible := (AEtape = eaJoueursHumains);
-        PanelInvestigateurs.Visible := (AEtape = eaInvestigateurs);
+        PanelJoueurs.Visible := AEtape = eaJoueursHumains;
+        PanelInvestigateurs.Visible := AEtape = eaInvestigateurs;
 
         case AEtape of
-          eaJoueursHumains : LabelTitre.Caption := 'Étape 1 / 2 — Joueurs humains';
-          eaInvestigateurs :
+          eaJoueursHumains: LabelTitre.Caption := 'Étape 1 / 2 — Joueurs humains';
+          eaInvestigateurs:
             begin
               LabelTitre.Caption := 'Étape 2 / 2 — Investigateurs';
               RafraichirComboJoueurControleur;
@@ -221,13 +210,13 @@ unit AH.UI.FrmNouvellePartie;
         BoutonPrecedent.Enabled := FEtapeCourante = eaInvestigateurs;
 
         case FEtapeCourante of
-          eaJoueursHumains :
+          eaJoueursHumains:
             begin
               BoutonSuivant.Caption := 'Suivant >';
               BoutonSuivant.Enabled := FNomsJoueursHumains.Count > 0;
               BoutonAjouterJoueur.Enabled := FNomsJoueursHumains.Count < NombreMaxJoueursHumains;
             end;
-          eaInvestigateurs :
+          eaInvestigateurs:
             begin
               BoutonSuivant.Caption := 'Créer la partie';
               BoutonSuivant.Enabled := FInvestigateurs.Count > 0;
@@ -370,8 +359,8 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.GererClicSuivant(ASender : TObject);
       var
-        Contexte : TContextePartie;
-        MessageErreur : string;
+        Contexte: TContextePartie;
+        MessageErreur: string;
       begin
         case FEtapeCourante of
           eaJoueursHumains:
@@ -383,14 +372,15 @@ unit AH.UI.FrmNouvellePartie;
                   AfficherErreur(MessageErreur);
                   Exit;
                 end;
+              FContextePartieCreee := Contexte;
+              ModalResult := mrOk;
             end;
         end;
       end;
 
-    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte : TContextePartie;
-                                                          out OMessageErreur : string) : Boolean;
+    function TFrmNouvellePartie.TenterCreerContextePartie(out OContexte : TContextePartie; out OMessageErreur : string) : Boolean;
       var
-        InvestigateursOrdonnes : TArray<TInvestigateurJoue>;
+        InvestigateursOrdonnes: TArray<TInvestigateurJoue>;
       begin
         OContexte := nil;
         OMessageErreur := EmptyStr;
@@ -415,14 +405,12 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.RafraichirInvestigateursDisponibles;
       var
-        Investigateur: TInvestigateurJoue;
+        Nom : string;
       begin
         ComboNomInvestigateur.Items.BeginUpdate;
         try
           ComboNomInvestigateur.Items.Clear;
-
-          // Ajouter tous les investigateurs connus non encore attribués
-          for var Nom in FInvestigateursDisponibles do
+          for Nom in FInvestigateursDisponibles do
             if not TConstructeurPartie.NomDejaUtilise(FInvestigateurs.ToArray, Nom) then
               ComboNomInvestigateur.Items.Add(Nom);
         finally
