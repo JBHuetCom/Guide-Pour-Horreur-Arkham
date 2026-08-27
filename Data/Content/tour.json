@@ -120,7 +120,7 @@
               "Noeud": {
                 "Id": "phase3_pas_portail",
                 "Type": "ntInstruction",
-                "Texte": "Il fait une rencontre : mélangez si nécessaire le paquet de cartes Lieu du quartier correspondant, piochez une carte, lisez le paragraphe de ce lieu à voix haute et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Remettez la carte dans le paquet une fois résolue."
+                "Texte": "Si le lieu prossède une description, l'Investigateur peut choisir ed faire l'action décrite ou faire une Rencontre. Si le lieu n'a pas de description, il y a automatiquemet une Rencontre. S'il fait une rencontre : mélangez si nécessaire le paquet de cartes Lieu du quartier correspondant, piochez une carte, lisez le paragraphe de ce lieu à voix haute et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Remettez la carte dans le paquet une fois résolue."
               }
             },
             {

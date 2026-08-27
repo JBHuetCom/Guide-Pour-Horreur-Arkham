@@ -94,6 +94,7 @@ unit AH.UI.FrmPrincipal;
       end;
 
     var
+
       FrmPrincipal : TFrmPrincipal;
 
   implementation
@@ -103,6 +104,7 @@ unit AH.UI.FrmPrincipal;
       System.UITypes;
 
     const
+
       CheminsRelatifsContenu = 'Data\Content\';
 
       IdsReveilPreparation: array[0..3] of string = (
@@ -490,8 +492,10 @@ unit AH.UI.FrmPrincipal;
         else
           PanelCapacite.Visible := False;
 
-        if (FContexte.NomGrandAncien <> EmptyStr) and
-           FGestionnaireGrandsAnciens.TryObtenirRegleEtape(FContexte.NomGrandAncien, FDernierIdAffiche, TexteRegle)
+        if (FContexte.NomGrandAncien <> EmptyStr)
+          and FGestionnaireGrandsAnciens.TryObtenirRegleEtape(FContexte.NomGrandAncien,
+                                                              FDernierIdAffiche,
+                                                              TexteRegle)
         then
           begin
             LabelRegleGrandAncien.Caption := TexteRegle;
@@ -505,10 +509,10 @@ unit AH.UI.FrmPrincipal;
       var
         EnPartie : Boolean;
       begin
-        EnPartie := FFichierActif <> fcFinDePartie;
+        EnPartie := (FFichierActif <> fcFinDePartie);
         BoutonPrecedent.Enabled := EnPartie;
-        BoutonReveilManuel.Enabled := EnPartie and (FFichierActif <> fcBatailleFinale);
-        BoutonTerminerPartie.Enabled := EnPartie and (FFichierActif = fcTour);
+        BoutonReveilManuel.Enabled := (EnPartie and (FFichierActif <> fcBatailleFinale));
+        BoutonTerminerPartie.Enabled := (EnPartie and (FFichierActif = fcTour));
         CheckBoxAfficherConseils.Checked := FParametres.AfficherConseils;
       end;
 
@@ -519,11 +523,10 @@ unit AH.UI.FrmPrincipal;
             FMoteur.EnregistrerReponse(AValeur);
           except
             on E: Exception do
-            begin
-              FrameEtape.AfficherErreurSaisie(E.Message);
-
-              Exit;
-            end;
+              begin
+                FrameEtape.AfficherErreurSaisie(E.Message);
+                Exit;
+              end;
           end;
 
         AvancerEtAfficher;

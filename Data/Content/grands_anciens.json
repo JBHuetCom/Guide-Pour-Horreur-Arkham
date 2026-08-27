@@ -36,7 +36,7 @@
             "TailleEchelleDestin": 11,
             "Regles": {
               "Etapes": {
-                "prep05_action_debut_partie": "Ajouter les 5 Monstres Masque dans la tasse des Monstres.",
+                "prep11_tasse_monstres": "Ajouter les 5 Monstres Masque dans la tasse des Monstres.",
                 "bf04_capacites_debut_bataille": "Tout Investigateur sans pion Indice est Dévoré.",
                 "bf_round_04_attaque_grand_ancien": "Chaque Investigateur doit réussir un test de Savoir(+1) avec un modificateur : 0 au 1er tour, -1 au 2ème tour, etc. Si échec : perte de 1 pion Indice. Si un Investigateur ne possède plus de pion Indice, il est Dévoré."
               },

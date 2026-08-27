@@ -21,7 +21,7 @@ object FrameEtape: TFrameEtape
   end
   object LabelTexte: TLabel
     Left = 0
-    Top = 32
+    Top = 30
     Width = 480
     Height = 100
     AutoSize = False
@@ -81,7 +81,7 @@ object FrameEtape: TFrameEtape
       Left = 0
       Top = 0
       Width = 200
-      Height = 24
+      Height = 23
       TabOrder = 0
     end
     object BoutonValiderSaisie: TButton
