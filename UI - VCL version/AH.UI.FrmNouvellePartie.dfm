@@ -45,7 +45,7 @@ object FrmNouvellePartie: TFrmNouvellePartie
     Left = 12
     Top = 48
     Width = 496
-    Height = 280
+    Height = 318
     BevelOuter = bvNone
     TabOrder = 0
     object Label1: TLabel
@@ -54,6 +54,14 @@ object FrmNouvellePartie: TFrmNouvellePartie
       Width = 261
       Height = 15
       Caption = 'Ajoutez chaque joueur humain autour de la table.'
+    end
+    object lblComboPremierJoueur: TLabel
+      Left = 9
+      Top = 286
+      Width = 88
+      Height = 15
+      Caption = 'Premier Joueur : '
+      Layout = tlCenter
     end
     object EditNomJoueur: TEdit
       Left = 0
@@ -88,6 +96,14 @@ object FrmNouvellePartie: TFrmNouvellePartie
       Caption = 'Supprimer'
       TabOrder = 3
       OnClick = GererClicSupprimerJoueur
+    end
+    object ComboPremierJoueur: TComboBox
+      Left = 103
+      Top = 286
+      Width = 145
+      Height = 23
+      Style = csDropDownList
+      TabOrder = 4
     end
   end
   object PanelInvestigateurs: TPanel

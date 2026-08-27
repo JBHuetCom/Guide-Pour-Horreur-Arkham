@@ -45,6 +45,18 @@ unit AH.Core.ConstructeurPartie;
           /// <returns>True si un investigateur de ce nom existe déjà dans AInvestigateurs.</returns>
           class function NomDejaUtilise(const AInvestigateurs : TArray<TInvestigateurJoue>;
             const ANomInvestigateur : string) : Boolean; static;
+
+          /// <summary>
+          /// Replace le joueur humain d'index AIndexJoueurChoisi en tête de ANomsJoueursHumains
+          /// (premier joueur), en conservant l'ordre relatif des autres, et met à jour en conséquence
+          /// le IndexJoueurHumain de chaque investigateur de AInvestigateurs.
+          /// </summary>
+          /// <param name="ANomsJoueursHumains">Liste modifiée en place.</param>
+          /// <param name="AInvestigateurs">Liste modifiée en place.</param>
+          /// <param name="AIndexJoueurChoisi">Index (base 0), avant réordonnancement, du joueur humain à placer en premier.</param>
+          /// <exception cref="EArgumentOutOfRangeException">Levée si AIndexJoueurChoisi est hors limites.</exception>
+          class procedure PlacerJoueurEnPremier(ANomsJoueursHumains: TList<string>;
+            AInvestigateurs: TList<TInvestigateurJoue>; AIndexJoueurChoisi: Integer); static;
       end;
 
   implementation
@@ -107,5 +119,49 @@ unit AH.Core.ConstructeurPartie;
           if SameText(Investigateur.NomInvestigateur, ANomInvestigateur) then
             Exit(True);
       end;
+
+
+      class procedure TConstructeurPartie.PlacerJoueurEnPremier(ANomsJoueursHumains : TList<string>;
+                                                                AInvestigateurs : TList<TInvestigateurJoue>;
+                                                                AIndexJoueurChoisi : Integer);
+        var
+          MappingAncienVersNouveau : TDictionary<Integer, Integer>;
+          NomChoisi : string;
+          i, NouvelIndex : Integer;
+          Investigateur : TInvestigateurJoue;
+        begin
+          if (AIndexJoueurChoisi < 0)
+            or (AIndexJoueurChoisi >= ANomsJoueursHumains.Count)
+          then
+            raise EArgumentOutOfRangeException.CreateFmt('Index de joueur hors limites : %d.', [AIndexJoueurChoisi]);
+
+          if AIndexJoueurChoisi = 0 then
+            Exit; // Déjà premier, rien à faire.
+
+          MappingAncienVersNouveau := TDictionary<Integer, Integer>.Create;
+          try
+            MappingAncienVersNouveau.Add(AIndexJoueurChoisi, 0);
+            NouvelIndex := 1;
+            for i := 0 to ANomsJoueursHumains.Count - 1 do
+              if i <> AIndexJoueurChoisi then
+                begin
+                  MappingAncienVersNouveau.Add(i, NouvelIndex);
+                  Inc(NouvelIndex);
+                end;
+
+            NomChoisi := ANomsJoueursHumains[AIndexJoueurChoisi];
+            ANomsJoueursHumains.Delete(AIndexJoueurChoisi);
+            ANomsJoueursHumains.Insert(0, NomChoisi);
+
+            for i := 0 to AInvestigateurs.Count - 1 do
+              begin
+                Investigateur := AInvestigateurs[i];
+                Investigateur.IndexJoueurHumain := MappingAncienVersNouveau[Investigateur.IndexJoueurHumain];
+                AInvestigateurs[i] := Investigateur;
+              end;
+          finally
+            MappingAncienVersNouveau.Free;
+          end;
+        end;
 
 end.

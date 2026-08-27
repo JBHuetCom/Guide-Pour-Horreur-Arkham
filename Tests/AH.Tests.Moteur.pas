@@ -52,6 +52,9 @@ unit AH.Tests.Moteur;
 
         [Test]
         procedure Precedent_SansHistorique_RetourneNil;
+
+        [Test]
+        procedure EstDansBouclePorInvestigateur_DistingueEtapeGeneraleEtEtapeDansLaBoucle;
       end;
 
   implementation
@@ -311,6 +314,33 @@ unit AH.Tests.Moteur;
 
         Assert.IsNull(FMoteur.Precedent);
       end;
+
+
+      procedure TTestMoteurSequenceur.EstDansBouclePorInvestigateur_DistingueEtapeGeneraleEtEtapeDansLaBoucle;
+        var
+          Racine, HorsBoucle, Boucle, DansBoucle : TNoeudEtape;
+        begin
+          Racine := TNoeudEtape.Create('racine', ntSequence);
+          HorsBoucle := TNoeudEtape.Create('hors_boucle', ntInstruction);
+          HorsBoucle.Texte := 'Étape générale';
+          Racine.AjouterEnfant(HorsBoucle);
+
+          Boucle := TNoeudEtape.Create('boucle', ntBouclePorInvestigateur);
+          DansBoucle := TNoeudEtape.Create('dans_boucle', ntInstruction);
+          DansBoucle.Texte := 'Étape par investigateur';
+          Boucle.AjouterEnfant(DansBoucle);
+          Racine.AjouterEnfant(Boucle);
+          FRacine := Racine;
+
+          FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+          FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+          FMoteur.Suivant; // hors_boucle
+          Assert.IsFalse(FMoteur.EstDansBouclePorInvestigateur);
+
+          FMoteur.Suivant; // dans_boucle
+          Assert.IsTrue(FMoteur.EstDansBouclePorInvestigateur);
+        end;
 
   initialization
     TDUnitX.RegisterTestFixture(TTestMoteurSequenceur);

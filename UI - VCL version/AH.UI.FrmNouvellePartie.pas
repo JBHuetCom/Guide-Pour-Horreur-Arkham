@@ -50,6 +50,8 @@ unit AH.UI.FrmNouvellePartie;
           /// attribués à un joueur (FInvestigateursDisponibles filtré par FInvestigateurs).
           /// </summary>
           procedure RafraichirInvestigateursDisponibles;
+
+          procedure RafraichirComboPremierJoueur;
         public
           /// <summary>
           /// Partie configurée, disponible uniquement après un ShowModal ayant retourné mrOk.
@@ -74,6 +76,8 @@ unit AH.UI.FrmNouvellePartie;
           ListeInvestigateurs : TListBox;
           Label1 : TLabel;
           Label2 : TLabel;
+          ComboPremierJoueur: TComboBox;
+          lblComboPremierJoueur: TLabel;
 
           procedure FormShow(Sender : TObject);
           procedure FormDestroy(Sender : TObject);
@@ -132,7 +136,19 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.FormShow(Sender : TObject);
       begin
+        // Cette instance est réutilisée d'une partie à l'autre (formulaire auto-créé) : on repart
+        // d'un état vierge à chaque ouverture plutôt qu'à chaque création.
+        FNomsJoueursHumains.Clear;
+        FInvestigateurs.Clear;
+        EditNomJoueur.Clear;
+        ComboNomInvestigateur.Text := EmptyStr;
+
+        RafraichirListeJoueurs;
+        RafraichirListeInvestigateurs;
+        RafraichirComboJoueurControleur;
+        RafraichirComboPremierJoueur;
         RafraichirInvestigateursDisponibles;
+        AfficherEtape(eaJoueursHumains);
       end;
 
     procedure TFrmNouvellePartie.AfficherEtape(AEtape : TEtapeAssistant);
@@ -268,6 +284,7 @@ unit AH.UI.FrmNouvellePartie;
         RafraichirListeJoueurs;
         AfficherErreur(EmptyStr);
         RafraichirEtatBoutons;
+        RafraichirComboPremierJoueur;
       end;
 
     procedure TFrmNouvellePartie.GererClicSupprimerJoueur(ASender : TObject);
@@ -298,6 +315,7 @@ unit AH.UI.FrmNouvellePartie;
         RafraichirComboJoueurControleur;
         RafraichirInvestigateursDisponibles;
         RafraichirEtatBoutons;
+        RafraichirComboPremierJoueur;
       end;
 
     procedure TFrmNouvellePartie.GererClicAjouterInvestigateur(ASender : TObject);
@@ -397,6 +415,11 @@ unit AH.UI.FrmNouvellePartie;
             Exit(False);
           end;
 
+        if ComboPremierJoueur.ItemIndex > 0 then
+          TConstructeurPartie.PlacerJoueurEnPremier(FNomsJoueursHumains,
+                                                    FInvestigateurs,
+                                                    ComboPremierJoueur.ItemIndex);
+
         InvestigateursOrdonnes := TConstructeurPartie.OrdonnerParJoueur(
           FNomsJoueursHumains.ToArray, FInvestigateurs.ToArray);
         OContexte := TContextePartie.Create(FNomsJoueursHumains.ToArray, InvestigateursOrdonnes);
@@ -417,5 +440,25 @@ unit AH.UI.FrmNouvellePartie;
           ComboNomInvestigateur.Items.EndUpdate;
         end;
       end;
+
+      procedure TFrmNouvellePartie.RafraichirComboPremierJoueur;
+        var
+          Nom : string;
+          IndexPrecedent : Integer;
+        begin
+          IndexPrecedent := ComboPremierJoueur.ItemIndex;
+          ComboPremierJoueur.Items.BeginUpdate;
+          try
+            ComboPremierJoueur.Items.Clear;
+            for Nom in FNomsJoueursHumains do
+              ComboPremierJoueur.Items.Add(Nom);
+          finally
+            ComboPremierJoueur.Items.EndUpdate;
+          end;
+          if (IndexPrecedent >= 0) and (IndexPrecedent < ComboPremierJoueur.Items.Count) then
+            ComboPremierJoueur.ItemIndex := IndexPrecedent
+          else if ComboPremierJoueur.Items.Count > 0 then
+            ComboPremierJoueur.ItemIndex := 0;
+        end;
 
 end.

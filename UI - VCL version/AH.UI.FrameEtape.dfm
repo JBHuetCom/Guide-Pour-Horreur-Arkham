@@ -1,7 +1,7 @@
-object Frame1: TFrame1
+object FrameEtape: TFrameEtape
   Left = 0
   Top = 0
-  Width = 640
-  Height = 480
+  Width = 500
+  Height = 300
   TabOrder = 0
 end

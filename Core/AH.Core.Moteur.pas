@@ -68,6 +68,14 @@ unit AH.Core.Moteur;
           function Precedent : TNoeudEtape;
 
           /// <summary>
+          /// Indique si le nœud actuellement affiché se trouve à l'intérieur d'une boucle par
+          /// investigateur active (donc si FContexte.NomInvestigateurCourant/NomJoueurHumainCourant
+          /// sont pertinents pour cette étape). False pour toute étape hors d'une telle boucle
+          /// (ex. la révélation du Grand Ancien, qui concerne le groupe entier).
+          /// </summary>
+          function EstDansBouclePorInvestigateur : Boolean;
+
+          /// <summary>
           /// Enregistre la réponse de l'utilisateur pour le nœud courant (ntChoix ou ntSaisie),
           /// préalable obligatoire à l'appel de Suivant pour ces deux types de nœud.
           /// </summary>
@@ -273,6 +281,16 @@ unit AH.Core.Moteur;
 
       FEnAttenteReponse := False;
     end;
+
+    function TMoteurSequenceur.EstDansBouclePorInvestigateur : Boolean;
+      var
+        i : Integer;
+      begin
+        Result := False;
+        for i := 0 to FPile.Count - 1 do
+          if FPile[i].Noeud.TypeNoeud = ntBouclePorInvestigateur then
+            Exit(True);
+      end;
 
   {$ENDREGION}
 

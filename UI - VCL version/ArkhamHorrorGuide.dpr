@@ -27,6 +27,7 @@ begin
   {$ENDIF}
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
   Application.CreateForm(TFrmNouvellePartie, FrmNouvellePartie);
   Application.Run;
 end.

@@ -78,6 +78,8 @@ unit AH.UI.FrameEtape;
 
   implementation
 
+    {$R *.dfm}
+
     { TFrameEtape }
 
     constructor TFrameEtape.Create(AOwner : TComponent);
@@ -209,7 +211,8 @@ unit AH.UI.FrameEtape;
         LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTexte.Caption := ANoeud.Texte;
 
-        PanelInstruction.Visible := ANoeud.TypeNoeud = ntInstruction;
+        PanelInstruction.Visible := (ANoeud.TypeNoeud = ntInstruction);
+
         PanelChoix.Visible := ANoeud.TypeNoeud = ntChoix;
         PanelSaisie.Visible := ANoeud.TypeNoeud = ntSaisie;
 
