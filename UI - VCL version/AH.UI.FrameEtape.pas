@@ -2,79 +2,77 @@ unit AH.UI.FrameEtape;
 
   interface
 
-  uses
+    uses
+      Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, System.Variants,
+      System.Generics.Collections,
+      Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
+      AH.Core.Noeud, AH.Core.Types;
 
-    System.SysUtils, System.Classes, System.Variants, System.Generics.Collections,
-    Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
-    AH.Core.Noeud, AH.Core.Types;
+    type
+      /// <summary>
+      /// Événement déclenché quand l'utilisateur termine son interaction avec l'étape affichée.
+      /// AValeur vaut Unassigned pour un ntInstruction (aucune réponse à transmettre), la
+      /// ValeurDeclenchante de la branche choisie pour un ntChoix, ou le texte saisi (converti
+      /// plus tard par TContextePartie.AffecterChamp, jamais ici) pour un ntSaisie.
+      /// </summary>
+      TAhEtapeValideeEvent = procedure(Sender : TObject; const AValeur : Variant) of object;
 
-  type
-    /// <summary>
-    /// Événement déclenché quand l'utilisateur termine son interaction avec l'étape affichée.
-    /// AValeur vaut Unassigned pour un ntInstruction (aucune réponse à transmettre), la
-    /// ValeurDeclenchante de la branche choisie pour un ntChoix, ou le texte saisi (converti
-    /// plus tard par TContextePartie.AffecterChamp, jamais ici) pour un ntSaisie.
-    /// </summary>
-    TAhEtapeValideeEvent = procedure(Sender : TObject; const AValeur : Variant) of object;
+      /// <summary>
+      /// Affiche un nœud interactif (ntInstruction, ntChoix ou ntSaisie) et capture la réaction de
+      /// l'utilisateur. Ne connaît ni TMoteurSequenceur ni TContextePartie : c'est à l'appelant
+      /// (AH.UI.FrmPrincipal) de piloter la navigation à partir de l'événement OnEtapeValidee.
+      /// </summary>
+      TFrameEtape = class(TFrame)
+        private
+          FOnEtapeValidee : TAhEtapeValideeEvent;
+          FValeursBranches : TList<Variant>;
+          FNoeudCourant : TNoeudEtape;
 
-    /// <summary>
-    /// Affiche un nœud interactif (ntInstruction, ntChoix ou ntSaisie) et capture la réaction de
-    /// l'utilisateur. Ne connaît ni TMoteurSequenceur ni TContextePartie : c'est à l'appelant
-    /// (AH.UI.FrmPrincipal) de piloter la navigation à partir de l'événement OnEtapeValidee.
-    /// </summary>
-    TFrameEtape = class(TFrame)
-      private
-        FOnEtapeValidee : TAhEtapeValideeEvent;
-        FValeursBranches : TList<Variant>;
-        FNoeudCourant : TNoeudEtape;
+          procedure ViderBoutonsChoix;
+          procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
+          procedure GererClicBoutonChoix(ASender : TObject);
+        public
+          /// <param name="AOwner">Propriétaire standard VCL de la frame.</param>
+          constructor Create(AOwner : TComponent); override;
+          destructor Destroy; override;
 
-        LabelTitre : TLabel;
-        LabelTexte : TLabel;
-        PanelInstruction : TPanel;
-        BoutonContinuer : TButton;
-        PanelChoix : TPanel;
-        PanelSaisie : TPanel;
-        EditSaisie : TEdit;
-        BoutonValiderSaisie : TButton;
-        LabelErreurSaisie : TLabel;
+          /// <param name="ANoeud">
+          /// Nœud à afficher. Doit être de type ntInstruction, ntChoix ou ntSaisie — c'est-à-dire
+          /// exactement ce que retourne TMoteurSequenceur.Suivant/Precedent quand il n'est pas nil.
+          /// </param>
+          /// <exception cref="EArgumentException">
+          /// Levée si ANoeud est d'un type structurel (ntSequence, ntBouclePorInvestigateur,
+          /// ntCondition), qui ne devrait jamais atteindre l'UI.
+          /// </exception>
+          procedure AfficherNoeud(ANoeud : TNoeudEtape);
 
-        procedure ConstruireControles;
-        procedure ViderBoutonsChoix;
-        procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
+          /// <summary>
+          /// Affiche un message d'erreur sous le champ de saisie, sans changer de nœud affiché.
+          /// </summary>
+          /// <param name="AMessage">Message à afficher. Une chaîne vide efface le message précédent.</param>
+          /// <exception cref="EInvalidOpException">
+          /// Levée si le nœud actuellement affiché n'est pas de type ntSaisie.
+          /// </exception>
+          procedure AfficherErreurSaisie(const AMessage : string);
 
-        procedure GererClicContinuer(ASender : TObject);
-        procedure GererClicBoutonChoix(ASender : TObject);
-        procedure GererClicValiderSaisie(ASender : TObject);
-      public
-        /// <param name="AOwner">Propriétaire standard VCL de la frame.</param>
-        constructor Create(AOwner : TComponent); override;
-        destructor Destroy; override;
+          /// <summary>Nœud actuellement affiché, ou nil si AfficherNoeud n'a pas encore été appelée.</summary>
+          property NoeudCourant : TNoeudEtape read FNoeudCourant;
 
-        /// <param name="ANoeud">
-        /// Nœud à afficher. Doit être de type ntInstruction, ntChoix ou ntSaisie — c'est-à-dire
-        /// exactement ce que retourne TMoteurSequenceur.Suivant/Precedent quand il n'est pas nil.
-        /// </param>
-        /// <exception cref="EArgumentException">
-        /// Levée si ANoeud est d'un type structurel (ntSequence, ntBouclePorInvestigateur, ntCondition), qui ne devrait jamais atteindre l'UI.
-        /// </exception>
-        procedure AfficherNoeud(ANoeud : TNoeudEtape);
-
-        /// <summary>
-        /// Affiche un message d'erreur sous le champ de saisie, sans changer de nœud affiché.
-        /// Destiné à signaler un échec de conversion survenu après coup dans
-        /// TContextePartie.AffecterChamp (ex. texte non numérique pour un champ entier) : cette
-        /// frame elle-même ne connaît pas le type attendu par le champ de contexte ciblé.
-        /// </summary>
-        /// <param name="AMessage">Message à afficher. Une chaîne vide efface le message précédent.</param>
-        /// <exception cref="EInvalidOpException">Levée si le nœud actuellement affiché n'est pas de type ntSaisie.</exception>
-        procedure AfficherErreurSaisie(const AMessage : string);
-
-        /// <summary>Nœud actuellement affiché, ou nil si AfficherNoeud n'a pas encore été appelée.</summary>
-        property NoeudCourant : TNoeudEtape read FNoeudCourant;
-
-        /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
-        property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
-    end;
+          /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
+          property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
+        published
+          LabelTitre : TLabel;
+          LabelTexte : TLabel;
+          PanelInstruction : TPanel;
+          BoutonContinuer : TButton;
+          PanelChoix : TPanel;
+          PanelSaisie : TPanel;
+          EditSaisie : TEdit;
+          BoutonValiderSaisie : TButton;
+          LabelErreurSaisie : TLabel;
+          procedure GererClicContinuer(Sender : TObject);
+          procedure GererClicValiderSaisie(Sender : TObject);
+      end;
 
   implementation
 
@@ -87,7 +85,6 @@ unit AH.UI.FrameEtape;
         inherited Create(AOwner);
 
         FValeursBranches := TList<Variant>.Create;
-        ConstruireControles;
       end;
 
     destructor TFrameEtape.Destroy;
@@ -95,71 +92,6 @@ unit AH.UI.FrameEtape;
         FValeursBranches.Free;
 
         inherited;
-      end;
-
-    procedure TFrameEtape.ConstruireControles;
-      begin
-        Width := 500;
-        Height := 300;
-
-        LabelTitre := TLabel.Create(Self);
-        LabelTitre.Parent := Self;
-        LabelTitre.SetBounds(0, 0, 480, 24);
-        LabelTitre.Font.Style := [fsBold];
-        LabelTitre.Font.Size := 12;
-        LabelTitre.WordWrap := True;
-
-        LabelTexte := TLabel.Create(Self);
-        LabelTexte.Parent := Self;
-        LabelTexte.SetBounds(0, 32, 480, 100);
-        LabelTexte.WordWrap := True;
-        LabelTexte.AutoSize := False;
-
-        // --- ntInstruction ---
-        PanelInstruction := TPanel.Create(Self);
-        PanelInstruction.Parent := Self;
-        PanelInstruction.SetBounds(0, 140, 480, 40);
-        PanelInstruction.BevelOuter := bvNone;
-
-        BoutonContinuer := TButton.Create(Self);
-        BoutonContinuer.Parent := PanelInstruction;
-        BoutonContinuer.SetBounds(0, 0, 160, 30);
-        BoutonContinuer.Caption := 'Étape suivante';
-        BoutonContinuer.Default := True;
-        BoutonContinuer.OnClick := GererClicContinuer;
-
-        // --- ntChoix (peuplé dynamiquement dans ConstruireBoutonsChoix) ---
-        PanelChoix := TPanel.Create(Self);
-        PanelChoix.Parent := Self;
-        PanelChoix.SetBounds(0, 140, 480, 140);
-        PanelChoix.BevelOuter := bvNone;
-
-        // --- ntSaisie ---
-        PanelSaisie := TPanel.Create(Self);
-        PanelSaisie.Parent := Self;
-        PanelSaisie.SetBounds(0, 140, 480, 80);
-        PanelSaisie.BevelOuter := bvNone;
-
-        EditSaisie := TEdit.Create(Self);
-        EditSaisie.Parent := PanelSaisie;
-        EditSaisie.SetBounds(0, 0, 200, 24);
-
-        BoutonValiderSaisie := TButton.Create(Self);
-        BoutonValiderSaisie.Parent := PanelSaisie;
-        BoutonValiderSaisie.SetBounds(208, 0, 100, 26);
-        BoutonValiderSaisie.Caption := 'Valider';
-        BoutonValiderSaisie.Default := True;
-        BoutonValiderSaisie.OnClick := GererClicValiderSaisie;
-
-        LabelErreurSaisie := TLabel.Create(Self);
-        LabelErreurSaisie.Parent := PanelSaisie;
-        LabelErreurSaisie.SetBounds(0, 34, 480, 20);
-        LabelErreurSaisie.Font.Color := clRed;
-        LabelErreurSaisie.WordWrap := True;
-
-        PanelInstruction.Visible := False;
-        PanelChoix.Visible := False;
-        PanelSaisie.Visible := False;
       end;
 
     procedure TFrameEtape.ViderBoutonsChoix;
@@ -171,9 +103,9 @@ unit AH.UI.FrameEtape;
 
     procedure TFrameEtape.ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
       var
-        Branche: TBrancheEtape;
-        Bouton: TButton;
-        Decalage: Integer;
+        Branche : TBrancheEtape;
+        Bouton : TButton;
+        Decalage : Integer;
       begin
         ViderBoutonsChoix;
 
@@ -194,7 +126,7 @@ unit AH.UI.FrameEtape;
           end;
       end;
 
-    procedure TFrameEtape.AfficherNoeud(ANoeud : TNoeudEtape);
+    procedure TFrameEtape.AfficherNoeud(ANoeud: TNoeudEtape);
       begin
         if not Assigned(ANoeud) then
           raise EArgumentNilException.Create('AfficherNoeud ne peut pas recevoir nil.');
@@ -211,8 +143,7 @@ unit AH.UI.FrameEtape;
         LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTexte.Caption := ANoeud.Texte;
 
-        PanelInstruction.Visible := (ANoeud.TypeNoeud = ntInstruction);
-
+        PanelInstruction.Visible := ANoeud.TypeNoeud = ntInstruction;
         PanelChoix.Visible := ANoeud.TypeNoeud = ntChoix;
         PanelSaisie.Visible := ANoeud.TypeNoeud = ntSaisie;
 
@@ -230,16 +161,14 @@ unit AH.UI.FrameEtape;
 
     procedure TFrameEtape.AfficherErreurSaisie(const AMessage : string);
       begin
-        if not Assigned(FNoeudCourant)
-           or (FNoeudCourant.TypeNoeud <> ntSaisie)
-        then
+        if not Assigned(FNoeudCourant) or (FNoeudCourant.TypeNoeud <> ntSaisie) then
           raise EInvalidOpException.Create(
             'AfficherErreurSaisie ne peut être appelée que lorsqu''un nœud ntSaisie est affiché.');
 
         LabelErreurSaisie.Caption := AMessage;
       end;
 
-    procedure TFrameEtape.GererClicContinuer(ASender : TObject);
+    procedure TFrameEtape.GererClicContinuer(Sender : TObject);
       begin
         if Assigned(FOnEtapeValidee) then
           FOnEtapeValidee(Self, Unassigned);
@@ -254,16 +183,16 @@ unit AH.UI.FrameEtape;
           FOnEtapeValidee(Self, ValeurChoisie);
       end;
 
-    procedure TFrameEtape.GererClicValiderSaisie(ASender : TObject);
+    procedure TFrameEtape.GererClicValiderSaisie(Sender : TObject);
       var
         Texte : string;
       begin
         Texte := Trim(EditSaisie.Text);
         if Texte = EmptyStr then
-          begin
-            LabelErreurSaisie.Caption := 'Saisissez une valeur avant de valider.';
-            Exit;
-          end;
+        begin
+          LabelErreurSaisie.Caption := 'Saisissez une valeur avant de valider.';
+          Exit;
+        end;
 
         LabelErreurSaisie.Caption := EmptyStr;
         if Assigned(FOnEtapeValidee) then
