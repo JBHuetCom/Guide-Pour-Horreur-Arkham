@@ -55,6 +55,12 @@ unit AH.Tests.Moteur;
 
         [Test]
         procedure EstDansBouclePorInvestigateur_DistingueEtapeGeneraleEtEtapeDansLaBoucle;
+
+        [Test]
+        procedure Suivant_SurNtSaisieAvecValeurForcee_AffecteLeChampSansExposerLeNoeud;
+
+        [Test]
+        procedure PeutReculer_AuDebutPuisApresUnSuivant_RefleteLHistorique;
       end;
 
   implementation
@@ -340,6 +346,40 @@ unit AH.Tests.Moteur;
 
           FMoteur.Suivant; // dans_boucle
           Assert.IsTrue(FMoteur.EstDansBouclePorInvestigateur);
+        end;
+
+      procedure TTestMoteurSequenceur.Suivant_SurNtSaisieAvecValeurForcee_AffecteLeChampSansExposerLeNoeud;
+        var
+          Racine, Saisie, EtapeSuivante : TNoeudEtape;
+        begin
+          Racine := TNoeudEtape.Create('racine', ntSequence);
+          Saisie := TNoeudEtape.Create('saisie_forcee', ntSaisie);
+          Saisie.ChampContexte := 'NiveauTerreur';
+          Saisie.ValeurForcee := 3;
+          Saisie.PossedeValeurForcee := True;
+          Racine.AjouterEnfant(Saisie);
+
+          EtapeSuivante := TNoeudEtape.Create('etape_suivante', ntInstruction);
+          EtapeSuivante.Texte := 'Après';
+          Racine.AjouterEnfant(EtapeSuivante);
+          FRacine := Racine;
+
+          FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+          FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+          Assert.AreEqual('etape_suivante', FMoteur.Suivant.Id); // saisie_forcee sauté, jamais affiché
+          Assert.AreEqual(3, FContexte.NiveauTerreur);
+        end;
+
+      procedure TTestMoteurSequenceur.PeutReculer_AuDebutPuisApresUnSuivant_RefleteLHistorique;
+        begin
+          FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+          FRacine := ConstruireSequenceDeuxInstructions;
+          FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+          Assert.IsFalse(FMoteur.PeutReculer);
+          FMoteur.Suivant;
+          Assert.IsTrue(FMoteur.PeutReculer);
         end;
 
   initialization

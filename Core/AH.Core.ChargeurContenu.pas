@@ -135,6 +135,12 @@ unit AH.Core.ChargeurContenu;
                       ChargerNoeud(BrancheJSON.O['Noeud']));
                   end;
               end;
+            ntSaisie:
+              if AJSON.O['ValeurForcee'] <> nil then
+                begin
+                  Result.ValeurForcee := ValeurVariantDepuisJSON(AJSON.O['ValeurForcee']);
+                  Result.PossedeValeurForcee := True;
+                end;
           end;
         except
           Result.Free;

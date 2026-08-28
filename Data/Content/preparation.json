@@ -29,77 +29,64 @@
         }
       ]
     },
-	{
-	  "Id": "prep05_grand_ancien",
-	  "Type": "ntChoix",
-	  "Titre": "Comment déterminez-vous le Grand Ancien qui menace Arkham cette partie ?",
-	  "Branches": [
-		{
-		  "Valeur": "hasard",
-		  "Libelle": "Tirage au hasard",
-		  "Noeud": {
-			"Id": "prep05_hasard",
-			"Type": "ntSequence",
-			"Enfants": [
-			  {
-				"Id": "prep05_hasard_tirage",
-				"Type": "ntInstruction",
-				"Texte": "Mélangez les 8 feuilles Grand Ancien et, sans les regarder, tirez-en une au hasard. Posez-la face visible à côté du plateau."
-			  },
-              {
-                "Id": "prep05_hasard_saisie_nom",
-                "Type": "ntSaisie",
-                "Champ": "NomGrandAncien",
-                "Texte": "Indiquez le nom du Grand Ancien tiré."
+    {
+      "Id": "prep05_grand_ancien",
+      "Type": "ntChoix",
+      "Titre": "Comment déterminez-vous le Grand Ancien qui menace Arkham cette partie ?",
+      "Branches": [
+        {
+          "Valeur": "hasard",
+          "Libelle": "Tirage au hasard",
+          "Noeud": {
+            "Id": "prep05_hasard",
+            "Type": "ntSequence",
+            "Enfants": [
+              { 
+                "Id": "prep05_hasard_tirage", 
+                "Type": "ntInstruction", 
+                "Texte": "Mélangez les 8 feuilles Grand Ancien et, sans les regarder, tirez-en une au hasard. Posez-la face visible à côté du plateau." 
               },
-			  {
-				"Id": "prep05_hasard_saisie_taille_destin",
-				"Type": "ntSaisie",
-				"Champ": "TailleEchelleDestin",
-				"Texte": "Indiquez le nombre total de cases de l'échelle du destin imprimée sur la feuille de ce Grand Ancien."
-			  },
-			  {
-				"Id": "prep05_action_debut_partie",
-				"Type": "ntInstruction",
-				"Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
-			  }
-			]
-		  }
-		},
-		{
-		  "Valeur": "manuel",
-		  "Libelle": "Choix manuel",
-		  "Noeud": {
-			"Id": "prep05_manuel",
-			"Type": "ntSequence",
-			"Enfants": [
-			  {
-				"Id": "prep05_manuel_choix",
-				"Type": "ntInstruction",
-				"Texte": "Choisissez ensemble le Grand Ancien à affronter et posez sa feuille face visible à côté du plateau. Yig convient pour une partie courte, Cthulhu pour une partie plus longue et difficile."
-			  },
-              {
-                "Id": "prep05_manuel_saisie_nom",
-                "Type": "ntSaisie",
-                "Champ": "NomGrandAncien",
-                "Texte": "Indiquez le nom du Grand Ancien tiré."
+              { 
+                "Id": "prep05_hasard_saisie_nom", 
+                "Type": "ntSaisie", "Champ": "NomGrandAncien", 
+                "Texte": "Indiquez le nom du Grand Ancien tiré." 
               },
-			  {
-				"Id": "prep05_manuel_saisie_taille_destin",
-				"Type": "ntSaisie",
-				"Champ": "TailleEchelleDestin",
-				"Texte": "Indiquez le nombre total de cases de l'échelle du destin imprimée sur la feuille de ce Grand Ancien."
-			  },
-			  {
-				"Id": "prep05_action_debut_partie_bis",
-				"Type": "ntInstruction",
-				"Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant."
-			  }
-			]
-		  }
-		}
-	  ]
-	},
+              { 
+                "Id": "prep05_action_debut_partie", 
+                "Type": "ntInstruction", 
+                "Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant." 
+              }
+            ]
+          }
+        },
+        {
+          "Valeur": "manuel",
+          "Libelle": "Choix manuel",
+          "Noeud": {
+            "Id": "prep05_manuel",
+            "Type": "ntSequence",
+            "Enfants": [
+              { 
+                "Id": "prep05_manuel_choix", 
+                "Type": "ntInstruction", 
+                "Texte": "Choisissez ensemble le Grand Ancien à affronter et posez sa feuille face visible à côté du plateau. Yig convient pour une partie courte, Cthulhu pour une partie plus longue et difficile." 
+              },
+              { 
+                "Id": "prep05_manuel_saisie_nom", 
+                "Type": "ntSaisie", 
+                "Champ": "NomGrandAncien", 
+                "Texte": "Indiquez le nom du Grand Ancien choisi."
+              },
+              { 
+                "Id": "prep05_action_debut_partie_bis", 
+                "Type": "ntInstruction", 
+                "Texte": "Si la feuille indique une action particulière de début de partie, appliquez-la maintenant." 
+              }
+            ]
+          }
+        }
+      ]
+    },
     {
       "Id": "prep06_separation_paquets",
       "Type": "ntInstruction",
@@ -150,28 +137,8 @@
     },
     {
       "Id": "prep11_tasse_monstres",
-      "Type": "ntChoix",
-      "Titre": "Le Grand Ancien de cette partie est-il Nyarlathotep ?",
-      "Branches": [
-        {
-          "Valeur": "oui",
-          "Libelle": "Oui",
-          "Noeud": {
-            "Id": "prep11_tasse_avec_masques",
-            "Type": "ntInstruction",
-            "Texte": "Placez tous les marqueurs Monstre, y compris les 5 monstres « Masque », dans un récipient opaque (la « tasse des monstres ») et mélangez-les."
-          }
-        },
-        {
-          "Valeur": "non",
-          "Libelle": "Non",
-          "Noeud": {
-            "Id": "prep11_tasse_sans_masques",
-            "Type": "ntInstruction",
-            "Texte": "Retirez du jeu les 5 monstres « Masque » (identifiables au mot « Masque » imprimé sur leur face Combat). Placez tous les autres marqueurs Monstre dans un récipient opaque (la « tasse des monstres ») et mélangez-les."
-          }
-        }
-      ]
+      "Type": "ntInstruction",
+      "Texte": "Placez tous les marqueurs Monstre dans un récipient opaque (la « tasse des monstres ») et mélangez-les."
     },
     {
       "Id": "prep12_melange_mythe_portail",
@@ -189,165 +156,67 @@
         }
       ]
     },
+{
+  "Id": "prep14_premiere_carte_mythe",
+  "Type": "ntSequence",
+  "Enfants": [
     {
-      "Id": "prep14_premiere_carte_mythe",
-      "Type": "ntSequence",
-      "Enfants": [
-        {
-          "Id": "prep14_piocher",
-          "Type": "ntInstruction",
-          "Texte": "Piochez la première carte du paquet Mythe. Si elle indique une Rumeur, défaussez-la face cachée sous le paquet et repiochez. Si elle n'indique aucun lieu où un portail doit s'ouvrir, défaussez-la également et repiochez. Continuez jusqu'à obtenir une carte qui ne soit ni une Rumeur, ni dépourvue de portail."
+      "Id": "prep14_piocher",
+      "Type": "ntInstruction",
+      "Texte": "Piochez la première carte du paquet Mythe. Si elle indique une Rumeur, défaussez-la face cachée sous le paquet et repiochez. Si elle n'indique aucun lieu où un portail doit s'ouvrir, défaussez-la également et repiochez. Continuez jusqu'à obtenir une carte qui ne soit ni une Rumeur, ni dépourvue de portail."
+    },
+    {
+      "Id": "prep14_saisie_destin",
+      "Type": "ntSaisie",
+      "Champ": "EchelleDestin",
+      "ValeurForcee": 1,
+      "Texte": "Placez un pion Destin (symbole œil visible) sur la première case de l'échelle du destin du Grand Ancien."
+    },
+    {
+      "Id": "prep14_saisie_portails",
+      "Type": "ntSaisie",
+      "Champ": "NombrePortailsOuverts",
+      "ValeurForcee": 1,
+      "Texte": "Piochez un marqueur Portail dans la pile et placez-le face visible sur le lieu indiqué par la carte."
+    },
+    {
+      "Id": "prep14_monstre_apparait_condition",
+      "Type": "ntCondition",
+      "Champ": "CinqInvestigateursOuPlus",
+      "Branches": [
+        { 
+          "Valeur": false, 
+          "Noeud": { 
+            "Id": "prep14_monstre_apparait_un", 
+            "Type": "ntInstruction", 
+            "Texte": "Piochez au hasard un marqueur Monstre dans la tasse et placez-le sur ce lieu." 
+          } 
         },
-        {
-          "Id": "prep14_etat_lieu",
-          "Type": "ntChoix",
-          "Titre": "Quel est l'état actuel du lieu indiqué en bas à gauche de la carte ?",
-          "Branches": [
-            {
-              "Valeur": "signe",
-              "Libelle": "Un Signe des Anciens y est posé",
-              "Noeud": {
-                "Id": "prep14_cas_signe",
-                "Type": "ntInstruction",
-                "Texte": "Il ne se passe rien : ce lieu est protégé, ni portail ni monstre n'apparaissent. Passez directement à la lecture de l'événement de la carte."
-              }
-            },
-            {
-              "Valeur": "portail_ouvert",
-              "Libelle": "Un portail y est déjà ouvert",
-              "Noeud": {
-                "Id": "prep14_cas_vague",
-                "Type": "ntInstruction",
-                "Texte": "Une vague de monstres se produit : piochez, dans la tasse des monstres, un nombre de monstres égal au nombre de portails actuellement ouverts ou au nombre d'investigateurs en jeu (le plus élevé des deux), et répartissez-les aussi équitablement que possible entre tous les portails ouverts, sans qu'aucun n'en reçoive plus que celui où la vague est apparue."
-              }
-            },
-            {
-              "Valeur": "aucun",
-              "Libelle": "Ni l'un ni l'autre",
-              "Noeud": {
-                "Id": "prep14_cas_nouveau_portail",
-                "Type": "ntSequence",
-                "Enfants": [
-                  {
-                    "Id": "prep14_saisie_destin",
-                    "Type": "ntSaisie",
-                    "Champ": "EchelleDestin",
-                    "Texte": "Placez un pion Destin (symbole œil visible) sur la première case libre de l'échelle du destin du Grand Ancien. Indiquez le nombre total de pions Destin désormais présents sur cette échelle."
-                  },
-                  {
-                    "Id": "prep14_condition_destin_plein",
-                    "Type": "ntCondition",
-                    "Champ": "EchelleDestinPleine",
-                    "Branches": [
-                      {
-                        "Valeur": true,
-                        "Noeud": {
-                          "Id": "prep14_reveil_destin",
-                          "Type": "ntInstruction",
-                          "Texte": "L'échelle du destin est complète : le Grand Ancien s'éveille immédiatement. Interrompez la préparation et passez à la séquence de Bataille Finale."
-                        }
-                      },
-                      {
-                        "Valeur": false,
-                        "Noeud": {
-                          "Id": "prep14_pile_portail_vide",
-                          "Type": "ntChoix",
-                          "Titre": "La pile de marqueurs Portail est-elle vide ?",
-                          "Branches": [
-                            {
-                              "Valeur": "oui",
-                              "Libelle": "Oui",
-                              "Noeud": {
-                                "Id": "prep14_reveil_pile_vide",
-                                "Type": "ntInstruction",
-                                "Texte": "Il n'y a plus de marqueur Portail disponible : le Grand Ancien s'éveille immédiatement. Interrompez la préparation et passez à la séquence de Bataille Finale."
-                              }
-                            },
-                            {
-                              "Valeur": "non",
-                              "Libelle": "Non",
-                              "Noeud": {
-                                "Id": "prep14_ouverture_portail",
-                                "Type": "ntSequence",
-                                "Enfants": [
-                                  {
-                                    "Id": "prep14_saisie_portails",
-                                    "Type": "ntSaisie",
-                                    "Champ": "NombrePortailsOuverts",
-                                    "Texte": "Piochez un marqueur Portail dans la pile et placez-le face visible sur le lieu ; défaussez les pions Indice qui s'y trouvaient. Indiquez le nombre total de portails désormais ouverts sur le plateau."
-                                  },
-                                  {
-                                    "Id": "prep14_condition_seuil_portails",
-                                    "Type": "ntCondition",
-                                    "Champ": "SeuilReveilPortailsOuvertsAtteint",
-                                    "Branches": [
-                                      {
-                                        "Valeur": true,
-                                        "Noeud": {
-                                          "Id": "prep14_reveil_trop_portails",
-                                          "Type": "ntInstruction",
-                                          "Texte": "Trop de portails sont ouverts simultanément : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale."
-                                        }
-                                      },
-                                      {
-                                        "Valeur": false,
-                                        "Noeud": {
-                                          "Id": "prep14_tasse_vide",
-                                          "Type": "ntChoix",
-                                          "Titre": "La tasse des monstres est-elle vide ?",
-                                          "Branches": [
-                                            {
-                                              "Valeur": "oui",
-                                              "Libelle": "Oui",
-                                              "Noeud": {
-                                                "Id": "prep14_reveil_tasse_vide",
-                                                "Type": "ntInstruction",
-                                                "Texte": "Il n'y a plus de marqueur Monstre disponible : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale."
-                                              }
-                                            },
-                                            {
-                                              "Valeur": "non",
-                                              "Libelle": "Non",
-                                              "Noeud": {
-                                                "Id": "prep14_monstre_apparait",
-                                                "Type": "ntInstruction",
-                                                "Texte": "Piochez au hasard un marqueur Monstre dans la tasse et placez-le sur ce lieu (deux marqueurs si 5 investigateurs ou plus sont en jeu)."
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "Id": "prep14_evenement",
-          "Type": "ntInstruction",
-          "Texte": "Lisez à voix haute le titre puis le texte de l'événement de la carte, et appliquez ses effets (Gros Titre, Environnement ou Rumeur selon l'attribut indiqué en haut de la carte)."
-        },
-        {
-          "Id": "prep14_indice",
-          "Type": "ntInstruction",
-          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide)."
-        },
-        {
-          "Id": "prep14_debut_premier_tour",
-          "Type": "ntInstruction",
-          "Texte": "La préparation est terminée. Le premier tour commence, en phase d'Entretien, avec le premier joueur."
+        { 
+          "Valeur": true, 
+          "Noeud": { 
+            "Id": "prep14_monstre_apparait_deux", 
+            "Type": "ntInstruction", 
+            "Texte": "Piochez au hasard deux marqueurs Monstres dans la tasse et placez-les sur ce lieu." 
+          } 
         }
       ]
+    },
+    {
+      "Id": "prep14_evenement",
+      "Type": "ntInstruction",
+      "Texte": "Lisez à voix haute le titre puis le texte de l'événement de la carte, et appliquez ses effets (Gros Titre, Environnement ou Rumeur selon l'attribut indiqué en haut de la carte)."
+    },
+    {
+      "Id": "prep14_indice",
+      "Type": "ntInstruction",
+      "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide)."
+    },
+    {
+      "Id": "prep14_debut_premier_tour",
+      "Type": "ntInstruction",
+      "Texte": "La préparation est terminée. Le premier tour commence, en phase d'Entretien, avec le premier joueur."
     }
   ]
+}  ]
 }

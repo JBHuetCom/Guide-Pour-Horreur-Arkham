@@ -55,6 +55,12 @@ unit AH.Tests.Contexte;
 
           [Test]
           procedure AffecterChamp_TailleEchelleDestin_MetAJourLeChampCorrespondant;
+
+          [Test]
+          procedure PasserMarqueurPremierJoueur_DeuxJoueursDeuxInvestigateursChacun_PasseAuPremierInvestigateurDuJoueurSuivant;
+
+          [Test]
+          procedure PasserMarqueurPremierJoueur_DernierJoueur_ReboucleSurLePremier;
       end;
 
   implementation
@@ -269,6 +275,43 @@ unit AH.Tests.Contexte;
         try
           Contexte.AffecterChamp('TailleEchelleDestin', 12);
           Assert.AreEqual(12, Contexte.TailleEchelleDestin);
+        finally
+          Contexte.Free;
+        end;
+      end;
+
+    procedure TTestContextePartie.PasserMarqueurPremierJoueur_DeuxJoueursDeuxInvestigateursChacun_PasseAuPremierInvestigateurDuJoueurSuivant;
+      var
+        Contexte : TContextePartie;
+      begin
+        // Alice : Amanda(0), Harvey(0) ; Bob : Jenny(1), Kate(1). Premier joueur initial : Alice (index 0 par défaut).
+        Contexte := TContextePartie.Create(
+          ['Alice', 'Bob'],
+          [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 1), Investigateur('Kate', 1)]);
+        try
+          Contexte.PasserMarqueurPremierJoueur;
+          Contexte.RevenirAuPremierInvestigateur;
+
+          Assert.AreEqual('Jenny', Contexte.NomInvestigateurCourant);
+          Assert.AreEqual('Bob', Contexte.NomJoueurHumainCourant);
+        finally
+          Contexte.Free;
+        end;
+      end;
+
+    procedure TTestContextePartie.PasserMarqueurPremierJoueur_DernierJoueur_ReboucleSurLePremier;
+      var
+        Contexte : TContextePartie;
+      begin
+        Contexte := TContextePartie.Create(
+          ['Alice', 'Bob'],
+          [Investigateur('Amanda', 0), Investigateur('Jenny', 1)]);
+        try
+          Contexte.PasserMarqueurPremierJoueur; // Alice -> Bob
+          Contexte.PasserMarqueurPremierJoueur; // Bob -> Alice
+          Contexte.RevenirAuPremierInvestigateur;
+
+          Assert.AreEqual('Amanda', Contexte.NomInvestigateurCourant);
         finally
           Contexte.Free;
         end;

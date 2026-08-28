@@ -75,6 +75,9 @@ unit AH.Core.Moteur;
           /// </summary>
           function EstDansBouclePorInvestigateur : Boolean;
 
+          /// <summary>Indique si Precedent peut faire reculer la navigation (False juste après le chargement d'un nouvel arbre).</summary>
+          function PeutReculer: Boolean;
+
           /// <summary>
           /// Enregistre la réponse de l'utilisateur pour le nœud courant (ntChoix ou ntSaisie),
           /// préalable obligatoire à l'appel de Suivant pour ces deux types de nœud.
@@ -96,64 +99,71 @@ unit AH.Core.Moteur;
 
   implementation
 
-  uses
-    System.SysUtils,
-    AH.Core.EvaluateurCondition, AH.Core.Types;
+    uses
+      System.SysUtils,
+      AH.Core.EvaluateurCondition, AH.Core.Types;
 
-  {$REGION 'TMoteurSequenceur'}
+    {$REGION 'TMoteurSequenceur'}
 
-  constructor TMoteurSequenceur.Create(ARacine : TNoeudEtape; AContexte : TContextePartie);
-    begin
-      inherited Create;
-      FRacine := ARacine;
-      FContexte := AContexte;
-      FPile := TList<TFrameParcours>.Create;
-      FHistorique := TStack<TInstantane>.Create;
-      PousserFrame(FRacine, 1); // La racine est toujours une ntSequence de premier niveau.
-    end;
-
-  destructor TMoteurSequenceur.Destroy;
-    begin
-      FPile.Free;
-      FHistorique.Free;
-      inherited;
-    end;
-
-  procedure TMoteurSequenceur.PousserFrame(ANoeud : TNoeudEtape; AInvestigateursRestants : Integer);
-    var
-      Frame : TFrameParcours;
-    begin
-      Frame.Noeud := ANoeud;
-      Frame.IndexProchainEnfant := 0;
-      Frame.InvestigateursRestants := AInvestigateursRestants;
-      FPile.Add(Frame);
-    end;
-
-  function TMoteurSequenceur.TraiterNoeud(ANoeud : TNoeudEtape) : TNoeudEtape;
-    var
-      NoeudResolu : TNoeudEtape;
-    begin
-      NoeudResolu := ANoeud;
-      while NoeudResolu.TypeNoeud = ntCondition do
-        NoeudResolu := TEvaluateurCondition.ResoudreBranche(NoeudResolu, FContexte);
-
-      case NoeudResolu.TypeNoeud of
-        ntSequence:
-          begin
-            PousserFrame(NoeudResolu, 0);
-            Result := nil;
-          end;
-        ntBouclePorInvestigateur:
-          begin
-            FContexte.RevenirAuPremierInvestigateur;
-            PousserFrame(NoeudResolu, FContexte.NombreInvestigateurs);
-            Result := nil;
-          end;
-      else
-        // ntInstruction, ntChoix, ntSaisie : nœuds interactifs, retournés tels quels.
-        Result := NoeudResolu;
+    constructor TMoteurSequenceur.Create(ARacine : TNoeudEtape; AContexte : TContextePartie);
+      begin
+        inherited Create;
+        FRacine := ARacine;
+        FContexte := AContexte;
+        FPile := TList<TFrameParcours>.Create;
+        FHistorique := TStack<TInstantane>.Create;
+        PousserFrame(FRacine, 1); // La racine est toujours une ntSequence de premier niveau.
       end;
-    end;
+
+    destructor TMoteurSequenceur.Destroy;
+      begin
+        FPile.Free;
+        FHistorique.Free;
+        inherited;
+      end;
+
+    procedure TMoteurSequenceur.PousserFrame(ANoeud : TNoeudEtape; AInvestigateursRestants : Integer);
+      var
+        Frame : TFrameParcours;
+      begin
+        Frame.Noeud := ANoeud;
+        Frame.IndexProchainEnfant := 0;
+        Frame.InvestigateursRestants := AInvestigateursRestants;
+        FPile.Add(Frame);
+      end;
+
+    function TMoteurSequenceur.TraiterNoeud(ANoeud : TNoeudEtape) : TNoeudEtape;
+      var
+        NoeudResolu : TNoeudEtape;
+      begin
+        NoeudResolu := ANoeud;
+        while NoeudResolu.TypeNoeud = ntCondition do
+          NoeudResolu := TEvaluateurCondition.ResoudreBranche(NoeudResolu, FContexte);
+
+        case NoeudResolu.TypeNoeud of
+          ntSequence:
+            begin
+              PousserFrame(NoeudResolu, 0);
+              Result := nil;
+            end;
+          ntBouclePorInvestigateur:
+            begin
+              FContexte.RevenirAuPremierInvestigateur;
+              PousserFrame(NoeudResolu, FContexte.NombreInvestigateurs);
+              Result := nil;
+            end;
+          ntSaisie:
+            if NoeudResolu.PossedeValeurForcee then
+              begin
+                FContexte.AffecterChamp(NoeudResolu.ChampContexte, NoeudResolu.ValeurForcee);
+                Result := nil; // Auto-résolu : la boucle d'AvancerJusquInteractif passe au frère suivant.
+              end
+            else
+              Result := NoeudResolu;
+        else
+          Result := NoeudResolu;
+        end;
+      end;
 
   function TMoteurSequenceur.AvancerJusquInteractif : TNoeudEtape;
     var
@@ -290,6 +300,11 @@ unit AH.Core.Moteur;
         for i := 0 to FPile.Count - 1 do
           if FPile[i].Noeud.TypeNoeud = ntBouclePorInvestigateur then
             Exit(True);
+      end;
+
+    function TMoteurSequenceur.PeutReculer: Boolean;
+      begin
+        Result := (FHistorique.Count > 0);
       end;
 
   {$ENDREGION}

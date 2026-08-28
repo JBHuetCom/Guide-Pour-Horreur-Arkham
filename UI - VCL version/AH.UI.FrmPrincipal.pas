@@ -4,6 +4,7 @@ unit AH.UI.FrmPrincipal;
 
     uses
 
+      Winapi.Windows, Winapi.Messages,
       System.SysUtils, System.Classes, System.Variants, System.Generics.Collections,
       Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics, Vcl.Dialogs,
       AH.Core.Types, AH.Core.Noeud, AH.Core.Contexte, AH.Core.Moteur, AH.Core.ChargeurContenu,
@@ -28,12 +29,10 @@ unit AH.UI.FrmPrincipal;
           FGestionnaireConseils : TGestionnaireConseils;
           FGestionnaireCapacites : TGestionnaireCapacites;
           FGestionnaireGrandsAnciens : TGestionnaireGrandsAnciens;
-
           FRacinePreparation : TNoeudEtape;
           FRacineTour : TNoeudEtape;
           FRacineBatailleFinale : TNoeudEtape;
           FRacineFinDePartie : TNoeudEtape;
-
           FMoteur : TMoteurSequenceur;
           FFichierActif : TFichierContenu;
           /// <summary>
@@ -42,9 +41,27 @@ unit AH.UI.FrmPrincipal;
           /// </summary>
           FDernierIdAffiche : string;
 
-          FrameEtape : TFrameEtape;
+          /// <returns>Chemin absolu d'un fichier sous Data\Content\, à côté de l'exécutable.</returns>
+          function CheminContenu(const ANomFichier : string) : string;
+
+          /// <summary>Charge les quatre arbres de contenu et les trois gestionnaires annexes. Fatal en cas d'échec sur un arbre de contenu.</summary>
+          procedure ChargerContenuStatique;
+          procedure ChargerFichier(AFichier : TFichierContenu);
+          procedure AvancerEtAfficher;
+          procedure GererFinDeFichier;
+          procedure AfficherEtatTerminal;
+          procedure RafraichirEnTete;
+          procedure RafraichirPanneauxAnnexes;
+          procedure RafraichirEtatBoutons;
+        public
+          procedure DemarrerNouvellePartie;
+        published
           PanelEnTete : TPanel;
           LabelEnTete : TLabel;
+
+          // POUR DEBUG SEULEMENT
+          LabelIdTechnique : TLabel;
+
           PanelBas : TPanel;
           BoutonPrecedent : TButton;
           BoutonReveilManuel : TButton;
@@ -52,45 +69,22 @@ unit AH.UI.FrmPrincipal;
           CheckBoxAfficherConseils : TCheckBox;
           PanelConseils : TPanel;
           MemoConseils : TMemo;
-          PanelCapacite : TPanel;
-          LabelCapacite : TLabel;
           PanelRegleGrandAncien : TPanel;
           LabelRegleGrandAncien : TLabel;
+          PanelCapacite : TPanel;
+          LabelCapacite : TLabel;
+          FrameEtape : TFrameEtape;
           PanelEtatTerminal : TPanel;
           LabelEtatTerminal : TLabel;
           BoutonNouvellePartie : TButton;
-
-          // POUR DEBUG SEULEMENT
-          LabelIdTechnique : TLabel;
-
-          procedure ConstruireControles;
-
-          /// <returns>Chemin absolu d'un fichier sous Data\Content\, à côté de l'exécutable.</returns>
-          function CheminContenu(const ANomFichier : string) : string;
-
-          /// <summary>Charge les quatre arbres de contenu et les trois gestionnaires annexes. Fatal en cas d'échec sur un arbre de contenu.</summary>
-          procedure ChargerContenuStatique;
-
-          procedure DemarrerNouvellePartie;
-          procedure ChargerFichier(AFichier : TFichierContenu);
-          procedure AvancerEtAfficher;
-          procedure GererFinDeFichier;
-          procedure AfficherEtatTerminal;
-
-          procedure RafraichirEnTete;
-          procedure RafraichirPanneauxAnnexes;
-          procedure RafraichirEtatBoutons;
-
+          procedure FormCreate(Sender: TObject);
+          procedure FormDestroy(Sender: TObject);
           procedure GererEtapeValidee(Sender : TObject; const AValeur : Variant);
           procedure GererClicPrecedent(Sender : TObject);
           procedure GererClicReveilManuel(Sender : TObject);
           procedure GererClicTerminerPartie(Sender : TObject);
           procedure GererClicAfficherConseils(Sender : TObject);
           procedure GererClicNouvellePartie(Sender : TObject);
-          procedure GererAffichageInitial(Sender : TObject);
-        public
-          constructor Create(AOwner : TComponent); override;
-          destructor Destroy; override;
       end;
 
     var
@@ -103,13 +97,11 @@ unit AH.UI.FrmPrincipal;
 
       System.UITypes;
 
+    {$R *.dfm}
+
     const
 
       CheminsRelatifsContenu = 'Data\Content\';
-
-      IdsReveilPreparation: array[0..3] of string = (
-        'prep14_reveil_destin', 'prep14_reveil_pile_vide',
-        'prep14_reveil_trop_portails', 'prep14_reveil_tasse_vide');
 
       IdsReveilTour: array[0..3] of string = (
         'phase5_reveil_destin', 'phase5_reveil_pile_vide',
@@ -132,180 +124,9 @@ unit AH.UI.FrmPrincipal;
 
     { TFrmPrincipal }
 
-    constructor TFrmPrincipal.Create(AOwner : TComponent);
-      begin
-        inherited CreateNew(AOwner);
-
-        Caption := 'Horreur à Arkham — Guide de partie';
-        Position := poScreenCenter;
-        Width := 900;
-        Height := 640;
-
-        FParametres := TParametresApplication.Create;
-        try
-          FParametres.ChargerDepuisFichier(CheminContenu('parametres.json'));
-        except
-          // Réglages absents ou invalides au premier lancement : valeurs par défaut conservées.
-        end;
-
-        FGestionnaireConseils := TGestionnaireConseils.Create;
-        FGestionnaireCapacites := TGestionnaireCapacites.Create;
-        FGestionnaireGrandsAnciens := TGestionnaireGrandsAnciens.Create;
-
-        ConstruireControles;
-        ChargerContenuStatique;
-
-       // DemarrerNouvellePartie utilise FrmNouvellePartie (formulaire auto-créé) : à cet instant du
-       // constructeur, le .dpr n'a pas encore exécuté son propre Application.CreateForm, donc
-       // FrmNouvellePartie vaut encore nil. On reporte le premier appel à OnShow, qui ne se déclenche
-       // qu'une fois tous les Application.CreateForm du .dpr terminés et Application.Run démarré.
-       OnShow := GererAffichageInitial;
-     end;
-
-    destructor TFrmPrincipal.Destroy;
-      begin
-        try
-          FParametres.SauvegarderDansFichier(CheminContenu('parametres.json'));
-        except
-          // Un échec de sauvegarde des préférences ne doit jamais empêcher la fermeture de l'application.
-        end;
-
-        FMoteur.Free;
-        FContexte.Free;
-        FRacineFinDePartie.Free;
-        FRacineBatailleFinale.Free;
-        FRacineTour.Free;
-        FRacinePreparation.Free;
-        FGestionnaireGrandsAnciens.Free;
-        FGestionnaireCapacites.Free;
-        FGestionnaireConseils.Free;
-        FParametres.Free;
-
-        inherited;
-      end;
-
     function TFrmPrincipal.CheminContenu(const ANomFichier : string) : string;
       begin
         Result := ExtractFilePath(Application.ExeName) + CheminsRelatifsContenu + ANomFichier;
-      end;
-
-    procedure TFrmPrincipal.ConstruireControles;
-      begin
-        PanelEnTete := TPanel.Create(Self);
-        PanelEnTete.Parent := Self;
-        PanelEnTete.Align := alTop;
-        PanelEnTete.Height := 56;
-        PanelEnTete.BevelOuter := bvNone;
-
-        LabelEnTete := TLabel.Create(Self);
-        LabelEnTete.Parent := PanelEnTete;
-        LabelEnTete.SetBounds(12, 10, 860, 20);
-        LabelEnTete.Font.Style := [fsBold];
-
-        PanelBas := TPanel.Create(Self);
-        PanelBas.Parent := Self;
-        PanelBas.Align := alBottom;
-        PanelBas.Height := 48;
-        PanelBas.BevelOuter := bvNone;
-
-        BoutonPrecedent := TButton.Create(Self);
-        BoutonPrecedent.Parent := PanelBas;
-        BoutonPrecedent.SetBounds(12, 10, 110, 28);
-        BoutonPrecedent.Caption := '< Précédent';
-        BoutonPrecedent.OnClick := GererClicPrecedent;
-
-        BoutonReveilManuel := TButton.Create(Self);
-        BoutonReveilManuel.Parent := PanelBas;
-        BoutonReveilManuel.SetBounds(132, 10, 260, 28);
-        BoutonReveilManuel.Caption := 'Le Grand Ancien s''est réveillé';
-        BoutonReveilManuel.OnClick := GererClicReveilManuel;
-
-        BoutonTerminerPartie := TButton.Create(Self);
-        BoutonTerminerPartie.Parent := PanelBas;
-        BoutonTerminerPartie.SetBounds(400, 10, 160, 28);
-        BoutonTerminerPartie.Caption := 'Terminer la partie';
-        BoutonTerminerPartie.OnClick := GererClicTerminerPartie;
-
-        CheckBoxAfficherConseils := TCheckBox.Create(Self);
-        CheckBoxAfficherConseils.Parent := PanelBas;
-        CheckBoxAfficherConseils.SetBounds(700, 14, 160, 20);
-        CheckBoxAfficherConseils.Caption := 'Afficher les conseils';
-        CheckBoxAfficherConseils.OnClick := GererClicAfficherConseils;
-
-        // --- Panneaux annexes, à droite ---
-        PanelConseils := TPanel.Create(Self);
-        PanelConseils.Parent := Self;
-        PanelConseils.Align := alRight;
-        PanelConseils.Width := 280;
-        PanelConseils.BevelOuter := bvNone;
-        PanelConseils.Caption := EmptyStr;
-
-        MemoConseils := TMemo.Create(Self);
-        MemoConseils.Parent := PanelConseils;
-        MemoConseils.Align := alClient;
-        MemoConseils.ReadOnly := True;
-        MemoConseils.ScrollBars := ssVertical;
-        MemoConseils.Color := clInfoBk;
-        MemoConseils.WordWrap := True;
-
-        PanelCapacite := TPanel.Create(Self);
-        PanelCapacite.Parent := Self;
-        PanelCapacite.Align := alBottom;
-        PanelCapacite.Height := 60;
-        PanelCapacite.BevelOuter := bvNone;
-
-        LabelCapacite := TLabel.Create(Self);
-        LabelCapacite.Parent := PanelCapacite;
-        LabelCapacite.Align := alClient;
-        LabelCapacite.Layout := tlCenter;
-        LabelCapacite.WordWrap := True;
-        LabelCapacite.Font.Style := [fsItalic];
-
-        PanelRegleGrandAncien := TPanel.Create(Self);
-        PanelRegleGrandAncien.Parent := Self;
-        PanelRegleGrandAncien.Align := alBottom;
-        PanelRegleGrandAncien.Height := 60;
-        PanelRegleGrandAncien.BevelOuter := bvNone;
-        PanelRegleGrandAncien.Color := clYellow;
-
-        LabelRegleGrandAncien := TLabel.Create(Self);
-        LabelRegleGrandAncien.Parent := PanelRegleGrandAncien;
-        LabelRegleGrandAncien.Align := alClient;
-        LabelRegleGrandAncien.Layout := tlCenter;
-        LabelRegleGrandAncien.WordWrap := True;
-        LabelRegleGrandAncien.Font.Style := [fsBold];
-
-        // --- Zone centrale : la frame d'étape, ou l'état terminal ---
-        FrameEtape := TFrameEtape.Create(Self);
-        FrameEtape.Parent := Self;
-        FrameEtape.Align := alClient;
-        FrameEtape.OnEtapeValidee := GererEtapeValidee;
-
-        PanelEtatTerminal := TPanel.Create(Self);
-        PanelEtatTerminal.Parent := Self;
-        PanelEtatTerminal.Align := alClient;
-        PanelEtatTerminal.BevelOuter := bvNone;
-        PanelEtatTerminal.Visible := False;
-
-        LabelEtatTerminal := TLabel.Create(Self);
-        LabelEtatTerminal.Parent := PanelEtatTerminal;
-        LabelEtatTerminal.SetBounds(20, 20, 500, 60);
-        LabelEtatTerminal.Font.Size := 14;
-        LabelEtatTerminal.WordWrap := True;
-
-        BoutonNouvellePartie := TButton.Create(Self);
-        BoutonNouvellePartie.Parent := PanelEtatTerminal;
-        BoutonNouvellePartie.SetBounds(20, 90, 160, 30);
-        BoutonNouvellePartie.Caption := 'Nouvelle partie';
-        BoutonNouvellePartie.OnClick := GererClicNouvellePartie;
-
-        // POUR DEBUG SEULEMENT
-        LabelIdTechnique := TLabel.Create(Self);
-        LabelIdTechnique.Parent := PanelEnTete;
-        LabelIdTechnique.SetBounds(12, 22, 860, 16);
-        LabelIdTechnique.Font.Name := 'Consolas';
-        LabelIdTechnique.Font.Color := clGray;
-
       end;
 
     procedure TFrmPrincipal.ChargerContenuStatique;
@@ -359,6 +180,7 @@ unit AH.UI.FrmPrincipal;
 
         PanelEtatTerminal.Visible := False;
         FrameEtape.Visible := True;
+        FrameEtape.OnEtapeValidee := GererEtapeValidee;
         ChargerFichier(fcPreparation);
       end;
 
@@ -391,6 +213,10 @@ unit AH.UI.FrmPrincipal;
           begin
             FDernierIdAffiche := Noeud.Id;
             FrameEtape.AfficherNoeud(Noeud);
+            if SameText(Noeud.ChampContexte, 'NomGrandAncien') then
+              FrameEtape.DefinirOptionsSaisie(FGestionnaireGrandsAnciens.Noms)
+            else
+              FrameEtape.DefinirOptionsSaisie([]);
             RafraichirEnTete;
             RafraichirPanneauxAnnexes;
             RafraichirEtatBoutons;
@@ -403,18 +229,16 @@ unit AH.UI.FrmPrincipal;
     begin
       case FFichierActif of
         fcPreparation :
-          if TableauContientId(IdsReveilPreparation, FDernierIdAffiche) then
-            ChargerFichier(fcBatailleFinale)
-          else
-            ChargerFichier(fcTour);
+          ChargerFichier(fcTour); // Le réveil du Grand Ancien ne peut plus survenir pendant la préparation (voir prep14 simplifié).
 
-        fcTour :
+        fcTour:
           if TableauContientId(IdsReveilTour, FDernierIdAffiche) then
             ChargerFichier(fcBatailleFinale)
           else
             begin
               FContexte.TourCourant := FContexte.TourCourant + 1;
-              ChargerFichier(fcTour); // Nouveau tour : même arbre, nouvelle instance de moteur.
+              FContexte.PasserMarqueurPremierJoueur;
+              ChargerFichier(fcTour);
             end;
 
         fcBatailleFinale :
@@ -484,7 +308,10 @@ unit AH.UI.FrmPrincipal;
         else
           PanelConseils.Visible := False;
 
-        if FGestionnaireCapacites.TryObtenirCapacite(FContexte.NomInvestigateurCourant, Capacite) then
+        if (FFichierActif = fcTour)
+           and FMoteur.EstDansBouclePorInvestigateur
+           and FGestionnaireCapacites.TryObtenirCapacite(FContexte.NomInvestigateurCourant, Capacite)
+        then
           begin
             LabelCapacite.Caption := Format('%s : %s', [Capacite.NomInvestigateur, Capacite.Description]);
             PanelCapacite.Visible := True;
@@ -506,27 +333,35 @@ unit AH.UI.FrmPrincipal;
       end;
 
     procedure TFrmPrincipal.RafraichirEtatBoutons;
-      var
-        EnPartie : Boolean;
       begin
-        EnPartie := (FFichierActif <> fcFinDePartie);
-        BoutonPrecedent.Enabled := EnPartie;
-        BoutonReveilManuel.Enabled := (EnPartie and (FFichierActif <> fcBatailleFinale));
-        BoutonTerminerPartie.Enabled := (EnPartie and (FFichierActif = fcTour));
+        BoutonPrecedent.Enabled := FMoteur.PeutReculer;
+        BoutonReveilManuel.Enabled := FFichierActif = fcTour;
+        BoutonTerminerPartie.Enabled := FFichierActif = fcTour;
         CheckBoxAfficherConseils.Checked := FParametres.AfficherConseils;
       end;
 
     procedure TFrmPrincipal.GererEtapeValidee(Sender : TObject; const AValeur : Variant);
+      var
+        ChampVise : string;
+        GrandAncien : TGrandAncien;
       begin
         if FrameEtape.NoeudCourant.TypeNoeud <> ntInstruction then
-          try
-            FMoteur.EnregistrerReponse(AValeur);
-          except
-            on E: Exception do
+          begin
+            ChampVise := FrameEtape.NoeudCourant.ChampContexte;
+            try
+              FMoteur.EnregistrerReponse(AValeur);
+            except
+              on E: Exception do
               begin
                 FrameEtape.AfficherErreurSaisie(E.Message);
                 Exit;
               end;
+            end;
+
+            if SameText(ChampVise, 'NomGrandAncien')
+               and FGestionnaireGrandsAnciens.TryObtenirGrandAncien(FContexte.NomGrandAncien, GrandAncien)
+            then
+              FContexte.TailleEchelleDestin := GrandAncien.TailleEchelleDestin;
           end;
 
         AvancerEtAfficher;
@@ -541,6 +376,10 @@ unit AH.UI.FrmPrincipal;
           begin
             FDernierIdAffiche := Noeud.Id;
             FrameEtape.AfficherNoeud(Noeud);
+            if SameText(Noeud.ChampContexte, 'NomGrandAncien') then
+              FrameEtape.DefinirOptionsSaisie(FGestionnaireGrandsAnciens.Noms)
+            else
+              FrameEtape.DefinirOptionsSaisie([]);
             RafraichirEnTete;
             RafraichirPanneauxAnnexes;
             RafraichirEtatBoutons;
@@ -576,14 +415,38 @@ unit AH.UI.FrmPrincipal;
         DemarrerNouvellePartie;
       end;
 
-    procedure TFrmPrincipal.GererAffichageInitial(Sender: TObject);
+    procedure TFrmPrincipal.FormCreate(Sender : TObject);
       begin
-        OnShow := nil;
-        TThread.ForceQueue(nil,
-          procedure
-          begin
-            DemarrerNouvellePartie;
-          end);
+        FParametres := TParametresApplication.Create;
+        try
+          FParametres.ChargerDepuisFichier(CheminContenu('parametres.json'));
+        except
+        end;
+
+        FGestionnaireConseils := TGestionnaireConseils.Create;
+        FGestionnaireCapacites := TGestionnaireCapacites.Create;
+        FGestionnaireGrandsAnciens := TGestionnaireGrandsAnciens.Create;
+
+        ChargerContenuStatique;
+      end;
+
+    procedure TFrmPrincipal.FormDestroy(Sender: TObject);
+      begin
+        try
+          FParametres.SauvegarderDansFichier(CheminContenu('parametres.json'));
+        except
+        end;
+
+        FMoteur.Free;
+        FContexte.Free;
+        FRacineFinDePartie.Free;
+        FRacineBatailleFinale.Free;
+        FRacineTour.Free;
+        FRacinePreparation.Free;
+        FGestionnaireGrandsAnciens.Free;
+        FGestionnaireCapacites.Free;
+        FGestionnaireConseils.Free;
+        FParametres.Free;
       end;
 
 end.

@@ -7,25 +7,36 @@ object FrameEtape: TFrameEtape
   object LabelTitre: TLabel
     Left = 0
     Top = 0
-    Width = 480
+    Width = 500
     Height = 24
+    Align = alTop
     AutoSize = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -16
+    Font.Height = -19
     Font.Name = 'Segoe UI'
     Font.Style = [fsBold]
     ParentFont = False
     Visible = False
     WordWrap = True
+    ExplicitWidth = 480
   end
   object LabelTexte: TLabel
     Left = 0
-    Top = 30
-    Width = 480
+    Top = 24
+    Width = 500
     Height = 100
+    Align = alTop
     AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     WordWrap = True
+    ExplicitTop = 32
+    ExplicitWidth = 480
   end
   object PanelInstruction: TPanel
     Left = 0
@@ -71,9 +82,9 @@ object FrameEtape: TFrameEtape
       AutoSize = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clRed
-      Font.Height = -12
+      Font.Height = -16
       Font.Name = 'Segoe UI'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
       WordWrap = True
     end
@@ -83,6 +94,15 @@ object FrameEtape: TFrameEtape
       Width = 200
       Height = 23
       TabOrder = 0
+    end
+    object ComboSaisie: TComboBox
+      Left = 0
+      Top = 0
+      Width = 200
+      Height = 23
+      Style = csDropDownList
+      TabOrder = 2
+      Visible = False
     end
     object BoutonValiderSaisie: TButton
       Left = 208

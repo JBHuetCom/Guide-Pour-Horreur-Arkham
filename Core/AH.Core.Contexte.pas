@@ -134,6 +134,13 @@ unit AH.Core.Contexte;
           /// <summary>Copie des investigateurs en jeu, dans l'ordre de résolution des phases.</summary>
           function Investigateurs: TArray<TInvestigateurJoue>;          /// <summary>Index (base 0) de l'investigateur courant. Exposé pour la sauvegarde d'historique du moteur.</summary>
 
+          /// <summary>
+          /// Fait passer le marqueur Premier Joueur au joueur humain suivant dans l'ordre horaire —
+          /// concrètement, au premier investigateur (dans l'ordre de jeu) contrôlé par ce joueur suivant.
+          /// À appeler une fois par tour, à la fin de la phase du Mythe.
+          /// </summary>
+          procedure PasserMarqueurPremierJoueur;
+
           property IndexPremierInvestigateur : Integer read FIndexPremierInvestigateur write FIndexPremierInvestigateur;
           property IndexInvestigateurCourant : Integer read FIndexInvestigateurCourant write FIndexInvestigateurCourant;
           property NiveauTerreur : Integer read FNiveauTerreur write FNiveauTerreur;
@@ -309,9 +316,13 @@ unit AH.Core.Contexte;
                       else
                         if SameText(ANomChamp, 'NomGrandAncien') then
                           Result := FNomGrandAncien
-                        else raise EArgumentException.CreateFmt(
-                               'Champ de contexte inconnu : "%s".',
-                               [ANomChamp]);
+                        else
+                          if SameText(ANomChamp, 'CinqInvestigateursOuPlus') then
+                            Result := NombreInvestigateurs >= 5
+                          else
+                            raise EArgumentException.CreateFmt(
+                              'Champ de contexte inconnu : "%s".',
+                              [ANomChamp]);
       end;
 
     function TContextePartie.NomsJoueursHumains : TArray<string>;
@@ -322,6 +333,22 @@ unit AH.Core.Contexte;
     function TContextePartie.Investigateurs : TArray<TInvestigateurJoue>;
       begin
         Result := Copy(FInvestigateurs);
+      end;
+
+    procedure TContextePartie.PasserMarqueurPremierJoueur;
+      var
+        IndexJoueurHumainSuivant : Integer;
+        i : Integer;
+      begin
+        IndexJoueurHumainSuivant :=
+          (FInvestigateurs[FIndexPremierInvestigateur].IndexJoueurHumain + 1) mod NombreJoueursHumains;
+
+        for i := 0 to High(FInvestigateurs) do
+          if FInvestigateurs[i].IndexJoueurHumain = IndexJoueurHumainSuivant then
+            begin
+              FIndexPremierInvestigateur := i;
+              Exit;
+            end;
       end;
 
 end.

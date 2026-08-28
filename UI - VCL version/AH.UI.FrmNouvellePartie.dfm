@@ -19,12 +19,12 @@ object FrmNouvellePartie: TFrmNouvellePartie
   object LabelTitre: TLabel
     Left = 12
     Top = 12
-    Width = 193
-    Height = 19
+    Width = 259
+    Height = 25
     Caption = #201'tape 1 / 2 : Joueurs humains'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -14
+    Font.Height = -19
     Font.Name = 'Segoe UI'
     Font.Style = [fsBold]
     ParentFont = False
@@ -51,16 +51,28 @@ object FrmNouvellePartie: TFrmNouvellePartie
     object Label1: TLabel
       Left = 0
       Top = 0
-      Width = 261
-      Height = 15
+      Width = 340
+      Height = 21
       Caption = 'Ajoutez chaque joueur humain autour de la table.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
     end
     object lblComboPremierJoueur: TLabel
       Left = 9
       Top = 286
-      Width = 88
-      Height = 15
+      Width = 117
+      Height = 21
       Caption = 'Premier Joueur : '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       Layout = tlCenter
     end
     object EditNomJoueur: TEdit
@@ -98,7 +110,7 @@ object FrmNouvellePartie: TFrmNouvellePartie
       OnClick = GererClicSupprimerJoueur
     end
     object ComboPremierJoueur: TComboBox
-      Left = 103
+      Left = 135
       Top = 286
       Width = 145
       Height = 23
@@ -117,9 +129,15 @@ object FrmNouvellePartie: TFrmNouvellePartie
     object Label2: TLabel
       Left = 0
       Top = 0
-      Width = 331
-      Height = 15
+      Width = 432
+      Height = 21
       Caption = 'Ajoutez chaque investigateur en jeu et indiquez qui le contr'#244'le.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
     end
     object ComboNomInvestigateur: TComboBox
       Left = 0

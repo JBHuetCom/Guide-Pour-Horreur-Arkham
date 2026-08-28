@@ -3,6 +3,7 @@ unit AH.Core.Noeud;
   interface
 
     uses
+
       System.Generics.Collections,
       AH.Core.Types;
 
@@ -161,6 +162,7 @@ unit AH.Core.Noeud;
 
         /// <summary>Nœud cible détenu par l'état interne de la branche.</summary>
         property Noeud : TNoeudEtape read GetNoeud;
+
       end;
 
       /// <summary>
@@ -177,6 +179,8 @@ unit AH.Core.Noeud;
           FChampContexte : string;
           FEnfants : TObjectList<TNoeudEtape>;
           FBranches : TList<TBrancheEtape>;
+          FValeurForcee: Variant;
+          FPossedeValeurForcee: Boolean;
         public
           /// <param name="AId">Identifiant unique du nœud, utilisé pour le diagnostic et les tests.</param>
           /// <param name="ATypeNoeud">Nature du nœud, détermine son mode de résolution par le moteur.</param>
@@ -219,6 +223,15 @@ unit AH.Core.Noeud;
           property ChampContexte : string read FChampContexte write FChampContexte;
           property Enfants : TObjectList<TNoeudEtape> read FEnfants;
           property Branches : TList<TBrancheEtape> read FBranches;
+          /// <summary>
+          /// Pour ntSaisie uniquement : si renseignée, le moteur affecte automatiquement cette valeur
+          /// au champ de contexte désigné par ChampContexte, sans jamais interroger l'utilisateur —
+          /// utile quand la valeur est déjà connue avec certitude (ex. le tout premier pion Destin
+          /// de la partie vaut toujours 1). Sans effet pour les autres types de nœud.
+          /// </summary>
+          property ValeurForcee: Variant read FValeurForcee write FValeurForcee;
+          /// <summary>True si ValeurForcee a été explicitement renseignée par le contenu.</summary>
+          property PossedeValeurForcee: Boolean read FPossedeValeurForcee write FPossedeValeurForcee;
       end;
 
   implementation

@@ -30,7 +30,6 @@ unit AH.UI.FrameEtape;
 
           procedure ViderBoutonsChoix;
           procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
-          procedure GererClicBoutonChoix(ASender : TObject);
         public
           /// <param name="AOwner">Propriétaire standard VCL de la frame.</param>
           constructor Create(AOwner : TComponent); override;
@@ -58,8 +57,6 @@ unit AH.UI.FrameEtape;
           /// <summary>Nœud actuellement affiché, ou nil si AfficherNoeud n'a pas encore été appelée.</summary>
           property NoeudCourant : TNoeudEtape read FNoeudCourant;
 
-          /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
-          property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
         published
           LabelTitre : TLabel;
           LabelTexte : TLabel;
@@ -70,8 +67,19 @@ unit AH.UI.FrameEtape;
           EditSaisie : TEdit;
           BoutonValiderSaisie : TButton;
           LabelErreurSaisie : TLabel;
+          ComboSaisie : TComboBox;
+
+          procedure GererClicBoutonChoix(ASender : TObject);
           procedure GererClicContinuer(Sender : TObject);
           procedure GererClicValiderSaisie(Sender : TObject);
+          /// <summary>
+          /// Bascule le champ de saisie affiché entre texte libre (par défaut) et liste déroulante.
+          /// </summary>
+          /// <param name="AOptions">Options à proposer. Tableau vide pour revenir à la saisie libre.</param>
+          procedure DefinirOptionsSaisie(const AOptions: TArray<string>);
+
+          /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
+          property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
       end;
 
   implementation
@@ -143,9 +151,9 @@ unit AH.UI.FrameEtape;
         LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTexte.Caption := ANoeud.Texte;
 
-        PanelInstruction.Visible := ANoeud.TypeNoeud = ntInstruction;
-        PanelChoix.Visible := ANoeud.TypeNoeud = ntChoix;
-        PanelSaisie.Visible := ANoeud.TypeNoeud = ntSaisie;
+        PanelInstruction.Visible := (ANoeud.TypeNoeud = ntInstruction);
+        PanelChoix.Visible := (ANoeud.TypeNoeud = ntChoix);
+        PanelSaisie.Visible := (ANoeud.TypeNoeud = ntSaisie);
 
         case ANoeud.TypeNoeud of
           ntChoix:
@@ -153,8 +161,10 @@ unit AH.UI.FrameEtape;
           ntSaisie:
             begin
               EditSaisie.Text := EmptyStr;
+              ComboSaisie.ItemIndex := -1;
               LabelErreurSaisie.Caption := EmptyStr;
-              EditSaisie.SetFocus;
+              if EditSaisie.Visible then
+                EditSaisie.SetFocus;
             end;
         end;
       end;
@@ -187,16 +197,37 @@ unit AH.UI.FrameEtape;
       var
         Texte : string;
       begin
-        Texte := Trim(EditSaisie.Text);
+        if ComboSaisie.Visible then
+          Texte := ComboSaisie.Text
+        else
+          Texte := Trim(EditSaisie.Text);
+
         if Texte = EmptyStr then
-        begin
-          LabelErreurSaisie.Caption := 'Saisissez une valeur avant de valider.';
-          Exit;
-        end;
+          begin
+            LabelErreurSaisie.Caption := 'Choisissez ou saisissez une valeur avant de valider.';
+            Exit;
+          end;
 
         LabelErreurSaisie.Caption := EmptyStr;
         if Assigned(FOnEtapeValidee) then
           FOnEtapeValidee(Self, Texte);
+      end;
+
+    procedure TFrameEtape.DefinirOptionsSaisie(const AOptions : TArray<string>);
+      var
+        Option : string;
+      begin
+        ComboSaisie.Items.Clear;
+        for Option in AOptions do
+          ComboSaisie.Items.Add(Option);
+
+        ComboSaisie.Visible := Length(AOptions) > 0;
+        EditSaisie.Visible := Length(AOptions) = 0;
+
+        if ComboSaisie.Visible
+           and (ComboSaisie.Items.Count > 0)
+        then
+          ComboSaisie.ItemIndex := 0;
       end;
 
 end.

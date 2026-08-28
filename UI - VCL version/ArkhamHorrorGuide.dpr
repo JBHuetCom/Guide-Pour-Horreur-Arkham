@@ -3,9 +3,9 @@ program ArkhamHorrorGuide;
 uses
   FastMM5,
   Vcl.Forms,
-  AH.UI.FrmPrincipal in 'AH.UI.FrmPrincipal.pas' {Form1},
+  AH.UI.FrmPrincipal in 'AH.UI.FrmPrincipal.pas' {FrmPrincipal},
   AH.UI.FrmNouvellePartie in 'AH.UI.FrmNouvellePartie.pas' {FrmNouvellePartie},
-  AH.UI.FrameEtape in 'AH.UI.FrameEtape.pas' {Frame1: TFrame},
+  AH.UI.FrameEtape in 'AH.UI.FrameEtape.pas' {FrameEtape: TFrame},
   AH.Core.Types in '..\Core\AH.Core.Types.pas',
   AH.Core.Contexte in '..\Core\AH.Core.Contexte.pas',
   AH.Core.Noeud in '..\Core\AH.Core.Noeud.pas',
@@ -29,5 +29,8 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmPrincipal, FrmPrincipal);
   Application.CreateForm(TFrmNouvellePartie, FrmNouvellePartie);
+  FrmPrincipal.Show;
+  Application.ProcessMessages; // Laisse Windows finir d'enregistrer la fenêtre avant d'ouvrir une modale.
+  FrmPrincipal.DemarrerNouvellePartie;
   Application.Run;
 end.

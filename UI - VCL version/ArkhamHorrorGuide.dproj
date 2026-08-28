@@ -140,13 +140,13 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="AH.UI.FrmPrincipal.pas">
-            <Form>Form1</Form>
+            <Form>FrmPrincipal</Form>
         </DCCReference>
         <DCCReference Include="AH.UI.FrmNouvellePartie.pas">
             <Form>FrmNouvellePartie</Form>
         </DCCReference>
         <DCCReference Include="AH.UI.FrameEtape.pas">
-            <Form>Frame1</Form>
+            <Form>FrameEtape</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Core\AH.Core.Types.pas"/>
@@ -160,7 +160,9 @@
         <DCCReference Include="..\Core\AH.Core.Capacites.pas"/>
         <DCCReference Include="..\Core\AH.Core.Parametres.pas"/>
         <DCCReference Include="..\Core\AH.Core.ConstructeurPartie.pas"/>
-        <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas"/>
+        <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
