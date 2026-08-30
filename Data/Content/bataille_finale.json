@@ -6,34 +6,40 @@
         {
             "Id": "bf01_defausser_environnement_rumeur",
             "Type": "ntInstruction",
-            "Texte": "Défaussez les cartes Environnement et Rumeur actuellement en jeu. À partir de maintenant, vous ne pouvez plus percevoir d'argent des cartes Acompte ou Prêt Bancaire, ni gagner de nouveaux pions Indice."
+            "Texte": "Défaussez les cartes Environnement et Rumeur actuellement en jeu. À partir de maintenant, vous ne pouvez plus percevoir d'argent des cartes Acompte ou Prêt Bancaire, ni gagner de nouveaux pions Indice.",
+            "Image": ""
         },
         {
             "Id": "bf02_investigateurs_perdus_devores",
             "Type": "ntInstruction",
-            "Texte": "Tout investigateur actuellement Perdu dans le Temps et l'Espace est immédiatement dévoré : il est retiré définitivement de la partie (son joueur ne reprend pas de nouveau personnage)."
+            "Texte": "Tout investigateur actuellement Perdu dans le Temps et l'Espace est immédiatement dévoré : il est retiré définitivement de la partie (son joueur ne reprend pas de nouveau personnage).",
+            "Image": ""
         },
         {
             "Id": "bf03_verification_destin",
             "Type": "ntInstruction",
-            "Texte": "Si l'échelle du destin du Grand Ancien n'est pas entièrement remplie de pions Destin, complétez-la maintenant avant de continuer."
+            "Texte": "Si l'échelle du destin du Grand Ancien n'est pas entièrement remplie de pions Destin, complétez-la maintenant avant de continuer.",
+            "Image": ""
         },
         {
             "Id": "bf03_saisie_destin",
             "Type": "ntSaisie",
             "Champ": "EchelleDestin",
-            "Texte": "Indiquez le nombre de pions Destin actuellement sur l'échelle (elle doit être à son maximum avant de commencer)."
+            "Texte": "Indiquez le nombre de pions Destin actuellement sur l'échelle (elle doit être à son maximum avant de commencer).",
+            "Image": ""
         },
         {
             "Id": "bf04_capacites_debut_bataille",
             "Type": "ntInstruction",
-            "Texte": "Activez immédiatement les capacités de Début de Bataille éventuelles du Grand Ancien (certaines ne se déclenchent qu'une seule fois, au tout début du combat)."
+            "Texte": "Activez immédiatement les capacités de Début de Bataille éventuelles du Grand Ancien (certaines ne se déclenchent qu'une seule fois, au tout début du combat).",
+            "Image": ""
         },
         {
             "Id": "bf_round_01_restauration",
             "Type": "ntInstruction",
             "Titre": "Round de bataille — Restauration",
-            "Texte": "Chaque investigateur encore en jeu restaure ses cartes déchargées, peut utiliser les capacités de son personnage, et ajuste ses compétences comme lors d'une phase d'Entretien normale. Le marqueur Premier Joueur passe au joueur humain suivant. Les investigateurs présents au même endroit peuvent s'échanger de l'équipement."
+            "Texte": "Chaque investigateur encore en jeu restaure ses cartes déchargées, peut utiliser les capacités de son personnage, et ajuste ses compétences comme lors d'une phase d'Entretien normale. Le marqueur Premier Joueur passe au joueur humain suivant. Les investigateurs présents au même endroit peuvent s'échanger de l'équipement.",
+            "Image": ""
         },
         {
             "Id": "bf_round_02_attaque_boucle",
@@ -43,7 +49,8 @@
                 {
                     "Id": "bf_investigateurs_attaquent",
                     "Type": "ntInstruction",
-                    "Texte": "S'il est toujours en jeu, cet investigateur effectue un test de Combat contre le Grand Ancien, avec sa valeur de Combat comme modificateur. Notez le nombre de succès obtenus : ils s'additionnent à ceux déjà accumulés ce round par l'ensemble du groupe."
+                    "Texte": "S'il est toujours en jeu, cet investigateur effectue un test de Combat contre le Grand Ancien, avec sa valeur de Combat comme modificateur. Notez le nombre de succès obtenus : ils s'additionnent à ceux déjà accumulés ce round par l'ensemble du groupe.",
+                    "Image": ""
                 }
             ]
         },
@@ -51,6 +58,7 @@
             "Id": "bf_round_03_seuil_succes",
             "Type": "ntChoix",
             "Titre": "Depuis la dernière vérification, le groupe a-t-il cumulé un total de succès au moins égal au nombre d'investigateurs en jeu (y compris ceux déjà dévorés) ?",
+            "Image": "",
             "Branches": [
                 {
                     "Valeur": "non",
@@ -62,18 +70,21 @@
                             {
                                 "Id": "bf_round_03_pas_de_retrait",
                                 "Type": "ntInstruction",
-                                "Texte": "Aucun pion Destin n'est retiré pour l'instant. Passez à l'attaque du Grand Ancien."
+                                "Texte": "Aucun pion Destin n'est retiré pour l'instant. Passez à l'attaque du Grand Ancien.",
+                                "Image": ""
                             },
                             {
                                 "Id": "bf_round_04_attaque_grand_ancien",
                                 "Type": "ntInstruction",
                                 "Titre": "Round de bataille — Le Grand Ancien attaque",
-                                "Texte": "Le Grand Ancien attaque chaque investigateur encore en jeu, selon le texte de sa capacité d'Attaque. Tout investigateur tombant à 0 en Santé Mentale ou en Résistance à cause de cette attaque est dévoré et retiré définitivement de la partie."
+                                "Texte": "Le Grand Ancien attaque chaque investigateur encore en jeu, selon le texte de sa capacité d'Attaque. Tout investigateur tombant à 0 en Santé Mentale ou en Résistance à cause de cette attaque est dévoré et retiré définitivement de la partie.",
+                                "Image": ""
                             },
                             {
                                 "Id": "bf_round_05_verification_survivants",
                                 "Type": "ntChoix",
                                 "Titre": "Reste-t-il au moins un investigateur encore en jeu après cette attaque ?",
+                                "Image": "",
                                 "Branches": [
                                     {
                                         "Valeur": "non",
@@ -81,7 +92,8 @@
                                         "Noeud": {
                                             "Id": "bf_defaite",
                                             "Type": "ntInstruction",
-                                            "Texte": "Tous les investigateurs ont été dévorés : le Grand Ancien déferle sur le monde. La partie est perdue."
+                                            "Texte": "Tous les investigateurs ont été dévorés : le Grand Ancien déferle sur le monde. La partie est perdue.",
+                                            "Image": ""
                                         }
                                     },
                                     {
@@ -90,7 +102,8 @@
                                         "Noeud": {
                                             "Id": "bf_round_suivant",
                                             "Type": "ntInstruction",
-                                            "Texte": "Un nouveau round de bataille commence : reprenez cette séquence depuis « Round de bataille — Restauration »."
+                                            "Texte": "Un nouveau round de bataille commence : reprenez cette séquence depuis « Round de bataille — Restauration ».",
+                                            "Image": ""
                                         }
                                     }
                                 ]
@@ -109,12 +122,14 @@
                                 "Id": "bf_round_03_saisie_destin",
                                 "Type": "ntSaisie",
                                 "Champ": "EchelleDestin",
-                                "Texte": "Retirez un pion Destin par tranche complète de succès égale au nombre d'investigateurs en jeu (le reliquat de succès sous ce seuil est conservé pour le round suivant). Si le cumul est très élevé, plusieurs pions peuvent être retirés d'un coup. Indiquez le nombre de pions Destin restant sur l'échelle du Grand Ancien."
+                                "Texte": "Retirez un pion Destin par tranche complète de succès égale au nombre d'investigateurs en jeu (le reliquat de succès sous ce seuil est conservé pour le round suivant). Si le cumul est très élevé, plusieurs pions peuvent être retirés d'un coup. Indiquez le nombre de pions Destin restant sur l'échelle du Grand Ancien.",
+                                "Image": ""
                             },
                             {
                                 "Id": "bf_round_03_destin_restant",
                                 "Type": "ntChoix",
                                 "Titre": "Reste-t-il au moins un pion Destin sur l'échelle du Grand Ancien ?",
+                                "Image": "",
                                 "Branches": [
                                     {
                                         "Valeur": "oui",
@@ -126,18 +141,21 @@
                                                 {
                                                     "Id": "bf_round_03_combat_continue",
                                                     "Type": "ntInstruction",
-                                                    "Texte": "Le combat continue. Passez à l'attaque du Grand Ancien."
+                                                    "Texte": "Le combat continue. Passez à l'attaque du Grand Ancien.",
+                                                    "Image": ""
                                                 },
                                                 {
                                                     "Id": "bf_round_04_attaque_grand_ancien",
                                                     "Type": "ntInstruction",
                                                     "Titre": "Round de bataille — Le Grand Ancien attaque",
-                                                    "Texte": "Le Grand Ancien attaque chaque investigateur encore en jeu, selon le texte de sa capacité d'Attaque. Tout investigateur tombant à 0 en Santé Mentale ou en Résistance à cause de cette attaque est dévoré et retiré définitivement de la partie."
+                                                    "Texte": "Le Grand Ancien attaque chaque investigateur encore en jeu, selon le texte de sa capacité d'Attaque. Tout investigateur tombant à 0 en Santé Mentale ou en Résistance à cause de cette attaque est dévoré et retiré définitivement de la partie.",
+                                                    "Image": ""
                                                 },
                                                 {
                                                     "Id": "bf_round_05_verification_survivants",
                                                     "Type": "ntChoix",
                                                     "Titre": "Reste-t-il au moins un investigateur encore en jeu après cette attaque ?",
+                                                    "Image": "",
                                                     "Branches": [
                                                         {
                                                             "Valeur": "non",
@@ -145,7 +163,8 @@
                                                             "Noeud": {
                                                                 "Id": "bf_defaite",
                                                                 "Type": "ntInstruction",
-                                                                "Texte": "Tous les investigateurs ont été dévorés : le Grand Ancien déferle sur le monde. La partie est perdue."
+                                                                "Texte": "Tous les investigateurs ont été dévorés : le Grand Ancien déferle sur le monde. La partie est perdue.",
+                                                                "Image": ""
                                                             }
                                                         },
                                                         {
@@ -154,7 +173,8 @@
                                                             "Noeud": {
                                                                 "Id": "bf_round_suivant",
                                                                 "Type": "ntInstruction",
-                                                                "Texte": "Un nouveau round de bataille commence : reprenez cette séquence depuis « Round de bataille — Restauration »."
+                                                                "Texte": "Un nouveau round de bataille commence : reprenez cette séquence depuis « Round de bataille — Restauration ».",
+                                                                "Image": ""
                                                             }
                                                         }
                                                     ]
@@ -168,7 +188,8 @@
                                         "Noeud": {
                                             "Id": "bf_victoire",
                                             "Type": "ntInstruction",
-                                            "Texte": "Le dernier pion Destin est retiré : le Grand Ancien est vaincu ! Les investigateurs ont gagné la partie."
+                                            "Texte": "Le dernier pion Destin est retiré : le Grand Ancien est vaincu ! Les investigateurs ont gagné la partie.",
+                                            "Image": ""
                                         }
                                     }
                                 ]

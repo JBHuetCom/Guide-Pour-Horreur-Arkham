@@ -3,82 +3,98 @@
     {
       "NomInvestigateur": "Amanda Sharpe (l'étudiante)",
       "Domaine": "Enquête",
-      "Description": "À chaque fois qu'elle pioche une ou plusieurs cartes du paquet Compétences, elle en pioche une de plus et en défausse une au choix."
+      "Description": "À chaque fois qu'elle pioche une ou plusieurs cartes du paquet Compétences, elle en pioche une de plus et en défausse une au choix.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Joe Diamond (le détective privé)",
       "Domaine": "Combat",
-      "Description": "Quand il dépense un pion indice, Joe lance un dé supplémentaire."
+      "Description": "Quand il dépense un pion indice, Joe lance un dé supplémentaire.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Monterey Jack (l'archéologue)",
       "Domaine": "Combat",
-      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Objets Uniques, il en pioche une de plus et en défausse une au choix."
+      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Objets Uniques, il en pioche une de plus et en défausse une au choix.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Ashcan Pete (le vagabond)",
       "Domaine": "Combat",
-      "Description": "À chaque fois qu'il pioche une cartes dans les paquets Objets Communs, Objets Uniques ou Sorts, il peut prendre celle de dessus ou d'en dessous. De plus, il peut regarder la carte du dessous de ces paquets à tout moment."
+      "Description": "À chaque fois qu'il pioche une cartes dans les paquets Objets Communs, Objets Uniques ou Sorts, il peut prendre celle de dessus ou d'en dessous. De plus, il peut regarder la carte du dessous de ces paquets à tout moment.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Harvey Walters (le professeur)",
       "Domaine": "Enquête",
-      "Description": "Il réduit de 1 toutes ses pertes de Santé Mentale (perte minimum = 0)."
+      "Description": "Il réduit de 1 toutes ses pertes de Santé Mentale (perte minimum = 0).",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Soeur Marie (la nonne)",
       "Domaine": "Enquête",
-      "Description": "Elle n'est jamais Perdue Dans Le Temps Et l'Espace. Si sa Santé Mentale descend à 0, elle retourne à l'Asile d'Arkham. Si sa Résistance descend à 0, elle retourne à l'Hôpital. Si ni l'un ni l'autre, elle retourne à l'Eglise Méridionale."
+      "Description": "Elle n'est jamais Perdue Dans Le Temps Et l'Espace. Si sa Santé Mentale descend à 0, elle retourne à l'Asile d'Arkham. Si sa Résistance descend à 0, elle retourne à l'Hôpital. Si ni l'un ni l'autre, elle retourne à l'Eglise Méridionale.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Jenny Barnes (l'héritière dilettante)",
       "Domaine": "Social",
-      "Description": "À la phase d'Entretien, elle gagne 1$."
+      "Description": "À la phase d'Entretien, elle gagne 1$.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Vincent Lee (le docteur)",
       "Domaine": "Social",
-      "Description": "À la phase d'Entretien, il peut restaurer 1 point de Résistance à lui-même ou à un autre personnage se trouvant au même endroit que lui. La Résistance d'un personnage ne peut jamais dépasser son maximum."
+      "Description": "À la phase d'Entretien, il peut restaurer 1 point de Résistance à lui-même ou à un autre personnage se trouvant au même endroit que lui. La Résistance d'un personnage ne peut jamais dépasser son maximum.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Carolyn Fern (la psychologue)",
       "Domaine": "Social",
-      "Description": "À la phase d'Entretien, elle peut restaurer 1 point de Santé Mentale à elle-même ou à un autre personnage se trouvant au même endroit qu'elle. La Santé Mentale d'un personnage ne peut jamais dépasser son maximum."
+      "Description": "À la phase d'Entretien, elle peut restaurer 1 point de Santé Mentale à elle-même ou à un autre personnage se trouvant au même endroit qu'elle. La Santé Mentale d'un personnage ne peut jamais dépasser son maximum.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Darrel Simmons (le photographe)",
       "Domaine": "Autre",
-      "Description": "Pendant les phases de Rencontres à Arkham, il pioche 1 carte supplémentaire, et doit en défausser une. Exemple : la Rencontre lui impose de piocher 2 cartes : grâce à cette capacité, il en pioche 3 et en défausse 1."
+      "Description": "Pendant les phases de Rencontres à Arkham, il pioche 1 carte supplémentaire, et doit en défausser une. Exemple : la Rencontre lui impose de piocher 2 cartes : grâce à cette capacité, il en pioche 3 et en défausse 1.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Kate Winthrop (la scientifique)",
       "Domaine": "Autre",
-      "Description": "Grâce à son stabilisateur de flux, elle empêche les monstres et les portails d'apparaître là où elle se trouve. Si une Vague De Monstres devait se déclencher depuis la case où elle se trouve, la Vague est totalement annulée. Si une Vague De Monstres déclenchée ailleurs devait faire apparaître des monstres à l'endroit où elle se trouve, ces monstres apparaîssent ailleurs. MAIS sa capacité ne fait pas disparaître les monstres ou les portails quand elle arrive quelque part, et elle n'empêche pas les monstres d'entrer là où elle est."
+      "Description": "Grâce à son stabilisateur de flux, elle empêche les monstres et les portails d'apparaître là où elle se trouve. Si une Vague De Monstres devait se déclencher depuis la case où elle se trouve, la Vague est totalement annulée. Si une Vague De Monstres déclenchée ailleurs devait faire apparaître des monstres à l'endroit où elle se trouve, ces monstres apparaîssent ailleurs. MAIS sa capacité ne fait pas disparaître les monstres ou les portails quand elle arrive quelque part, et elle n'empêche pas les monstres d'entrer là où elle est.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Gloria Goldberg (la femme de lettres)",
       "Domaine": "Autre",
-      "Description": "Pendant les phases de Rencontres dans l'Autre Monde, elle pioche 1 carte supplémentaire correspondant à la couleur de l'Autre Monde où elle se trouve, et doit en défausser une. Exemple : la Rencontre lui impose de piocher 2 cartes : grâce à cette capacité, il en pioche 3 et en défausse 1."
+      "Description": "Pendant les phases de Rencontres dans l'Autre Monde, elle pioche 1 carte supplémentaire correspondant à la couleur de l'Autre Monde où elle se trouve, et doit en défausser une. Exemple : la Rencontre lui impose de piocher 2 cartes : grâce à cette capacité, il en pioche 3 et en défausse 1.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Michael McGlen (le gangster)",
       "Domaine": "Combat",
-      "Description": "Il réduit de 1 toutes ses pertes de Résistance (perte minimum = 0)."
+      "Description": "Il réduit de 1 toutes ses pertes de Résistance (perte minimum = 0).",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Bob Jenkins (le représentant)",
       "Domaine": "Social",
-      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Objets Communs, il en pioche une de plus et en défausse une au choix."
+      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Objets Communs, il en pioche une de plus et en défausse une au choix.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Dexter Drake (le magicien)",
       "Domaine": "Social",
-      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Sorts, il en pioche une de plus et en défausse une au choix."
+      "Description": "À chaque fois qu'il pioche une ou plusieurs cartes du paquet Sorts, il en pioche une de plus et en défausse une au choix.",
+      "Image": ""
     },
     {
       "NomInvestigateur": "Mandy Thompson (la chercheuse)",
       "Domaine": "Autre",
-      "Description": "Une et une seule fois par tour, elle peut permettre à n'importe quel personnage - elle y compris - de relancer les dés d'un test de Compétence qui n'étaient pas un succès."
+      "Description": "Une et une seule fois par tour, elle peut permettre à n'importe quel personnage - elle y compris - de relancer les dés d'un test de Compétence qui n'étaient pas un succès.",
+      "Image": ""
     }
-]
+  ]
 }

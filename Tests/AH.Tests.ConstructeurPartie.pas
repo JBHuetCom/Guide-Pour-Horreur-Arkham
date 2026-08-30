@@ -40,6 +40,12 @@
 
           [Test]
           procedure PlacerJoueurEnPremier_IndexHorsLimites_LeveEArgumentOutOfRangeException;
+
+          [Test]
+          procedure TousLesJoueursControlentAuMoinsUnInvestigateur_UnJoueurSansInvestigateur_RetourneFalse;
+
+          [Test]
+          procedure TousLesJoueursControlentAuMoinsUnInvestigateur_ChaqueJoueurCouvert_RetourneTrue;
       end;
 
   implementation
@@ -202,6 +208,18 @@
           Investigateurs.Free;
           Noms.Free;
         end;
+      end;
+
+    procedure TTestConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur_UnJoueurSansInvestigateur_RetourneFalse;
+      begin
+        Assert.IsFalse(TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
+          2, [Investigateur('Amanda', 0)])); // Joueur d'index 1 sans investigateur
+      end;
+
+    procedure TTestConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur_ChaqueJoueurCouvert_RetourneTrue;
+      begin
+        Assert.IsTrue(TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
+          2, [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 1)]));
       end;
 
   initialization

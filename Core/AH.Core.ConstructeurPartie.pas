@@ -57,6 +57,12 @@ unit AH.Core.ConstructeurPartie;
           /// <exception cref="EArgumentOutOfRangeException">Levée si AIndexJoueurChoisi est hors limites.</exception>
           class procedure PlacerJoueurEnPremier(ANomsJoueursHumains: TList<string>;
             AInvestigateurs: TList<TInvestigateurJoue>; AIndexJoueurChoisi: Integer); static;
+
+          /// <param name="ANombreJoueursHumains">Nombre de joueurs humains configurés.</param>
+          /// <param name="AInvestigateurs">Investigateurs déjà saisis.</param>
+          /// <returns>True si chaque joueur humain (index 0 à ANombreJoueursHumains-1) contrôle au moins un investigateur.</returns>
+          class function TousLesJoueursControlentAuMoinsUnInvestigateur(ANombreJoueursHumains : Integer;
+            const AInvestigateurs : TArray<TInvestigateurJoue>) : Boolean; static;
       end;
 
   implementation
@@ -162,6 +168,27 @@ unit AH.Core.ConstructeurPartie;
           finally
             MappingAncienVersNouveau.Free;
           end;
+        end;
+
+      class function TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
+                       ANombreJoueursHumains : Integer;
+                       const AInvestigateurs : TArray<TInvestigateurJoue>) : Boolean;
+        var
+          Couvert : TArray<Boolean>;
+          Investigateur : TInvestigateurJoue;
+          i : Integer;
+        begin
+          SetLength(Couvert, ANombreJoueursHumains);
+          for Investigateur in AInvestigateurs do
+            if (Investigateur.IndexJoueurHumain >= 0)
+               and (Investigateur.IndexJoueurHumain < ANombreJoueursHumains)
+            then
+              Couvert[Investigateur.IndexJoueurHumain] := True;
+
+          Result := True;
+          for i := 0 to ANombreJoueursHumains - 1 do
+            if not Couvert[i] then
+              Exit(False);
         end;
 
 end.

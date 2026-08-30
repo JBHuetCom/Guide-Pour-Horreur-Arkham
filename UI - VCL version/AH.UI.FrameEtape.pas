@@ -134,7 +134,9 @@ unit AH.UI.FrameEtape;
           end;
       end;
 
-    procedure TFrameEtape.AfficherNoeud(ANoeud: TNoeudEtape);
+    procedure TFrameEtape.AfficherNoeud(ANoeud : TNoeudEtape);
+      var
+        DecalageVertical : Integer;
       begin
         if not Assigned(ANoeud) then
           raise EArgumentNilException.Create('AfficherNoeud ne peut pas recevoir nil.');
@@ -148,17 +150,27 @@ unit AH.UI.FrameEtape;
         FNoeudCourant := ANoeud;
 
         LabelTitre.Caption := ANoeud.Titre;
-        LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
+        LabelTitre.Visible := (ANoeud.Titre <> EmptyStr);
         LabelTexte.Caption := ANoeud.Texte;
+
+        if LabelTitre.Visible then
+          LabelTexte.Top := LabelTitre.Top + LabelTitre.Height + 8
+        else
+          LabelTexte.Top := 0;
+
+        DecalageVertical := LabelTexte.Top + LabelTexte.Height + 12;
+        PanelInstruction.Top := DecalageVertical;
+        PanelChoix.Top := DecalageVertical;
+        PanelSaisie.Top := DecalageVertical;
 
         PanelInstruction.Visible := (ANoeud.TypeNoeud = ntInstruction);
         PanelChoix.Visible := (ANoeud.TypeNoeud = ntChoix);
         PanelSaisie.Visible := (ANoeud.TypeNoeud = ntSaisie);
 
         case ANoeud.TypeNoeud of
-          ntChoix:
+          ntChoix :
             ConstruireBoutonsChoix(ANoeud);
-          ntSaisie:
+          ntSaisie :
             begin
               EditSaisie.Text := EmptyStr;
               ComboSaisie.ItemIndex := -1;

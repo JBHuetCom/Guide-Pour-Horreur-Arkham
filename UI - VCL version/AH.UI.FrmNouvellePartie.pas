@@ -229,14 +229,16 @@ unit AH.UI.FrmNouvellePartie;
           eaJoueursHumains:
             begin
               BoutonSuivant.Caption := 'Suivant >';
-              BoutonSuivant.Enabled := FNomsJoueursHumains.Count > 0;
-              BoutonAjouterJoueur.Enabled := FNomsJoueursHumains.Count < NombreMaxJoueursHumains;
+              BoutonSuivant.Enabled := (FNomsJoueursHumains.Count > 0);
+              BoutonAjouterJoueur.Enabled := (FNomsJoueursHumains.Count < NombreMaxJoueursHumains);
             end;
           eaInvestigateurs:
             begin
               BoutonSuivant.Caption := 'Créer la partie';
-              BoutonSuivant.Enabled := FInvestigateurs.Count > 0;
-              BoutonAjouterInvestigateur.Enabled := FInvestigateurs.Count < NombreMaxInvestigateurs;
+              BoutonSuivant.Enabled := (FInvestigateurs.Count > 0)
+                                       and TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
+                                             FNomsJoueursHumains.Count, FInvestigateurs.ToArray);
+              BoutonAjouterInvestigateur.Enabled := (FInvestigateurs.Count < NombreMaxInvestigateurs);
             end;
         end;
 
@@ -414,6 +416,13 @@ unit AH.UI.FrmNouvellePartie;
             OMessageErreur := 'Ajoutez au moins un investigateur.';
             Exit(False);
           end;
+
+        if not TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
+                 FNomsJoueursHumains.Count, FInvestigateurs.ToArray) then
+        begin
+          OMessageErreur := 'Chaque joueur humain doit contrôler au moins un investigateur.';
+          Exit(False);
+        end;
 
         if ComboPremierJoueur.ItemIndex > 0 then
           TConstructeurPartie.PlacerJoueurEnPremier(FNomsJoueursHumains,

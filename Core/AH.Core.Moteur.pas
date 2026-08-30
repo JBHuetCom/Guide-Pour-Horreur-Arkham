@@ -108,17 +108,27 @@ unit AH.Core.Moteur;
     constructor TMoteurSequenceur.Create(ARacine : TNoeudEtape; AContexte : TContextePartie);
       begin
         inherited Create;
+
         FRacine := ARacine;
         FContexte := AContexte;
         FPile := TList<TFrameParcours>.Create;
         FHistorique := TStack<TInstantane>.Create;
-        PousserFrame(FRacine, 1); // La racine est toujours une ntSequence de premier niveau.
+
+        if FRacine.TypeNoeud in [ntSequence, ntBouclePorInvestigateur] then
+          PousserFrame(FRacine, 1)
+        else
+          // La racine n'est pas un conteneur (ex. fin_de_partie.json, dont la racine est un
+          // ntChoix) : Enfants y vaut nil, PousserFrame planterait dessus. On la traite comme
+          // n'importe quel nœud rencontré en cours de route, via la résolution habituelle
+          // (TraiterNoeud, invoquée par AvancerJusquInteractif dès le premier Suivant).
+          FBrancheChoisieEnAttente := FRacine;
       end;
 
     destructor TMoteurSequenceur.Destroy;
       begin
         FPile.Free;
         FHistorique.Free;
+
         inherited;
       end;
 

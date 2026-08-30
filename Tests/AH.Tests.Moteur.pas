@@ -61,6 +61,9 @@ unit AH.Tests.Moteur;
 
         [Test]
         procedure PeutReculer_AuDebutPuisApresUnSuivant_RefleteLHistorique;
+
+        [Test]
+        procedure Create_AvecRacineDeTypeNtChoix_NePasPlanterEtResoudreCorrectement;
       end;
 
   implementation
@@ -381,6 +384,32 @@ unit AH.Tests.Moteur;
           FMoteur.Suivant;
           Assert.IsTrue(FMoteur.PeutReculer);
         end;
+
+    procedure TTestMoteurSequenceur.Create_AvecRacineDeTypeNtChoix_NePasPlanterEtResoudreCorrectement;
+      var
+        Racine, BrancheA : TNoeudEtape;
+        Resultat : TNoeudEtape;
+      begin
+        // Reproduit fin_de_partie.json : une racine directement de type ntChoix (pas ntSequence),
+        // ce qui provoquait une violation d'accès (Enfants est nil pour ntChoix).
+        Racine := TNoeudEtape.Create('racine_choix', ntChoix);
+        BrancheA := TNoeudEtape.Create('branche_a', ntInstruction);
+        BrancheA.Texte := 'Option A';
+        Racine.AjouterBranche('a', 'Option A', BrancheA);
+        FRacine := Racine;
+
+        FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+
+        Resultat := FMoteur.Suivant;
+        Assert.AreEqual('racine_choix', Resultat.Id);
+
+        FMoteur.EnregistrerReponse('a');
+        Resultat := FMoteur.Suivant;
+        Assert.AreEqual('branche_a', Resultat.Id);
+
+        Assert.IsNull(FMoteur.Suivant);
+      end;
 
   initialization
     TDUnitX.RegisterTestFixture(TTestMoteurSequenceur);
