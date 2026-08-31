@@ -163,6 +163,7 @@
         <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas">
             <Form>$R *.res</Form>
         </DCCReference>
+        <DCCReference Include="AH.UI.Images.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -61,6 +61,12 @@ unit AH.Tests.Contexte;
 
           [Test]
           procedure PasserMarqueurPremierJoueur_DernierJoueur_ReboucleSurLePremier;
+
+          [TestCase('4 investigateurs', '4,4')]
+          [TestCase('8 investigateurs', '8,0')]
+          [TestCase('1 investigateur', '1,7')]
+          procedure LimitePeripherie_RespecteLaTableDuLivret(ANombreInvestigateurs, ALimiteAttendue: Integer);
+
       end;
 
   implementation
@@ -312,6 +318,26 @@ unit AH.Tests.Contexte;
           Contexte.RevenirAuPremierInvestigateur;
 
           Assert.AreEqual('Amanda', Contexte.NomInvestigateurCourant);
+        finally
+          Contexte.Free;
+        end;
+      end;
+
+    [TestCase('4 investigateurs', '4,4')]
+    [TestCase('8 investigateurs', '8,0')]
+    [TestCase('1 investigateur', '1,7')]
+    procedure TTestContextePartie.LimitePeripherie_RespecteLaTableDuLivret(ANombreInvestigateurs, ALimiteAttendue: Integer);
+      var
+        Investigateurs : TArray<TInvestigateurJoue>;
+        i : Integer;
+        Contexte : TContextePartie;
+      begin
+        SetLength(Investigateurs, ANombreInvestigateurs);
+        for i := 0 to ANombreInvestigateurs - 1 do
+          Investigateurs[i] := Investigateur(Format('Inv%d', [i + 1]), 0);
+        Contexte := TContextePartie.Create(['Alice'], Investigateurs);
+        try
+          Assert.AreEqual(ALimiteAttendue, Contexte.LimitePeripherie);
         finally
           Contexte.Free;
         end;

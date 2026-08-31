@@ -17,6 +17,8 @@ unit AH.Core.Capacites;
         NomInvestigateur : string;
         Domaine : TDomaineCapacite;
         Description : string;
+        /// <summary>Chemin du portrait de l'investigateur. Vide si non précisé.</summary>
+        Image: string;
       end;
 
       /// <summary>
@@ -134,6 +136,7 @@ unit AH.Core.Capacites;
                 [Capacite.NomInvestigateur, TexteDomaine]);
 
             Capacite.Description := Entree.S['Description'];
+            Capacite.Image := Entree.S['Image'];
 
             FCapacitesParInvestigateur.AddOrSetValue(AnsiLowerCase(Capacite.NomInvestigateur), Capacite);
           end;

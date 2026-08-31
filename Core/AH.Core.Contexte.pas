@@ -141,6 +141,9 @@ unit AH.Core.Contexte;
           /// </summary>
           procedure PasserMarqueurPremierJoueur;
 
+          /// <summary>Maximum de monstres pouvant s'accumuler en Périphérie (règle page 18) : 8 - NombreInvestigateurs, jamais négatif.</summary>
+          function LimitePeripherie : Integer;
+
           property IndexPremierInvestigateur : Integer read FIndexPremierInvestigateur write FIndexPremierInvestigateur;
           property IndexInvestigateurCourant : Integer read FIndexInvestigateurCourant write FIndexInvestigateurCourant;
           property NiveauTerreur : Integer read FNiveauTerreur write FNiveauTerreur;
@@ -158,6 +161,10 @@ unit AH.Core.Contexte;
       end;
 
   implementation
+
+    uses
+
+      System.Math;
 
     { TContextePartie }
 
@@ -320,9 +327,15 @@ unit AH.Core.Contexte;
                           if SameText(ANomChamp, 'CinqInvestigateursOuPlus') then
                             Result := NombreInvestigateurs >= 5
                           else
-                            raise EArgumentException.CreateFmt(
-                              'Champ de contexte inconnu : "%s".',
-                              [ANomChamp]);
+                            if SameText(ANomChamp, 'PlusAucunPortailOuvert') then
+                              Result := FNombrePortailsOuverts = 0
+                            else
+                              if SameText(ANomChamp, 'SixSignesDesAnciensAtteint') then
+                                Result := FNombreSignesDesAnciens >= 6
+                              else
+                                raise EArgumentException.CreateFmt(
+                                  'Champ de contexte inconnu : "%s".',
+                                  [ANomChamp]);
       end;
 
     function TContextePartie.NomsJoueursHumains : TArray<string>;
@@ -349,6 +362,11 @@ unit AH.Core.Contexte;
               FIndexPremierInvestigateur := i;
               Exit;
             end;
+      end;
+
+    function TContextePartie.LimitePeripherie : Integer;
+      begin
+        Result := Max(8 - NombreInvestigateurs, 0);
       end;
 
 end.
