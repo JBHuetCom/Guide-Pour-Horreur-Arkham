@@ -73,6 +73,7 @@ unit AH.UI.FrmPrincipal;
           LabelRegleGrandAncien : TLabel;
           PanelCapacite : TPanel;
           LabelCapacite : TLabel;
+          LabelFilAriane : TLabel;
           FrameEtape : TFrameEtape;
           PanelEtatTerminal : TPanel;
           LabelEtatTerminal : TLabel;
@@ -268,7 +269,7 @@ unit AH.UI.FrmPrincipal;
 
     procedure TFrmPrincipal.RafraichirEnTete;
       var
-        PrefixePhase:  string;
+        PrefixePhase : string;
       begin
         case FFichierActif of
           fcPreparation: PrefixePhase := 'Préparation';
@@ -281,8 +282,13 @@ unit AH.UI.FrmPrincipal;
           LabelEnTete.Caption := Format('%s — %s (joué par %s)',
             [PrefixePhase, FContexte.NomInvestigateurCourant, FContexte.NomJoueurHumainCourant])
         else
-          LabelEnTete.Caption := PrefixePhase;
+          if FFichierActif = fcTour then
+            LabelEnTete.Caption := Format('%s — Limite de monstres à Arkham : %d · Limite en Périphérie : %d',
+              [PrefixePhase, FContexte.LimiteMonstres, FContexte.LimitePeripherie])
+          else
+            LabelEnTete.Caption := PrefixePhase;
 
+        LabelFilAriane.Caption := string.Join(' › ', FMoteur.TitresPhaseActifs);
         LabelIdTechnique.Caption := 'Id : ' + FDernierIdAffiche;
       end;
 
@@ -351,11 +357,11 @@ unit AH.UI.FrmPrincipal;
             try
               FMoteur.EnregistrerReponse(AValeur);
             except
-              on E: Exception do
-              begin
-                FrameEtape.AfficherErreurSaisie(E.Message);
-                Exit;
-              end;
+              on E : Exception do
+                begin
+                  FrameEtape.AfficherErreurSaisie(E.Message);
+                  Exit;
+                end;
             end;
 
             if SameText(ChampVise, 'NomGrandAncien')
@@ -417,6 +423,10 @@ unit AH.UI.FrmPrincipal;
 
     procedure TFrmPrincipal.FormCreate(Sender : TObject);
       begin
+        WindowState := wsMaximized;
+        Font.Size := 14;
+        FrameEtape.DefinirDossierImages(ExtractFilePath(Application.ExeName) + 'Data\Images\');
+
         FParametres := TParametresApplication.Create;
         try
           FParametres.ChargerDepuisFichier(CheminContenu('parametres.json'));

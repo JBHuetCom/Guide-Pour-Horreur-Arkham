@@ -19,7 +19,7 @@ object FrmPrincipal: TFrmPrincipal
     Left = 0
     Top = 0
     Width = 1200
-    Height = 56
+    Height = 76
     Align = alTop
     BevelOuter = bvNone
     Padding.Left = 10
@@ -41,7 +41,7 @@ object FrmPrincipal: TFrmPrincipal
     end
     object LabelIdTechnique: TLabel
       Left = 12
-      Top = 32
+      Top = 50
       Width = 7
       Height = 14
       Font.Charset = DEFAULT_CHARSET
@@ -49,6 +49,18 @@ object FrmPrincipal: TFrmPrincipal
       Font.Height = -12
       Font.Name = 'Consolas'
       Font.Style = []
+      ParentFont = False
+    end
+    object LabelFilAriane: TLabel
+      Left = 12
+      Top = 30
+      Width = 3
+      Height = 15
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsItalic]
       ParentFont = False
     end
   end
@@ -99,18 +111,17 @@ object FrmPrincipal: TFrmPrincipal
   end
   object PanelConseils: TPanel
     Left = 920
-    Top = 116
+    Top = 136
     Width = 280
-    Height = 576
+    Height = 556
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 56
     object MemoConseils: TMemo
       Left = 0
       Top = 0
       Width = 280
-      Height = 576
+      Height = 556
       Align = alClient
       Color = clInfoBk
       EditMargins.Left = 10
@@ -167,7 +178,7 @@ object FrmPrincipal: TFrmPrincipal
   end
   object PanelCapacite: TPanel
     Left = 0
-    Top = 56
+    Top = 76
     Width = 1200
     Height = 60
     Align = alTop
@@ -177,7 +188,6 @@ object FrmPrincipal: TFrmPrincipal
     Padding.Right = 10
     Padding.Bottom = 10
     TabOrder = 4
-    ExplicitTop = 632
     object LabelCapacite: TLabel
       Left = 10
       Top = 10
@@ -193,76 +203,83 @@ object FrmPrincipal: TFrmPrincipal
       ParentFont = False
       Layout = tlCenter
       WordWrap = True
-      ExplicitLeft = 0
-      ExplicitTop = 0
       ExplicitWidth = 4
       ExplicitHeight = 21
     end
   end
   inline FrameEtape: TFrameEtape
     Left = 0
-    Top = 116
+    Top = 136
     Width = 920
-    Height = 576
+    Height = 556
     Align = alClient
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
     Padding.Left = 10
     Padding.Top = 10
     Padding.Right = 10
     Padding.Bottom = 10
+    ParentFont = False
     TabOrder = 5
-    ExplicitTop = 56
+    ExplicitTop = 136
     ExplicitWidth = 920
-    ExplicitHeight = 576
-    inherited LabelTitre: TLabel
+    ExplicitHeight = 556
+    inherited ScrollBoxContenu: TScrollBox
       Left = 10
       Top = 10
       Width = 900
-      Height = 25
-      AutoSize = True
-      StyleElements = [seFont, seClient, seBorder]
-      ExplicitWidth = 5
-      ExplicitHeight = 25
-    end
-    inherited LabelTexte: TLabel
-      Left = 10
-      Top = 35
-      Width = 900
-      Height = 21
-      AutoSize = True
-      StyleElements = [seFont, seClient, seBorder]
-      ExplicitTop = 24
-      ExplicitWidth = 4
-      ExplicitHeight = 21
-    end
-    inherited PanelInstruction: TPanel
-      StyleElements = [seFont, seClient, seBorder]
-    end
-    inherited PanelChoix: TPanel
-      StyleElements = [seFont, seClient, seBorder]
-    end
-    inherited PanelSaisie: TPanel
-      StyleElements = [seFont, seClient, seBorder]
-      inherited LabelErreurSaisie: TLabel
+      ExplicitLeft = 10
+      ExplicitTop = 10
+      ExplicitWidth = 900
+      inherited LabelTitre: TLabel
+        Left = 10
+        Top = 10
+        StyleElements = [seFont, seClient, seBorder]
+        ExplicitLeft = 10
+        ExplicitTop = 10
+      end
+      inherited LabelTexte: TLabel
+        Left = 10
+        Top = 35
+        StyleElements = [seFont, seClient, seBorder]
+        ExplicitLeft = 10
+        ExplicitTop = 35
+      end
+      inherited MemoTexteListe: TMemo
         StyleElements = [seFont, seClient, seBorder]
       end
-      inherited EditSaisie: TEdit
+      inherited PanelInstruction: TPanel
         StyleElements = [seFont, seClient, seBorder]
       end
-      inherited ComboSaisie: TComboBox
+      inherited PanelChoix: TPanel
         StyleElements = [seFont, seClient, seBorder]
+      end
+      inherited PanelSaisie: TPanel
+        StyleElements = [seFont, seClient, seBorder]
+        inherited LabelErreurSaisie: TLabel
+          StyleElements = [seFont, seClient, seBorder]
+        end
+        inherited EditSaisie: TEdit
+          StyleElements = [seFont, seClient, seBorder]
+        end
+        inherited ComboSaisie: TComboBox
+          StyleElements = [seFont, seClient, seBorder]
+        end
       end
     end
   end
   object PanelEtatTerminal: TPanel
     Left = 0
-    Top = 116
+    Top = 136
     Width = 920
-    Height = 576
+    Height = 556
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 6
     Visible = False
-    ExplicitTop = 56
     object LabelEtatTerminal: TLabel
       Left = 20
       Top = 20

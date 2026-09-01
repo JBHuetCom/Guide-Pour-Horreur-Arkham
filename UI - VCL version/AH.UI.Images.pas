@@ -4,7 +4,8 @@ unit AH.UI.Images;
 
     uses
 
-      System.SysUtils, System.IOUtils, Vcl.ExtCtrls;
+      System.SysUtils, System.IOUtils,
+      Vcl.ExtCtrls;
 
     /// <summary>
     /// Charge une image dans AImage si ACheminRelatif est renseigné et que le fichier existe
@@ -16,7 +17,7 @@ unit AH.UI.Images;
 
   implementation
 
-    procedure ChargerImageSiPossible(AImage: TImage; const ACheminRelatif, ADossierBase: string);
+    procedure ChargerImageSiPossible(AImage : TImage; const ACheminRelatif, ADossierBase : string);
       var
         CheminComplet : string;
       begin

@@ -17,10 +17,7 @@ uses
   AH.Core.Capacites in '..\Core\AH.Core.Capacites.pas',
   AH.Core.Parametres in '..\Core\AH.Core.Parametres.pas',
   AH.Core.ConstructeurPartie in '..\Core\AH.Core.ConstructeurPartie.pas',
-  {$R}
-  {$R}
-  {$R}
-  AH.Core.GrandsAnciens in '..\Core\AH.Core.GrandsAnciens.pas' {$R *.res},
+  AH.Core.GrandsAnciens in '..\Core\AH.Core.GrandsAnciens.pas',
   AH.UI.Images in 'AH.UI.Images.pas';
 
 {$R *.res}

@@ -64,6 +64,9 @@ unit AH.Tests.Moteur;
 
         [Test]
         procedure Create_AvecRacineDeTypeNtChoix_NePasPlanterEtResoudreCorrectement;
+
+        [Test]
+        procedure TitresPhaseActifs_DansUneBoucleAvecTitre_RetourneCeTitre;
       end;
 
   implementation
@@ -409,6 +412,29 @@ unit AH.Tests.Moteur;
         Assert.AreEqual('branche_a', Resultat.Id);
 
         Assert.IsNull(FMoteur.Suivant);
+      end;
+
+    procedure TTestMoteurSequenceur.TitresPhaseActifs_DansUneBoucleAvecTitre_RetourneCeTitre;
+      var
+        Racine, Boucle, Etape : TNoeudEtape;
+        Titres : TArray<string>;
+      begin
+        Racine := TNoeudEtape.Create('racine', ntSequence);
+        Boucle := TNoeudEtape.Create('boucle', ntBouclePorInvestigateur);
+        Boucle.Titre := 'Phase II : Mouvement';
+        Etape := TNoeudEtape.Create('etape', ntInstruction);
+        Etape.Texte := '...';
+        Boucle.AjouterEnfant(Etape);
+        Racine.AjouterEnfant(Boucle);
+        FRacine := Racine;
+
+        FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
+        FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
+        FMoteur.Suivant;
+
+        Titres := FMoteur.TitresPhaseActifs;
+        Assert.AreEqual(1, Length(Titres));
+        Assert.AreEqual('Phase II : Mouvement', Titres[0]);
       end;
 
   initialization

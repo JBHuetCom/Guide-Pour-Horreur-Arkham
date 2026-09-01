@@ -82,9 +82,10 @@ unit AH.Core.ChargeurContenu;
 
     class function TChargeurContenu.ChargerNoeud(const AJSON : ISuperObject) : TNoeudEtape;
       var
-        i : Integer;
+        i, j : Integer;
         Id, TypeTexte : string;
-        Enfants, Branches : ISuperArray;
+        ListeTemp : TArray<string>;
+        Enfants, Branches, TableauTexteListe : ISuperArray;
         BrancheJSON : ISuperObject;
         TypeNoeud : TTypeNoeud;
       begin
@@ -104,6 +105,14 @@ unit AH.Core.ChargeurContenu;
             begin
               Titre := AJSON.S['Titre'];
               Texte := AJSON.S['Texte'];
+              TableauTexteListe := AJSON.A['TexteListe'];
+              if Assigned(TableauTexteListe) then
+                begin
+                  SetLength(ListeTemp, TableauTexteListe.Length);
+                  for j := 0 to TableauTexteListe.Length - 1 do
+                    ListeTemp[j] := TableauTexteListe.S[j];
+                  Result.TexteListe := ListeTemp;
+                end;
               Illustration := AJSON.S['Illustration'];
               ChampContexte := AJSON.S['Champ'];
             end;

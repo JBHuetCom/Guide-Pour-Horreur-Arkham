@@ -20,15 +20,15 @@ unit AH.Core.Noeud;
 
         /// <summary>Retourne la valeur déclenchante de la branche.</summary>
         /// <returns>Valeur de contexte utilisée pour identifier la branche sélectionnée.</returns>
-        function GetTriggerValue: Variant;
+        function GetTriggerValue : Variant;
 
         /// <summary>Retourne le libellé affichable de la branche.</summary>
         /// <returns>Libellé de la branche ou EmptyStr lorsqu'aucun libellé n'est défini.</returns>
-        function GetLabelText: string;
+        function GetLabelText : string;
 
         /// <summary>Retourne le nœud cible possédé par l'état.</summary>
         /// <returns>Nœud cible ou nil si la branche ne possède pas de nœud.</returns>
-        function GetNode: TNoeudEtape;
+        function GetNode : TNoeudEtape;
       end;
 
     /// <summary>
@@ -45,9 +45,9 @@ unit AH.Core.Noeud;
         /// </summary>
         TBrancheEtapeState = class(TInterfacedObject, IBrancheEtapeState)
           private
-            FTriggerValue: Variant;
-            FLabelText: string;
-            FNode: TNoeudEtape;
+            FTriggerValue : Variant;
+            FLabelText : string;
+            FNode : TNoeudEtape;
           public
             /// <summary>
             /// Crée l'état d'une branche et enregistre le nœud dont il devient propriétaire.
@@ -64,59 +64,35 @@ unit AH.Core.Noeud;
             constructor Create(const ATriggerValue: Variant;
               const ALabelText: string; ANode: TNoeudEtape);
 
-            /// <summary>
-            /// Détruit le nœud cible possédé par l'état.
-            /// </summary>
+            /// <summary>Détruit le nœud cible possédé par l'état.</summary>
             destructor Destroy; override;
 
-            /// <summary>
-            /// Retourne la valeur déclenchante de la branche.
-            /// </summary>
-            function GetTriggerValue: Variant;
+            /// <summary>Retourne la valeur déclenchante de la branche.</summary>
+            function GetTriggerValue : Variant;
 
-            /// <summary>
-            /// Retourne le libellé de la branche.
-            /// </summary>
-            function GetLabelText: string;
+            /// <summary>Retourne le libellé de la branche.</summary>
+            function GetLabelText : string;
 
-            /// <summary>
-            /// Retourne le nœud cible de la branche.
-            /// </summary>
-            function GetNode: TNoeudEtape;
+            /// <summary>Retourne le nœud cible de la branche.</summary>
+            function GetNode : TNoeudEtape;
         end;
       private
-        FState: IBrancheEtapeState;
+        FState : IBrancheEtapeState;
 
-        /// <summary>
-        /// Retourne la valeur déclenchante de l'état interne.
-        /// </summary>
-        /// <returns>
-        /// Valeur déclenchante ou Unassigned pour une branche non initialisée.
-        /// </returns>
-        function GetValeurDeclenchante: Variant;
+        /// <summary>Retourne la valeur déclenchante de l'état interne.</summary>
+        /// <returns>Valeur déclenchante ou Unassigned pour une branche non initialisée.</returns>
+        function GetValeurDeclenchante : Variant;
 
-        /// <summary>
-        /// Retourne le libellé de l'état interne.
-        /// </summary>
-        /// <returns>
-        /// Libellé de la branche ou EmptyStr pour une branche non initialisée.
-        /// </returns>
-        function GetLibelle: string;
+        /// <summary>Retourne le libellé de l'état interne.</summary>
+        /// <returns>Libellé de la branche ou EmptyStr pour une branche non initialisée.</returns>
+        function GetLibelle : string;
 
-        /// <summary>
-        /// Retourne le nœud possédé par l'état interne.
-        /// </summary>
-        /// <returns>
-        /// Nœud cible ou nil pour une branche non initialisée.
-        /// </returns>
-        function GetNoeud: TNoeudEtape;
+        /// <summary>Retourne le nœud possédé par l'état interne.</summary>
+        /// <returns>Nœud cible ou nil pour une branche non initialisée.</returns>
+        function GetNoeud : TNoeudEtape;
       public
-        /// <summary>
-        /// Initialise le record sans état interne.
-        /// </summary>
-        /// <param name="ADestination">
-        /// Instance du record à initialiser.
-        /// </param>
+        /// <summary>Initialise le record sans état interne.</summary>
+        /// <param name="ADestination">Instance du record à initialiser.</param>
         class operator Initialize(out ADestination : TBrancheEtape);
 
         /// <summary>
@@ -124,21 +100,15 @@ unit AH.Core.Noeud;
         /// Si cette référence est la dernière, l'état détruit automatiquement le
         /// nœud cible qu'il possède.
         /// </summary>
-        /// <param name="ADestination">
-        /// Instance du record en cours de finalisation.
-        /// </param>
+        /// <param name="ADestination">Instance du record en cours de finalisation.</param>
         class operator Finalize(var ADestination : TBrancheEtape);
 
         /// <summary>
         /// Copie une branche sans cloner son sous-arbre.
         /// La source et la destination partagent le même état interne.
         /// </summary>
-        /// <param name="ADestination">
-        /// Branche de destination.
-        /// </param>
-        /// <param name="ASource">
-        /// Branche source qui reste inchangée.
-        /// </param>
+        /// <param name="ADestination">Branche de destination.</param>
+        /// <param name="ASource">Branche source qui reste inchangée.</param>
         class operator Assign(var ADestination : TBrancheEtape; const [ref] ASource : TBrancheEtape);
 
         /// <summary>
@@ -175,6 +145,7 @@ unit AH.Core.Noeud;
           FTypeNoeud : TTypeNoeud;
           FTitre : string;
           FTexte : string;
+          FTexteListe : TArray<string>;
           FIllustration : string;
           FChampContexte : string;
           FEnfants : TObjectList<TNoeudEtape>;
@@ -214,6 +185,13 @@ unit AH.Core.Noeud;
           property TypeNoeud : TTypeNoeud read FTypeNoeud;
           property Titre : string read FTitre write FTitre;
           property Texte : string read FTexte write FTexte;
+
+          /// <summary>
+          /// Alternative à Texte pour un contenu qui se lit mieux comme une liste à puces (ex. une
+          /// énumération d'options ou d'effets). Si non vide, l'UI l'affiche à la place de Texte.
+          /// </summary>
+          property TexteListe : TArray<string> read FTexteListe write FTexteListe;
+
           property Illustration : string read FIllustration write FIllustration;
           /// <summary>
           /// Pour ntCondition : nom du champ de TContextePartie évalué pour choisir la branche.
@@ -232,6 +210,7 @@ unit AH.Core.Noeud;
           property ValeurForcee: Variant read FValeurForcee write FValeurForcee;
           /// <summary>True si ValeurForcee a été explicitement renseignée par le contenu.</summary>
           property PossedeValeurForcee: Boolean read FPossedeValeurForcee write FPossedeValeurForcee;
+
       end;
 
   implementation

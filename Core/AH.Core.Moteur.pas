@@ -94,6 +94,14 @@ unit AH.Core.Moteur;
           /// </exception>
           procedure EnregistrerReponse(const AValeur : Variant);
 
+          /// <summary>
+          /// Titres (non vides) des nœuds conteneurs actuellement actifs sur la pile de navigation, du
+          /// plus englobant au plus proche du nœud courant — ex. ["Phase II : Mouvement"]. Permet à
+          /// l'UI d'afficher ces titres tant que leurs enfants sont en cours de parcours, alors que le
+          /// moteur ne retourne jamais directement un nœud conteneur à l'appelant.
+          /// </summary>
+          function TitresPhaseActifs : TArray<string>;
+
           property NoeudCourant : TNoeudEtape read FNoeudCourant;
       end;
 
@@ -315,6 +323,22 @@ unit AH.Core.Moteur;
     function TMoteurSequenceur.PeutReculer: Boolean;
       begin
         Result := (FHistorique.Count > 0);
+      end;
+
+    function TMoteurSequenceur.TitresPhaseActifs : TArray<string>;
+      var
+        Resultat : TList<string>;
+        i : Integer;
+      begin
+        Resultat := TList<string>.Create;
+        try
+          for i := 0 to FPile.Count - 1 do
+            if FPile[i].Noeud.Titre <> EmptyStr then
+              Resultat.Add(FPile[i].Noeud.Titre);
+          Result := Resultat.ToArray;
+        finally
+          Resultat.Free;
+        end;
       end;
 
   {$ENDREGION}

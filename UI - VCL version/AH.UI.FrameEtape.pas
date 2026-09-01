@@ -27,6 +27,7 @@ unit AH.UI.FrameEtape;
           FOnEtapeValidee : TAhEtapeValideeEvent;
           FValeursBranches : TList<Variant>;
           FNoeudCourant : TNoeudEtape;
+          FDossierImages: string;
 
           procedure ViderBoutonsChoix;
           procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
@@ -68,6 +69,9 @@ unit AH.UI.FrameEtape;
           BoutonValiderSaisie : TButton;
           LabelErreurSaisie : TLabel;
           ComboSaisie : TComboBox;
+          ImageEtape : TImage;
+          MemoTexteListe : TMemo;
+          ScrollBoxContenu : TScrollBox;
 
           procedure GererClicBoutonChoix(ASender : TObject);
           procedure GererClicContinuer(Sender : TObject);
@@ -78,11 +82,18 @@ unit AH.UI.FrameEtape;
           /// <param name="AOptions">Options à proposer. Tableau vide pour revenir à la saisie libre.</param>
           procedure DefinirOptionsSaisie(const AOptions: TArray<string>);
 
+          /// <param name="ADossierImages">Dossier de base pour résoudre les chemins d'illustration relatifs (ex. Data\Images).</param>
+          procedure DefinirDossierImages(const ADossierImages: string);
+
           /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
           property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
       end;
 
   implementation
+
+  uses
+
+    AH.UI.Images, System.Math;
 
     {$R *.dfm}
 
@@ -143,34 +154,55 @@ unit AH.UI.FrameEtape;
 
         if not (ANoeud.TypeNoeud in [ntInstruction, ntChoix, ntSaisie]) then
           raise EArgumentException.CreateFmt(
-            'AfficherNoeud attend un nœud interactif (ntInstruction, ntChoix ou ntSaisie) ; ' +
-            'le nœud "%s" est d''un type structurel qui ne devrait jamais atteindre l''UI.',
+            'AfficherNoeud attend un nœud interactif ; le nœud "%s" est d''un type structurel.',
             [ANoeud.Id]);
 
         FNoeudCourant := ANoeud;
+        DecalageVertical := 0;
 
+        LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTitre.Caption := ANoeud.Titre;
-        LabelTitre.Visible := (ANoeud.Titre <> EmptyStr);
-        LabelTexte.Caption := ANoeud.Texte;
-
+        LabelTitre.Top := DecalageVertical;
         if LabelTitre.Visible then
-          LabelTexte.Top := LabelTitre.Top + LabelTitre.Height + 8
-        else
-          LabelTexte.Top := 0;
+          Inc(DecalageVertical, LabelTitre.Height + 8);
 
-        DecalageVertical := LabelTexte.Top + LabelTexte.Height + 12;
+        ChargerImageSiPossible(ImageEtape, ANoeud.Illustration, FDossierImages);
+        ImageEtape.Top := DecalageVertical;
+        if ImageEtape.Visible then
+          Inc(DecalageVertical, ImageEtape.Height + 8);
+
+        if Length(ANoeud.TexteListe) > 0 then
+          begin
+            LabelTexte.Visible := False;
+            MemoTexteListe.Lines.Clear;
+            for var Ligne in ANoeud.TexteListe do
+              MemoTexteListe.Lines.Add('•  ' + Ligne);
+            MemoTexteListe.Top := DecalageVertical;
+            MemoTexteListe.Height := EnsureRange(MemoTexteListe.Lines.Count * 24, 60, 260);
+            MemoTexteListe.Visible := True;
+            Inc(DecalageVertical, MemoTexteListe.Height + 12);
+          end
+        else
+          begin
+            MemoTexteListe.Visible := False;
+            LabelTexte.Caption := ANoeud.Texte;
+            LabelTexte.Top := DecalageVertical;
+            LabelTexte.Visible := True;
+            Inc(DecalageVertical, LabelTexte.Height + 12);
+          end;
+
         PanelInstruction.Top := DecalageVertical;
         PanelChoix.Top := DecalageVertical;
         PanelSaisie.Top := DecalageVertical;
 
-        PanelInstruction.Visible := (ANoeud.TypeNoeud = ntInstruction);
-        PanelChoix.Visible := (ANoeud.TypeNoeud = ntChoix);
-        PanelSaisie.Visible := (ANoeud.TypeNoeud = ntSaisie);
+        PanelInstruction.Visible := ANoeud.TypeNoeud = ntInstruction;
+        PanelChoix.Visible := ANoeud.TypeNoeud = ntChoix;
+        PanelSaisie.Visible := ANoeud.TypeNoeud = ntSaisie;
 
         case ANoeud.TypeNoeud of
-          ntChoix :
+          ntChoix:
             ConstruireBoutonsChoix(ANoeud);
-          ntSaisie :
+          ntSaisie:
             begin
               EditSaisie.Text := EmptyStr;
               ComboSaisie.ItemIndex := -1;
@@ -179,6 +211,8 @@ unit AH.UI.FrameEtape;
                 EditSaisie.SetFocus;
             end;
         end;
+
+        ScrollBoxContenu.VertScrollBar.Position := 0; // Remonter en haut à chaque nouvelle étape.
       end;
 
     procedure TFrameEtape.AfficherErreurSaisie(const AMessage : string);
@@ -240,6 +274,11 @@ unit AH.UI.FrameEtape;
            and (ComboSaisie.Items.Count > 0)
         then
           ComboSaisie.ItemIndex := 0;
+      end;
+
+    procedure TFrameEtape.DefinirDossierImages(const ADossierImages : string);
+      begin
+        FDossierImages := ADossierImages;
       end;
 
 end.
