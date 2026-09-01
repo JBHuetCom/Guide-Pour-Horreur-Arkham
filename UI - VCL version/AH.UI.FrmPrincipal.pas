@@ -9,7 +9,7 @@ unit AH.UI.FrmPrincipal;
       Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics, Vcl.Dialogs,
       AH.Core.Types, AH.Core.Noeud, AH.Core.Contexte, AH.Core.Moteur, AH.Core.ChargeurContenu,
       AH.Core.Conseils, AH.Core.Capacites, AH.Core.GrandsAnciens, AH.Core.Parametres,
-      AH.UI.FrameEtape, AH.UI.FrmNouvellePartie;
+      AH.UI.FrameEtape, AH.UI.FrmNouvellePartie, AH.UI.FrmAide;
 
     type
       /// <summary>Fichier de contenu actuellement piloté par FMoteur.</summary>
@@ -23,6 +23,7 @@ unit AH.UI.FrmPrincipal;
       /// basculer, notamment via l'Id du dernier nœud affiché (voir GererFinDeFichier).
       /// </summary>
       TFrmPrincipal = class(TForm)
+    btnRappelCombat: TButton;
         private
           FContexte : TContextePartie;
           FParametres : TParametresApplication;
@@ -53,6 +54,7 @@ unit AH.UI.FrmPrincipal;
           procedure RafraichirEnTete;
           procedure RafraichirPanneauxAnnexes;
           procedure RafraichirEtatBoutons;
+          procedure RafraichirPanneauGrandAncienGeneral;
         public
           procedure DemarrerNouvellePartie;
         published
@@ -78,6 +80,9 @@ unit AH.UI.FrmPrincipal;
           PanelEtatTerminal : TPanel;
           LabelEtatTerminal : TLabel;
           BoutonNouvellePartie : TButton;
+          PanelGrandAncienGeneral : TPanel;
+          MemoGrandAncienGeneral : TMemo;
+
           procedure FormCreate(Sender: TObject);
           procedure FormDestroy(Sender: TObject);
           procedure GererEtapeValidee(Sender : TObject; const AValeur : Variant);
@@ -86,6 +91,7 @@ unit AH.UI.FrmPrincipal;
           procedure GererClicTerminerPartie(Sender : TObject);
           procedure GererClicAfficherConseils(Sender : TObject);
           procedure GererClicNouvellePartie(Sender : TObject);
+          procedure GererClicAideCombat(Sender : TObject);
       end;
 
     var
@@ -336,6 +342,8 @@ unit AH.UI.FrmPrincipal;
           end
         else
           PanelRegleGrandAncien.Visible := False;
+
+        RafraichirPanneauGrandAncienGeneral;
       end;
 
     procedure TFrmPrincipal.RafraichirEtatBoutons;
@@ -457,6 +465,47 @@ unit AH.UI.FrmPrincipal;
         FGestionnaireCapacites.Free;
         FGestionnaireConseils.Free;
         FParametres.Free;
+      end;
+
+    procedure TFrmPrincipal.RafraichirPanneauGrandAncienGeneral;
+      var
+        GrandAncien : TGrandAncien;
+        Texte : string;
+      begin
+        if (FContexte.NomGrandAncien = EmptyStr)
+           or not FGestionnaireGrandsAnciens.TryObtenirGrandAncien(FContexte.NomGrandAncien, GrandAncien)
+        then
+          begin
+            PanelGrandAncienGeneral.Visible := False;
+            Exit;
+          end;
+
+        Texte := EmptyStr;
+        if GrandAncien.Special <> EmptyStr then
+          Texte := Texte + GrandAncien.Special + sLineBreak;
+
+        if FFichierActif in [fcPreparation, fcTour] then
+          begin
+            if GrandAncien.EnSommeil <> EmptyStr then
+              Texte := Texte + GrandAncien.EnSommeil + sLineBreak;
+            if GrandAncien.Adorateurs <> EmptyStr then
+              Texte := Texte + GrandAncien.Adorateurs + sLineBreak;
+          end;
+
+        if FFichierActif = fcBatailleFinale then
+          begin
+            if GrandAncien.Bataille.Combat <> 0 then
+              Texte := Texte + Format('Modificateur de Combat contre le Grand Ancien : %d.', [GrandAncien.Bataille.Combat]) + sLineBreak;
+            if GrandAncien.Bataille.Defense <> EmptyStr then
+              Texte := Texte + 'Défense : ' + GrandAncien.Bataille.Defense + sLineBreak;
+          end;
+
+        MemoGrandAncienGeneral.Lines.Text := Trim(Texte);
+        PanelGrandAncienGeneral.Visible := MemoGrandAncienGeneral.Lines.Text <> EmptyStr;
+      end;
+    procedure TFrmPrincipal.GererClicAideCombat(Sender : TObject);
+      begin
+        FrmAide.AfficherFichier(CheminContenu('aide_combat.html'));
       end;
 
 end.

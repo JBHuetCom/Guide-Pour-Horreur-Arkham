@@ -18,7 +18,8 @@ uses
   AH.Core.Parametres in '..\Core\AH.Core.Parametres.pas',
   AH.Core.ConstructeurPartie in '..\Core\AH.Core.ConstructeurPartie.pas',
   AH.Core.GrandsAnciens in '..\Core\AH.Core.GrandsAnciens.pas',
-  AH.UI.Images in 'AH.UI.Images.pas';
+  AH.UI.Images in 'AH.UI.Images.pas',
+  AH.UI.FrmAide in 'AH.UI.FrmAide.pas' {FrmAide};
 
 {$R *.res}
 
@@ -30,6 +31,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmPrincipal, FrmPrincipal);
   Application.CreateForm(TFrmNouvellePartie, FrmNouvellePartie);
+  Application.CreateForm(TFrmAide, FrmAide);
   FrmPrincipal.Show;
   Application.ProcessMessages; // Laisse Windows finir d'enregistrer la fenêtre avant d'ouvrir une modale.
   FrmPrincipal.DemarrerNouvellePartie;

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Rappel — Combat</title>
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #1a1a1a;
+    background: #f5f0e6;
+    margin: 0;
+    padding: 24px 32px 48px 32px;
+  }
+  h1 {
+    font-size: 30px;
+    color: #4a1414;
+    border-bottom: 4px solid #4a1414;
+    padding-bottom: 8px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 24px;
+    color: #4a1414;
+    background: #e0d5bd;
+    padding: 6px 12px;
+    margin-top: 36px;
+    border-left: 8px solid #4a1414;
+  }
+  .etape {
+    background: #ffffff;
+    border: 2px solid #c9bfa3;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .etape .numero {
+    display: inline-block;
+    background: #4a1414;
+    color: #fff;
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0 20px 0;
+    background: #ffffff;
+  }
+  th, td {
+    border: 1px solid #c9bfa3;
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #4a1414;
+    color: #ffffff;
+    font-size: 19px;
+  }
+  tr:nth-child(even) td {
+    background: #f5f0e6;
+  }
+  .reussite {
+    color: #1a5c1a;
+    font-weight: bold;
+  }
+  .echec {
+    color: #8b1a1a;
+    font-weight: bold;
+  }
+  .encadre {
+    background: #fff3cc;
+    border: 2px solid #cc9900;
+    border-radius: 6px;
+    padding: 12px 18px;
+    margin: 16px 0;
+    font-weight: bold;
+  }
+  .rappel-mains {
+    background: #e8f0ff;
+    border: 2px solid #3a5ba0;
+    border-radius: 6px;
+    padding: 12px 18px;
+    margin: 16px 0;
+  }
+  .sommaire {
+    background: #ffffff;
+    border: 2px solid #c9bfa3;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin-bottom: 24px;
+  }
+  .sommaire a {
+    color: #4a1414;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .sommaire li {
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Rappel — Échapper et Combattre</h1>
+
+<div class="sommaire">
+  <strong>Sommaire :</strong>
+  <ul>
+    <li><a href="#evasion">1. Échapper à un monstre</a></li>
+    <li><a href="#combat">2. Combattre un monstre</a></li>
+    <li><a href="#armes-sorts">3. Utiliser armes et sorts en combat</a></li>
+    <li><a href="#sort">4. Lancer un sort</a></li>
+    <li><a href="#bataille-finale">5. Bataille finale (résumé)</a></li>
+  </ul>
+</div>
+
+<h2 id="evasion">1. Échapper à un monstre</h2>
+
+<p>Obligatoire à chaque fois qu'un investigateur tente de <strong>quitter</strong> une zone occupée par un ou plusieurs monstres, ou qu'il <strong>termine</strong> son mouvement dans une telle zone.</p>
+
+<table>
+  <tr><th>Élément</th><th>Valeur</th></tr>
+  <tr><td>Compétence utilisée</td><td>Discrétion</td></tr>
+  <tr><td>Modificateur</td><td>Conscience du monstre (coin supérieur, face Mouvement)</td></tr>
+  <tr><td>Difficulté</td><td>1 (sauf capacité spéciale du monstre indiquant autre chose)</td></tr>
+</table>
+
+<div class="etape"><span class="numero">1</span> S'il y a plusieurs monstres dans la zone, échappez-vous à chacun d'eux, dans l'ordre de votre choix.</div>
+<div class="etape"><span class="numero">2</span> <span class="reussite">Réussite</span> : le monstre est évité, le mouvement continue normalement. Il est possible de rester dans la même zone qu'un monstre après lui avoir échappé, sans le combattre ce tour-ci.</div>
+<div class="etape"><span class="numero">3</span> <span class="echec">Échec</span> : le monstre inflige immédiatement ses dégâts de Combat, puis le combat commence (section 2). Le mouvement de l'investigateur s'arrête définitivement pour ce tour.</div>
+
+<div class="encadre">Un monstre apparu comme résultat d'une rencontre (lieu ou portail) ne reste jamais sur le plateau après la rencontre : s'il est évité, il retourne directement dans la tasse des monstres.</div>
+
+<h2 id="combat">2. Combattre un monstre</h2>
+
+<table>
+  <tr><th>Étape</th><th>Compétence</th><th>Modificateur</th><th>Difficulté</th></tr>
+  <tr><td>1. Test d'Horreur</td><td>Volonté</td><td>Valeur d'Horreur du monstre (face Combat)</td><td>1</td></tr>
+  <tr><td>3. Test de Combat</td><td>Vigueur</td><td>Valeur de Combat du monstre (face Combat)</td><td>Force du monstre (gouttes de sang)</td></tr>
+</table>
+
+<div class="etape"><span class="numero">1</span> <strong>Test d'Horreur.</strong> <span class="echec">Échec</span> : perte de Santé Mentale égale à la valeur d'Horreur du monstre. Un seul test d'Horreur par monstre affronté, même si le combat dure plusieurs rounds.</div>
+<div class="etape"><span class="numero">2</span> <strong>Choisir : fuir ou combattre.</strong> Fuir = un test d'Évasion normal (section 1). Réussite ? combat terminé immédiatement. Échec ? dégâts de combat, puis on continue à l'étape 3.</div>
+<div class="etape"><span class="numero">3</span> <strong>Test de Combat</strong> (si l'investigateur choisit de combattre). La difficulté est la Force du monstre : il faut au moins ce nombre de succès. <span class="echec">Important :</span> si la Force du monstre est supérieure à 1, un nombre de succès insuffisant ne compte pour rien — le monstre doit être complètement vaincu en un seul test.</div>
+<div class="etape"><span class="numero">4</span> <span class="reussite">Réussite</span> : le monstre est vaincu, son marqueur devient un trophée. <span class="echec">Échec</span> : le monstre inflige ses dégâts de Combat (perte de Résistance).</div>
+<div class="etape"><span class="numero">5</span> Si l'investigateur est toujours conscient, sain d'esprit, et dans la même zone que le monstre : retour à l'étape 2 pour un nouveau round, sans refaire de test d'Horreur.</div>
+
+<h2 id="armes-sorts">3. Utiliser armes et sorts en combat</h2>
+
+<div class="rappel-mains">
+  <strong>Limite : 2 "mains" maximum</strong> — le total des icônes main des armes et sorts utilisés simultanément ne peut pas dépasser 2. Un sort compte pour ses mains qu'il ait été lancé avec succès ou non.
+</div>
+
+<table>
+  <tr><th>Type</th><th>Type de bonus</th><th>Efficacité</th></tr>
+  <tr><td>Arme</td><td>Combat Physique</td><td>Automatique, pas de test — mais inefficace contre de nombreux monstres du Mythe</td></tr>
+  <tr><td>Sort</td><td>Combat Magique</td><td>Nécessite de réussir le test de Sort — efficace contre la plupart des monstres</td></tr>
+</table>
+
+<p>Changer d'arme ou de sort d'un round à l'autre est permis, mais dès qu'on cesse d'y consacrer le nombre de mains requis, le bonus cesse immédiatement de s'appliquer.</p>
+
+<h2 id="sort">4. Lancer un sort</h2>
+
+<div class="etape"><span class="numero">1</span> Payer le coût en Santé Mentale du sort — <strong>toujours</strong>, que le test qui suit réussisse ou non.</div>
+<div class="etape"><span class="numero">2</span> Test de Sort : compétence <strong>Savoir</strong>, ajusté par le modificateur de lancer propre au sort.</div>
+<div class="etape"><span class="numero">3</span> <span class="reussite">Réussite</span> : le sort produit son effet. <span class="echec">Échec</span> : aucun effet, le coût en Santé Mentale reste payé.</div>
+
+<h2 id="bataille-finale">5. Bataille finale (résumé d'un round)</h2>
+
+<div class="etape"><span class="numero">1</span> <strong>Restauration</strong> — comme une phase d'Entretien normale ; le marqueur Premier Joueur tourne ; échanges d'équipement libres entre investigateurs présents au même endroit.</div>
+<div class="etape"><span class="numero">2</span> <strong>Les investigateurs attaquent</strong> — chacun fait un test de Combat contre le Grand Ancien (valeur de Combat en modificateur). Les succès du groupe s'additionnent, tour après tour.</div>
+<div class="etape"><span class="numero">3</span> Dès que le total cumulé atteint un multiple du nombre d'investigateurs en jeu (dévorés compris), retirer autant de pions Destin que de tranches complètes atteintes ; le reliquat de succès est conservé pour la suite.</div>
+<div class="etape"><span class="numero">4</span> <strong>Le Grand Ancien attaque</strong> chaque investigateur encore en jeu, selon sa capacité d'Attaque propre.</div>
+<div class="etape"><span class="numero">5</span> Un investigateur à 0 en Santé Mentale <strong>ou</strong> en Résistance à cause de cette attaque est dévoré et retiré définitivement — pas de nouveau personnage.</div>
+
+<div class="encadre">Dernier pion Destin retiré ? victoire immédiate. Tous les investigateurs dévorés ? défaite immédiate. Sinon, nouveau round depuis l'étape 1.</div>
+
+</body>
+</html>

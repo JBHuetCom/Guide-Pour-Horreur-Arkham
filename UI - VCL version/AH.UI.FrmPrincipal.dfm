@@ -26,7 +26,7 @@ object FrmPrincipal: TFrmPrincipal
     Padding.Top = 10
     Padding.Right = 10
     Padding.Bottom = 10
-    TabOrder = 0
+    TabOrder = 7
     object LabelEnTete: TLabel
       Left = 12
       Top = 10
@@ -91,7 +91,7 @@ object FrmPrincipal: TFrmPrincipal
       OnClick = GererClicReveilManuel
     end
     object BoutonTerminerPartie: TButton
-      Left = 400
+      Left = 398
       Top = 10
       Width = 160
       Height = 28
@@ -100,7 +100,7 @@ object FrmPrincipal: TFrmPrincipal
       OnClick = GererClicTerminerPartie
     end
     object CheckBoxAfficherConseils: TCheckBox
-      Left = 700
+      Left = 964
       Top = 14
       Width = 160
       Height = 20
@@ -108,12 +108,21 @@ object FrmPrincipal: TFrmPrincipal
       TabOrder = 3
       OnClick = GererClicAfficherConseils
     end
+    object btnRappelCombat: TButton
+      Left = 664
+      Top = 10
+      Width = 145
+      Height = 28
+      Caption = 'R'#232'gles combats'
+      TabOrder = 4
+      OnClick = GererClicAideCombat
+    end
   end
   object PanelConseils: TPanel
     Left = 920
     Top = 136
     Width = 280
-    Height = 556
+    Height = 466
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
@@ -121,7 +130,7 @@ object FrmPrincipal: TFrmPrincipal
       Left = 0
       Top = 0
       Width = 280
-      Height = 556
+      Height = 466
       Align = alClient
       Color = clInfoBk
       EditMargins.Left = 10
@@ -207,11 +216,43 @@ object FrmPrincipal: TFrmPrincipal
       ExplicitHeight = 21
     end
   end
+  object PanelGrandAncienGeneral: TPanel
+    Left = 0
+    Top = 602
+    Width = 1200
+    Height = 90
+    Align = alBottom
+    BevelOuter = bvNone
+    Color = clYellow
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    Padding.Left = 10
+    Padding.Top = 10
+    Padding.Right = 10
+    Padding.Bottom = 10
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+    object MemoGrandAncienGeneral: TMemo
+      Left = 10
+      Top = 10
+      Width = 1180
+      Height = 70
+      Align = alClient
+      Color = clMoneyGreen
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+    end
+  end
   inline FrameEtape: TFrameEtape
     Left = 0
     Top = 136
     Width = 920
-    Height = 556
+    Height = 466
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -226,7 +267,7 @@ object FrmPrincipal: TFrmPrincipal
     TabOrder = 5
     ExplicitTop = 136
     ExplicitWidth = 920
-    ExplicitHeight = 556
+    ExplicitHeight = 466
     inherited ScrollBoxContenu: TScrollBox
       Left = 10
       Top = 10
@@ -275,7 +316,7 @@ object FrmPrincipal: TFrmPrincipal
     Left = 0
     Top = 136
     Width = 920
-    Height = 556
+    Height = 466
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 6

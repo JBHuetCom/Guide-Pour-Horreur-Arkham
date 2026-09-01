@@ -164,6 +164,10 @@
             <Form>$R *.res</Form>
         </DCCReference>
         <DCCReference Include="AH.UI.Images.pas"/>
+        <DCCReference Include="AH.UI.FrmAide.pas">
+            <Form>FrmAide</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

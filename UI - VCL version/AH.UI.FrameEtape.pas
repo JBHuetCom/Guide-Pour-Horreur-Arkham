@@ -27,7 +27,7 @@ unit AH.UI.FrameEtape;
           FOnEtapeValidee : TAhEtapeValideeEvent;
           FValeursBranches : TList<Variant>;
           FNoeudCourant : TNoeudEtape;
-          FDossierImages: string;
+          FDossierImages : string;
 
           procedure ViderBoutonsChoix;
           procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
