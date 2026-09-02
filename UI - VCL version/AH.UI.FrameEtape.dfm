@@ -14,15 +14,19 @@ object FrameEtape: TFrameEtape
     Left = 0
     Top = 0
     Width = 620
-    Height = 460
-    Align = alTop
+    Height = 500
+    Align = alClient
     BorderStyle = bsNone
     TabOrder = 0
+    DesignSize = (
+      620
+      500)
     object LabelTitre: TLabel
       Left = 0
       Top = 0
       Width = 7
       Height = 32
+      Anchors = [akLeft, akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -24
@@ -37,6 +41,7 @@ object FrameEtape: TFrameEtape
       Top = 32
       Width = 580
       Height = 200
+      Anchors = [akLeft, akTop, akRight]
       Center = True
       Proportional = True
       Visible = False
@@ -46,6 +51,7 @@ object FrameEtape: TFrameEtape
       Top = 32
       Width = 6
       Height = 30
+      Anchors = [akLeft, akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -21
@@ -59,6 +65,7 @@ object FrameEtape: TFrameEtape
       Top = 32
       Width = 580
       Height = 100
+      Anchors = [akLeft, akTop, akRight]
       BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
@@ -77,6 +84,7 @@ object FrameEtape: TFrameEtape
       Top = 140
       Width = 580
       Height = 40
+      Anchors = [akLeft, akTop, akRight]
       BevelOuter = bvNone
       TabOrder = 1
       Visible = False
@@ -96,6 +104,7 @@ object FrameEtape: TFrameEtape
       Top = 140
       Width = 580
       Height = 200
+      Anchors = [akLeft, akTop, akRight]
       BevelOuter = bvNone
       TabOrder = 2
       Visible = False
@@ -105,14 +114,19 @@ object FrameEtape: TFrameEtape
       Top = 140
       Width = 580
       Height = 90
+      Anchors = [akLeft, akTop, akRight]
       BevelOuter = bvNone
       TabOrder = 3
       Visible = False
+      DesignSize = (
+        580
+        90)
       object LabelErreurSaisie: TLabel
         Left = 0
         Top = 38
         Width = 580
         Height = 20
+        Anchors = [akLeft, akTop, akRight]
         AutoSize = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed

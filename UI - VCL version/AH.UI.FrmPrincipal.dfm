@@ -1,7 +1,6 @@
 object FrmPrincipal: TFrmPrincipal
   Left = 0
   Top = 0
-  BorderStyle = bsDialog
   Caption = 'Horreur '#224' Arkham '#8212' Guide de partie'
   ClientHeight = 800
   ClientWidth = 1200
@@ -73,45 +72,45 @@ object FrmPrincipal: TFrmPrincipal
     BevelOuter = bvNone
     TabOrder = 1
     object BoutonPrecedent: TButton
-      Left = 12
+      Left = 10
       Top = 10
-      Width = 110
+      Width = 140
       Height = 28
       Caption = '< Pr'#233'c'#233'dent'
       TabOrder = 0
       OnClick = GererClicPrecedent
     end
     object BoutonReveilManuel: TButton
-      Left = 132
+      Left = 172
       Top = 10
-      Width = 260
+      Width = 280
       Height = 28
       Caption = 'Le Grand Ancien s'#39'est r'#233'veill'#233
       TabOrder = 1
       OnClick = GererClicReveilManuel
     end
     object BoutonTerminerPartie: TButton
-      Left = 398
+      Left = 470
       Top = 10
-      Width = 160
+      Width = 240
       Height = 28
       Caption = 'Terminer la partie'
       TabOrder = 2
       OnClick = GererClicTerminerPartie
     end
     object CheckBoxAfficherConseils: TCheckBox
-      Left = 964
+      Left = 936
       Top = 14
-      Width = 160
+      Width = 240
       Height = 20
       Caption = 'Afficher les conseils'
       TabOrder = 3
       OnClick = GererClicAfficherConseils
     end
     object btnRappelCombat: TButton
-      Left = 664
+      Left = 727
       Top = 10
-      Width = 145
+      Width = 180
       Height = 28
       Caption = 'R'#232'gles combats'
       TabOrder = 4
@@ -272,9 +271,14 @@ object FrmPrincipal: TFrmPrincipal
       Left = 10
       Top = 10
       Width = 900
+      Height = 446
       ExplicitLeft = 10
       ExplicitTop = 10
       ExplicitWidth = 900
+      ExplicitHeight = 446
+      DesignSize = (
+        900
+        446)
       inherited LabelTitre: TLabel
         Left = 10
         Top = 10
@@ -300,6 +304,9 @@ object FrmPrincipal: TFrmPrincipal
       end
       inherited PanelSaisie: TPanel
         StyleElements = [seFont, seClient, seBorder]
+        DesignSize = (
+          580
+          90)
         inherited LabelErreurSaisie: TLabel
           StyleElements = [seFont, seClient, seBorder]
         end
