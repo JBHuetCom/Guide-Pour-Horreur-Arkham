@@ -160,6 +160,12 @@ unit AH.UI.FrameEtape;
         FNoeudCourant := ANoeud;
         DecalageVertical := 0;
 
+        // Détruit les boutons de choix résiduels dès qu'on quitte un ntChoix, plutôt que de se
+        // contenter de masquer le panneau — évite qu'un contenu périmé influence la géométrie
+        // calculée par la ScrollBox pour les étapes suivantes.
+        if ANoeud.TypeNoeud <> ntChoix then
+          ViderBoutonsChoix;
+
         LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTitre.Caption := ANoeud.Titre;
         LabelTitre.Top := DecalageVertical;
@@ -212,7 +218,8 @@ unit AH.UI.FrameEtape;
             end;
         end;
 
-        ScrollBoxContenu.VertScrollBar.Position := 0; // Remonter en haut à chaque nouvelle étape.
+        ScrollBoxContenu.VertScrollBar.Position := 0;
+        ScrollBoxContenu.HorzScrollBar.Position := 0;
       end;
 
     procedure TFrameEtape.AfficherErreurSaisie(const AMessage : string);

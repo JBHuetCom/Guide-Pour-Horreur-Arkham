@@ -367,7 +367,11 @@ unit AH.UI.FrmPrincipal;
             except
               on E : Exception do
                 begin
-                  FrameEtape.AfficherErreurSaisie(E.Message);
+                  if FrameEtape.NoeudCourant.TypeNoeud = ntSaisie then
+                    FrameEtape.AfficherErreurSaisie(E.Message)
+                  else
+                    MessageDlg('Erreur : ' + E.ClassName + sLineBreak + E.Message, mtError, [mbOK], 0);
+
                   Exit;
                 end;
             end;

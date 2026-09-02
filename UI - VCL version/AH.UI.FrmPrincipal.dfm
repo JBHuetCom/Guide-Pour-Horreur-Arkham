@@ -304,9 +304,6 @@ object FrmPrincipal: TFrmPrincipal
       end
       inherited PanelSaisie: TPanel
         StyleElements = [seFont, seClient, seBorder]
-        DesignSize = (
-          580
-          90)
         inherited LabelErreurSaisie: TLabel
           StyleElements = [seFont, seClient, seBorder]
         end
