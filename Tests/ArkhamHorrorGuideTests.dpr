@@ -36,7 +36,8 @@ program ArkhamHorrorGuideTests;
   AH.Tests.Parametres in 'AH.Tests.Parametres.pas',
   AH.Tests.Session in 'AH.Tests.Session.pas',
   AH.Tests.ConstructeurPartie in 'AH.Tests.ConstructeurPartie.pas',
-  AH.Tests.GrandsAnciens in 'AH.Tests.GrandsAnciens.pas';
+  AH.Tests.GrandsAnciens in 'AH.Tests.GrandsAnciens.pas',
+  AH.Tests.Noeud in 'AH.Tests.Noeud.pas';
 
 { keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
   {$IFNDEF TESTINSIGHT}

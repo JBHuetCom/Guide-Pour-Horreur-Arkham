@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">ArkhamHorrorGuideTests</ProjectName>
         <TargetedPlatforms>1</TargetedPlatforms>
@@ -126,6 +126,7 @@
         <DCCReference Include="AH.Tests.Session.pas"/>
         <DCCReference Include="AH.Tests.ConstructeurPartie.pas"/>
         <DCCReference Include="AH.Tests.GrandsAnciens.pas"/>
+        <DCCReference Include="AH.Tests.Noeud.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

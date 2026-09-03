@@ -222,18 +222,26 @@ unit AH.Core.Noeud;
 
     function TNoeudEtape.Clone : TNoeudEtape;
       var
-        ChildIndex: Integer;
-        BrancheIndex: Integer;
-        SourceEnfant: TNoeudEtape;
-        SourceBranche: TBrancheEtape;
-        ClonedBrancheNode: TNoeudEtape;
+        ChildIndex : Integer;
+        BrancheIndex : Integer;
+        SourceEnfant : TNoeudEtape;
+        SourceBranche : TBrancheEtape;
+        ClonedBrancheNode : TNoeudEtape;
       begin
         Result := TNoeudEtape.Create(FId, FTypeNoeud);
         try
-          Result.FTitre         := Self.FTitre;
-          Result.FTexte         := Self.FTexte;
-          Result.FIllustration  := Self.FIllustration;
-          Result.FChampContexte := Self.FChampContexte;
+          with Result do
+            begin
+              FTitre                := Self.FTitre;
+              FTexte                := Self.FTexte;
+              FIllustration         := Self.FIllustration;
+              FChampContexte        := Self.FChampContexte;
+              FTexteListe           := Copy(Self.FTexteListe);
+              FIllustration         := Self.FIllustration;
+              Result.FChampContexte := Self.FChampContexte;
+              FValeurForcee         := Self.FValeurForcee;
+              FPossedeValeurForcee  := Self.FPossedeValeurForcee;
+            end;
 
           if Assigned(FEnfants) then
             for ChildIndex := 0 to FEnfants.Count - 1 do
@@ -282,8 +290,6 @@ unit AH.Core.Noeud;
       end;
 
     destructor TNoeudEtape.Destroy;
-      var
-        Branche : TBrancheEtape;
       begin
         FEnfants.Free;
         FBranches.Free;
