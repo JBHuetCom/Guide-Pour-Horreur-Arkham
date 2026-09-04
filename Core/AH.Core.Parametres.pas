@@ -1,32 +1,32 @@
-unit AH.Core.Parametres;
+ï»¿unit AH.Core.Parametres;
 
   interface
 
     type
 
       /// <summary>
-      /// Préférences d'affichage de l'application, persistées entre les sessions. À distinguer de
-      /// TContextePartie (état d'une partie en cours) : ce sont des réglages utilisateur, pas des
-      /// données de jeu.
+      /// PrÃ©fÃ©rences d'affichage de l'application, persistÃ©es entre les sessions. Ã€ distinguer de
+      /// TContextePartie (Ã©tat d'une partie en cours) : ce sont des rÃ©glages utilisateur, pas des
+      /// donnÃ©es de jeu.
       /// </summary>
       TParametresApplication = class
         private
           FAfficherConseils : Boolean;
         public
-          /// <summary>Initialise les valeurs par défaut avant tout chargement : conseils affichés.</summary>
+          /// <summary>Initialise les valeurs par dÃ©faut avant tout chargement : conseils affichÃ©s.</summary>
           constructor Create;
 
           /// <param name="ACheminFichier">
-          /// Chemin d'un fichier .json de préférences. S'il n'existe pas ou si une clé est absente,
-          /// les valeurs par défaut correspondantes sont conservées silencieusement (premier lancement
-          /// ou fichier partiellement édité à la main).
+          /// Chemin d'un fichier .json de prÃ©fÃ©rences. S'il n'existe pas ou si une clÃ© est absente,
+          /// les valeurs par dÃ©faut correspondantes sont conservÃ©es silencieusement (premier lancement
+          /// ou fichier partiellement Ã©ditÃ© Ã  la main).
           /// </param>
           procedure ChargerDepuisFichier(const ACheminFichier : string);
 
-          /// <param name="ACheminFichier">Chemin du fichier .json à écrire (créé s'il n'existe pas, écrasé sinon).</param>
+          /// <param name="ACheminFichier">Chemin du fichier .json Ã  Ã©crire (crÃ©Ã© s'il n'existe pas, Ã©crasÃ© sinon).</param>
           procedure SauvegarderDansFichier(const ACheminFichier : string);
 
-          /// <summary>Active ou désactive l'affichage du panneau de conseils stratégiques dans l'UI.</summary>
+          /// <summary>Active ou dÃ©sactive l'affichage du panneau de conseils stratÃ©giques dans l'UI.</summary>
           property AfficherConseils : Boolean read FAfficherConseils write FAfficherConseils;
       end;
 
@@ -49,11 +49,11 @@ unit AH.Core.Parametres;
         Racine : ISuperObject;
       begin
         if not FileExists(ACheminFichier) then
-          Exit; // Premier lancement : valeurs par défaut conservées.
+          Exit; // Premier lancement : valeurs par dÃ©faut conservÃ©es.
 
         Racine := TSuperObject.ParseFile(ACheminFichier, False);
         if Racine = nil then
-          Exit; // Fichier corrompu : valeurs par défaut conservées plutôt que de bloquer le démarrage.
+          Exit; // Fichier corrompu : valeurs par dÃ©faut conservÃ©es plutÃ´t que de bloquer le dÃ©marrage.
 
         if Racine.O['AfficherConseils'] <> nil then
           FAfficherConseils := Racine.B['AfficherConseils'];

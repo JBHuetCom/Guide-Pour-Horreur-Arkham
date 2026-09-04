@@ -1,4 +1,4 @@
-unit AH.Tests.Noeud;
+ï»¿unit AH.Tests.Noeud;
 
     interface
 
@@ -62,7 +62,7 @@ unit AH.Tests.Noeud;
             procedure begin Parent.AjouterEnfant(Enfant); end,
             EInvalidOpException);
         finally
-          Enfant.Free; // AjouterEnfant a levé avant toute prise de possession : à l'appelant de libérer.
+          Enfant.Free; // AjouterEnfant a levÃ© avant toute prise de possession : Ã  l'appelant de libÃ©rer.
           Parent.Free;
         end;
       end;
@@ -87,7 +87,7 @@ unit AH.Tests.Noeud;
       begin
         Parent := TNoeudEtape.Create('parent', ntSequence);
         Enfant := TNoeudEtape.Create('enfant', ntInstruction);
-        Parent.AjouterEnfant(Enfant); // Parent devient propriétaire de Enfant, libéré via Parent.Free.
+        Parent.AjouterEnfant(Enfant); // Parent devient propriÃ©taire de Enfant, libÃ©rÃ© via Parent.Free.
 
         Assert.AreEqual(1, Parent.Enfants.Count);
         Assert.AreEqual('enfant', Parent.Enfants[0].Id);
@@ -106,8 +106,8 @@ unit AH.Tests.Noeud;
             procedure begin Parent.AjouterBranche('v', 'L', Cible); end,
             EInvalidOpException);
         finally
-          // D'après la doc de AjouterBranche, en cas d'exception la méthode garantit elle-même la
-          // libération de Cible : ne pas la libérer une seconde fois ici sous peine de double libération.
+          // D'aprÃ¨s la doc de AjouterBranche, en cas d'exception la mÃ©thode garantit elle-mÃªme la
+          // libÃ©ration de Cible : ne pas la libÃ©rer une seconde fois ici sous peine de double libÃ©ration.
           Parent.Free;
         end;
       end;
@@ -125,16 +125,16 @@ unit AH.Tests.Noeud;
         Assert.AreEqual('Oui', Parent.Branches[0].Libelle);
         Assert.AreEqual('cible', Parent.Branches[0].Noeud.Id);
 
-        Parent.Free; // Libère aussi Cible, désormais possédé par la branche.
+        Parent.Free; // LibÃ¨re aussi Cible, dÃ©sormais possÃ©dÃ© par la branche.
       end;
 
     procedure TTestNoeudEtape.Destroy_NoeudAvecPlusieursBranches_NePlanteEtNeFuitePas;
       var
         Racine, BrancheA, BrancheB : TNoeudEtape;
       begin
-        // Ne vérifie pas de fuite par une assertion explicite (le test runner DUnitX+FastMM le fait
-        // automatiquement à la fin du test) : si TNoeudEtape.Destroy ne finalise pas correctement
-        // chaque TBrancheEtape de FBranches, ce test sera signalé en fuite mémoire.
+        // Ne vÃ©rifie pas de fuite par une assertion explicite (le test runner DUnitX+FastMM le fait
+        // automatiquement Ã  la fin du test) : si TNoeudEtape.Destroy ne finalise pas correctement
+        // chaque TBrancheEtape de FBranches, ce test sera signalÃ© en fuite mÃ©moire.
         Racine := TNoeudEtape.Create('racine', ntChoix);
         BrancheA := TNoeudEtape.Create('a', ntInstruction);
         BrancheA.Texte := 'A';
@@ -153,8 +153,8 @@ unit AH.Tests.Noeud;
         Noeud : TNoeudEtape;
         Branche : TBrancheEtape;
       begin
-        // Même principe : la fuite éventuelle (si le nœud n'est jamais libéré faute de compte de
-        // références correct) sera signalée par le test runner, pas par une assertion ici.
+        // MÃªme principe : la fuite Ã©ventuelle (si le nÅ“ud n'est jamais libÃ©rÃ© faute de compte de
+        // rÃ©fÃ©rences correct) sera signalÃ©e par le test runner, pas par une assertion ici.
         Noeud := TNoeudEtape.Create('isole', ntInstruction);
         Branche := TBrancheEtape.Create('v', 'L', Noeud);
 
@@ -200,11 +200,11 @@ unit AH.Tests.Noeud;
 
         Copie := Original.Clone;
         try
-          // Un même Id d'enfant des deux côtés, mais ce ne doit pas être la même instance :
+          // Un mÃªme Id d'enfant des deux cÃ´tÃ©s, mais ce ne doit pas Ãªtre la mÃªme instance :
           // modifier l'un ne doit pas affecter l'autre.
-          Copie.Enfants[0].Texte := 'Modifié dans la copie';
+          Copie.Enfants[0].Texte := 'ModifiÃ© dans la copie';
 
-          Assert.AreNotEqual('Modifié dans la copie', Original.Enfants[0].Texte);
+          Assert.AreNotEqual('ModifiÃ© dans la copie', Original.Enfants[0].Texte);
         finally
           Copie.Free;
           Original.Free;
@@ -220,9 +220,9 @@ unit AH.Tests.Noeud;
 
         Copie := Original.Clone;
         try
-          Copie.Branches[0].Noeud.Texte := 'Modifié dans la copie';
+          Copie.Branches[0].Noeud.Texte := 'ModifiÃ© dans la copie';
 
-          Assert.AreNotEqual('Modifié dans la copie', Original.Branches[0].Noeud.Texte);
+          Assert.AreNotEqual('ModifiÃ© dans la copie', Original.Branches[0].Noeud.Texte);
         finally
           Copie.Free;
           Original.Free;

@@ -1,4 +1,4 @@
-unit AH.Tests.Capacites;
+ï»¿unit AH.Tests.Capacites;
 
   interface
 
@@ -65,12 +65,12 @@ unit AH.Tests.Capacites;
     procedure TTestGestionnaireCapacites.ChargerDepuisFichier_DomaineInconnu_LeveECapacitesInvalidesException;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Inexistant","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''Ã©tudiante)","Domaine":"Inexistant","Description":"..."}]}');
         try
           FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
           Assert.Fail(
-            'ECapacitesInvalidesException était attendue pour un domaine inconnu.');
+            'ECapacitesInvalidesException Ã©tait attendue pour un domaine inconnu.');
         except
           on E: ECapacitesInvalidesException do
             // L'exception attendue confirme que la validation du domaine est active.
@@ -84,10 +84,10 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"Pioche une carte de plus"}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''Ã©tudiante)","Domaine":"EnquÃªte","Description":"Pioche une carte de plus"}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
-        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('Amanda Sharpe (l''étudiante)', Capacite));
+        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('Amanda Sharpe (l''Ã©tudiante)', Capacite));
         Assert.AreEqual('Pioche une carte de plus', Capacite.Description);
         Assert.AreEqual(Ord(dcEnquete), Ord(Capacite.Domaine));
       end;
@@ -97,10 +97,10 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''Ã©tudiante)","Domaine":"EnquÃªte","Description":"..."}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
-        FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''ÉTUDIANTE)', Capacite);
-        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''ÉTUDIANTE)', Capacite));
+        FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''Ã‰TUDIANTE)', Capacite);
+        Assert.IsTrue(FGestionnaire.TryObtenirCapacite('AMANDA SHARPE (L''Ã‰TUDIANTE)', Capacite));
       end;
 
     procedure TTestGestionnaireCapacites.TryObtenirCapacite_InvestigateurInconnu_RetourneFalse;
@@ -108,7 +108,7 @@ unit AH.Tests.Capacites;
         Capacite: TCapaciteInvestigateur;
       begin
         EcrireFichierTemp(
-          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."}]}');
+          '{"Capacites":[{"NomInvestigateur":"Amanda Sharpe (l''Ã©tudiante)","Domaine":"EnquÃªte","Description":"..."}]}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
 
         Assert.IsFalse(FGestionnaire.TryObtenirCapacite('Harvey Walters', Capacite));
@@ -120,7 +120,7 @@ unit AH.Tests.Capacites;
       begin
         EcrireFichierTemp(
           '{"Capacites":[' +
-          '{"NomInvestigateur":"Amanda Sharpe (l''étudiante)","Domaine":"Enquête","Description":"..."},' +
+          '{"NomInvestigateur":"Amanda Sharpe (l''Ã©tudiante)","Domaine":"EnquÃªte","Description":"..."},' +
           '{"NomInvestigateur":"Dexter Drake (le magicien)","Domaine":"Magie","Description":"..."}' +
           ']}');
         FGestionnaire.ChargerDepuisFichier(FCheminTemp);
@@ -128,7 +128,7 @@ unit AH.Tests.Capacites;
         Noms := FGestionnaire.NomsConnus;
 
         Assert.AreEqual(2, Length(Noms));
-        Assert.IsTrue((Noms[0] = 'Amanda Sharpe (l''étudiante)') or (Noms[1] = 'Amanda Sharpe (l''étudiante)'));
+        Assert.IsTrue((Noms[0] = 'Amanda Sharpe (l''Ã©tudiante)') or (Noms[1] = 'Amanda Sharpe (l''Ã©tudiante)'));
       end;
 
   initialization

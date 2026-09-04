@@ -1,4 +1,4 @@
-object FrmNouvellePartie: TFrmNouvellePartie
+﻿object FrmNouvellePartie: TFrmNouvellePartie
   Left = 0
   Top = 0
   BorderStyle = bsDialog

@@ -1,4 +1,4 @@
-unit AH.UI.Images;
+ï»¿unit AH.UI.Images;
 
   interface
 
@@ -8,9 +8,9 @@ unit AH.UI.Images;
       Vcl.ExtCtrls;
 
     /// <summary>
-    /// Charge une image dans AImage si ACheminRelatif est renseigné et que le fichier existe
+    /// Charge une image dans AImage si ACheminRelatif est renseignÃ© et que le fichier existe
     /// sous ADossierBase ; masque et vide AImage sinon (chemin vide, fichier absent, ou format
-    /// non reconnu). Ne lève jamais d'exception : les illustrations sont un confort, jamais une
+    /// non reconnu). Ne lÃ¨ve jamais d'exception : les illustrations sont un confort, jamais une
     /// condition de fonctionnement de l'application.
     /// </summary>
     procedure ChargerImageSiPossible(AImage : TImage; const ACheminRelatif, ADossierBase : string);

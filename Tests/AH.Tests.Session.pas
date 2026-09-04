@@ -1,4 +1,4 @@
-unit AH.Tests.Session;
+ï»¿unit AH.Tests.Session;
 
   interface
 
@@ -34,7 +34,7 @@ unit AH.Tests.Session;
         procedure RecreerContexte_ProduitUnContextePartieAvecLesMemesValeurs;
 
         [Test]
-        procedure RestaurerPosition_SurArbreMixte_RamèneAuMemeNoeudEtPermetDeContinuer;
+        procedure RestaurerPosition_SurArbreMixte_RamÃ¨neAuMemeNoeudEtPermetDeContinuer;
 
         [Test]
         procedure Journal_Precedent_AnnuleLaDerniereReponseEtLeCompteur;
@@ -63,7 +63,7 @@ unit AH.Tests.Session;
         Racine := TNoeudEtape.Create('racine', ntSequence);
 
         Etape1 := TNoeudEtape.Create('etape1', ntInstruction);
-        Etape1.Texte := 'Première étape';
+        Etape1.Texte := 'PremiÃ¨re Ã©tape';
         Racine.AjouterEnfant(Etape1);
 
         Choix := TNoeudEtape.Create('choix', ntChoix);
@@ -85,7 +85,7 @@ unit AH.Tests.Session;
         Racine.AjouterEnfant(Saisie);
 
         EtapeFinale := TNoeudEtape.Create('etape_finale', ntInstruction);
-        EtapeFinale.Texte := 'Dernière étape';
+        EtapeFinale.Texte := 'DerniÃ¨re Ã©tape';
         Racine.AjouterEnfant(EtapeFinale);
 
         Result := Racine;
@@ -221,7 +221,7 @@ unit AH.Tests.Session;
         end;
       end;
 
-    procedure TTestGestionnaireSession.RestaurerPosition_SurArbreMixte_RamèneAuMemeNoeudEtPermetDeContinuer;
+    procedure TTestGestionnaireSession.RestaurerPosition_SurArbreMixte_RamÃ¨neAuMemeNoeudEtPermetDeContinuer;
       var
         Racine1, Racine2 : TNoeudEtape;
         Contexte1, Contexte2 : TContextePartie;
@@ -230,7 +230,7 @@ unit AH.Tests.Session;
         Session : TSessionPartie;
         NoeudApresRestauration, Suite1, Suite2 : TNoeudEtape;
       begin
-        // Partie "originale" : on avance jusqu'au nœud "saisie" (après avoir répondu au choix), puis on sauvegarde.
+        // Partie "originale" : on avance jusqu'au nÅ“ud "saisie" (aprÃ¨s avoir rÃ©pondu au choix), puis on sauvegarde.
         Racine1 := ConstruireArbreMixte;
         Contexte1 := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
         MoteurBrut1 := TMoteurSequenceur.Create(Racine1, Contexte1);
@@ -242,7 +242,7 @@ unit AH.Tests.Session;
               Suivant; // choix
               EnregistrerReponse('oui');
               Suivant; // branche_oui
-              Suivant; // saisie (en attente de réponse)
+              Suivant; // saisie (en attente de rÃ©ponse)
             end;
 
           Assert.AreEqual('saisie', Moteur1.NoeudCourant.Id);
@@ -255,7 +255,7 @@ unit AH.Tests.Session;
           Racine1.Free;
         end;
 
-        // Reprise : arbre et contexte fraîchement recréés, comme après relance de l'application.
+        // Reprise : arbre et contexte fraÃ®chement recrÃ©Ã©s, comme aprÃ¨s relance de l'application.
         Racine2 := ConstruireArbreMixte;
         Contexte2 := TGestionnaireSession.RecreerContexte(Session);
         MoteurBrut2 := TMoteurSequenceur.Create(Racine2, Contexte2);
@@ -266,7 +266,7 @@ unit AH.Tests.Session;
 
           Assert.AreEqual('saisie', NoeudApresRestauration.Id);
 
-          // La partie peut continuer normalement depuis la position restaurée.
+          // La partie peut continuer normalement depuis la position restaurÃ©e.
           Moteur2.EnregistrerReponse(5);
           Suite1 := Moteur2.Suivant;
           Assert.AreEqual('etape_finale', Suite1.Id);
@@ -299,11 +299,11 @@ unit AH.Tests.Session;
               Suivant; // choix
               EnregistrerReponse('oui');
               Suivant; // branche_oui
-              Precedent; // retour sur "choix", la réponse 'oui' doit être retirée du journal
+              Precedent; // retour sur "choix", la rÃ©ponse 'oui' doit Ãªtre retirÃ©e du journal
             end;
 
           Session := Moteur.CapturerSession(Contexte, 'test');
-          Assert.AreEqual(2, Session.NombreEtapesTraversees); // etape1, choix — plus branche_oui
+          Assert.AreEqual(2, Session.NombreEtapesTraversees); // etape1, choix â€” plus branche_oui
           Assert.AreEqual(0, Length(Session.ReponsesEnregistrees));
         finally
           Moteur.Free;

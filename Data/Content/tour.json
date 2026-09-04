@@ -1,639 +1,639 @@
 {
-  "Id": "tour_racine",
-  "Type": "ntSequence",
-  "Titre": "Tour de jeu",
-  "Enfants": [
-    {
-      "Id": "phase1_entretien_boucle",
-      "Type": "ntBouclePorInvestigateur",
-      "Titre": "Phase I : Entretien",
-      "Enfants": [
+    "Id": "tour_racine",
+    "Type": "ntSequence",
+    "Titre": "Tour de jeu",
+    "Enfants": [
         {
-          "Id": "phase1_restaurer_cartes",
-          "Type": "ntInstruction",
-          "Texte": "Retournez face visible toutes vos cartes déchargées : elles sont de nouveau utilisables ce tour-ci.",
-          "Illustration": ""
+            "Id": "phase1_entretien_boucle",
+            "Type": "ntBouclePorInvestigateur",
+            "Titre": "Phase I : Entretien",
+            "Enfants": [
+                {
+                    "Id": "phase1_restaurer_cartes",
+                    "Type": "ntInstruction",
+                    "Texte": "Retournez face visible toutes vos cartes déchargées : elles sont de nouveau utilisables ce tour-ci.",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase1_actions_entretien",
+                    "Type": "ntInstruction",
+                    "Texte": "Effectuez toutes les actions d'Entretien indiquées sur vos cartes Investigateur spéciales (Acompte, Prêt Bancaire, Bénédiction, Malédiction, sorts à relancer, etc.), dans l'ordre de votre choix. Une carte acquise ce tour-ci n'exige pas encore d'action d'Entretien.",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase1_ajustement_competences",
+                    "Type": "ntInstruction",
+                    "Texte": "Ajustez vos compétences en déplaçant vos trois pions coulissants, dans la limite totale de cases indiquée par votre Concentration.",
+                    "Illustration": ""
+                }
+            ]
         },
         {
-          "Id": "phase1_actions_entretien",
-          "Type": "ntInstruction",
-          "Texte": "Effectuez toutes les actions d'Entretien indiquées sur vos cartes Investigateur spéciales (Acompte, Prêt Bancaire, Bénédiction, Malédiction, sorts à relancer, etc.), dans l'ordre de votre choix. Une carte acquise ce tour-ci n'exige pas encore d'action d'Entretien.",
-          "Illustration": ""
-        },
-        {
-          "Id": "phase1_ajustement_competences",
-          "Type": "ntInstruction",
-          "Texte": "Ajustez vos compétences en déplaçant vos trois pions coulissants, dans la limite totale de cases indiquée par votre Concentration.",
-          "Illustration": ""
-        }
-      ]
-    },
-    {
-      "Id": "phase2_mouvement_boucle",
-      "Type": "ntBouclePorInvestigateur",
-      "Titre": "Phase II : Mouvement",
-      "Enfants": [
-        {
-          "Id": "phase2_situation",
-          "Type": "ntChoix",
-          "Titre": "Où se trouve cet investigateur au début de cette phase ?",
-          "Illustration": "",
-          "Branches": [
-            {
-              "Valeur": "retarde",
-              "Libelle": "Il est retardé (marqueur couché)",
-              "Noeud": {
-                "Id": "phase2_retarde",
-                "Type": "ntInstruction",
-                "Texte": "Il ne reçoit aucun point de mouvement ce tour-ci. Redressez son marqueur : il ne sera plus retardé au tour suivant.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "arkham",
-              "Libelle": "Il est à Arkham",
-              "Noeud": {
-                "Id": "phase2_mouvement_arkham",
-                "Type": "ntInstruction",
-                "Texte": "Déplacez cet investigateur d'un nombre de zones égal à sa Vitesse actuelle, en suivant les lignes jaunes du plateau. À chaque tentative de quitter, ou à la fin de son mouvement sur une case occupée par un ou plusieurs monstres, échappez-vous ou combattez chacun d'eux selon les règles habituelles. S'il termine son mouvement dans un lieu contenant des pions Indice, il peut en prendre un ou plusieurs.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "premiere_zone",
-              "Libelle": "Il est dans la première zone d'un Autre Monde",
-              "Noeud": {
-                "Id": "phase2_vers_seconde_zone",
-                "Type": "ntInstruction",
-                "Texte": "Il ne reçoit aucun point de mouvement : déplacez-le vers la seconde zone de cet Autre Monde.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "seconde_zone",
-              "Libelle": "Il est dans la seconde zone d'un Autre Monde",
-              "Noeud": {
-                "Id": "phase2_retour_choix",
-                "Type": "ntChoix",
-                "Titre": "Existe-t-il un portail actuellement ouvert vers cet Autre Monde ?",
-                "Illustration": "",
-                "Branches": [
-                  {
-                    "Valeur": "oui",
-                    "Libelle": "Oui",
-                    "Noeud": {
-                      "Id": "phase2_retour_arkham",
-                      "Type": "ntInstruction",
-                      "Texte": "Il ne reçoit aucun point de mouvement : ramenez-le à Arkham sur le lieu de votre choix où un portail ouvert mène à cet Autre Monde, et placez un marqueur Exploré sous son pion.",
-                      "Illustration": ""
-                    }
-                  },
-                  {
-                    "Valeur": "non",
-                    "Libelle": "Non",
-                    "Noeud": {
-                      "Id": "phase2_perdu_temps_espace",
-                      "Type": "ntInstruction",
-                      "Texte": "Il est perdu dans le temps et l'espace : défaussez la moitié (arrondie à l'inférieur) de ses objets et de ses pions Indice ainsi que tous ses acomptes ; sa Santé Mentale et sa Résistance reviennent à 1. Placez-le sur la case « Perdu dans le Temps et l'Espace » et couchez son marqueur (il est retardé).",
-                      "Illustration": ""
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Id": "phase3_rencontres_arkham_boucle",
-      "Type": "ntBouclePorInvestigateur",
-      "Titre": "Phase III : Rencontres à Arkham",
-      "Enfants": [
-        {
-          "Id": "phase3_situation",
-          "Type": "ntChoix",
-          "Titre": "Cet investigateur est-il actuellement dans un lieu d'Arkham (pas une zone de rues, pas un Autre Monde) ?",
-                "Illustration": "",
-          "Branches": [
-            {
-              "Valeur": "non",
-              "Libelle": "Non",
-              "Noeud": {
-                "Id": "phase3_non_concerne",
-                "Type": "ntInstruction",
-                "Texte": "Il n'a pas de rencontre à résoudre cette phase-ci.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "lieu_sans_portail",
-              "Libelle": "Oui, un lieu sans portail",
-              "Noeud": {
-                "Id": "phase3_pas_portail",
-                "Type": "ntInstruction",
-                "Texte": "Si le lieu prossède une description, l'Investigateur peut choisir ed faire l'action décrite ou faire une Rencontre. Si le lieu n'a pas de description, il y a automatiquemet une Rencontre. S'il fait une rencontre : mélangez si nécessaire le paquet de cartes Lieu du quartier correspondant, piochez une carte, lisez le paragraphe de ce lieu à voix haute et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Remettez la carte dans le paquet une fois résolue.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "lieu_portail_pas_explore",
-              "Libelle": "Oui, un lieu avec un portail (première visite)",
-              "Noeud": {
-                "Id": "phase3_aspire_portail",
-                "Type": "ntInstruction",
-                "Texte": "Il est aspiré par le portail : déplacez-le sur la première zone (celle de gauche) de l'Autre Monde indiqué par le marqueur Portail.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "lieu_portail_explore",
-              "Libelle": "Oui, un lieu avec un portail (déjà exploré, marqueur Exploré présent)",
-              "Noeud": {
-                "Id": "phase3_fermer_portail_choix",
-                "Type": "ntChoix",
-                "Titre": "Tente-t-il de fermer ce portail ?",
-                "Illustration": "",
-                "Branches": [
-                  {
-                    "Valeur": "non",
-                    "Libelle": "Non",
-                    "Noeud": {
-                      "Id": "phase3_ne_tente_pas",
-                      "Type": "ntInstruction",
-                      "Texte": "Il reste sur place sans tenter de fermer le portail ce tour-ci.",
-                      Image": ""
-                    }
-                  },
-                  {
-                    "Valeur": "oui",
-                    "Libelle": "Oui",
-                    "Noeud": {
-                      "Id": "phase3_tentative_fermeture",
-                      "Type": "ntSequence",
-                      "Enfants": [
+            "Id": "phase2_mouvement_boucle",
+            "Type": "ntBouclePorInvestigateur",
+            "Titre": "Phase II : Mouvement",
+            "Enfants": [
+                {
+                    "Id": "phase2_situation",
+                    "Type": "ntChoix",
+                    "Titre": "Où se trouve cet investigateur au début de cette phase ?",
+                    "Illustration": "",
+                    "Branches": [
                         {
-                          "Id": "phase3_test_fermeture",
-                          "Type": "ntInstruction",
-                          "Texte": "Choisissez de faire un test de Savoir ou de Vigueur, en utilisant le nombre imprimé sur le marqueur Portail comme modificateur (difficulté de base 1).",
-                          "Illustration": ""
+                            "Valeur": "retarde",
+                            "Libelle": "Il est retardé (marqueur couché)",
+                            "Noeud": {
+                                "Id": "phase2_retarde",
+                                "Type": "ntInstruction",
+                                "Texte": "Il ne reçoit aucun point de mouvement ce tour-ci. Redressez son marqueur : il ne sera plus retardé au tour suivant.",
+                                "Illustration": ""
+                            }
                         },
                         {
-                          "Id": "phase3_resultat_fermeture",
-                          "Type": "ntChoix",
-                          "Titre": "Le test est-il réussi ?",
-                          "Illustration": "",
-                          "Branches": [
-                            {
-                              "Valeur": "non",
-                              "Libelle": "Échec",
-                              "Noeud": {
-                                "Id": "phase3_fermeture_echec",
+                            "Valeur": "arkham",
+                            "Libelle": "Il est à Arkham",
+                            "Noeud": {
+                                "Id": "phase2_mouvement_arkham",
                                 "Type": "ntInstruction",
-                                "Texte": "Le portail reste ouvert. Il pourra retenter de le fermer aux tours suivants, tant qu'il ne quitte pas ce lieu.",
+                                "Texte": "Déplacez cet investigateur d'un nombre de zones égal à sa Vitesse actuelle, en suivant les lignes jaunes du plateau. À chaque tentative de quitter, ou à la fin de son mouvement sur une case occupée par un ou plusieurs monstres, échappez-vous ou combattez chacun d'eux selon les règles habituelles. S'il termine son mouvement dans un lieu contenant des pions Indice, il peut en prendre un ou plusieurs.",
                                 "Illustration": ""
-                              }
-                            },
-                            {
-                              "Valeur": "oui",
-                              "Libelle": "Réussite",
-                              "Noeud": {
-                                "Id": "phase3_fermeture_reussie",
-                                "Type": "ntSequence",
-                                "Enfants": [
-                                  {
-                                    "Id": "phase3_saisie_portails_fermes",
-                                    "Type": "ntSaisie",
-                                    "Champ": "NombrePortailsOuverts",
-                                    "Texte": "Il ferme le portail et prend le marqueur Portail comme trophée. Tous les Monstres qui portent le même icône que le POrtail retournent dans la Tasse des Monstres. Indiquez le nombre de portails désormais ouverts sur le plateau.",
-                                    "Illustration": ""
-                                  },
-                                  {
-                                    "Id": "phase3_condition_derniere_fermeture",
-                                    "Type": "ntCondition",
-                                    "Champ": "PlusAucunPortailOuvert",
-                                    "Branches": [
-                                      { 
-                                        "Valeur": false, 
-                                        "Noeud": { 
-                                          "Id": "phase3_pas_dernier_portail", 
-                                          "Type": "ntInstruction", 
-                                          "Texte": "D'autres portails restent ouverts : la partie continue.",
-                                          "Illustration": "" 
-                                        }
-                                      },
-                                      {
-                                        "Valeur": true,
-                                        "Noeud": {
-                                          "Id": "phase3_verification_trophees",
-                                          "Type": "ntChoix",
-                                          "Titre": "C'était le dernier portail ouvert. Le groupe possède-t-il un nombre de trophées Portail non dépensés au moins égal au nombre d'investigateurs en jeu ?",
-                                          "Illustration": "",
-                                          "Branches": [
-                                            { 
-                                              "Valeur": "non", 
-                                              "Libelle": "Non, pas assez de trophées", 
-                                              "Noeud": { 
-                                                "Id": "phase3_fermeture_sans_victoire", 
-                                                "Type": "ntInstruction", 
-                                                "Texte": "Le dernier portail est fermé, mais il manque des trophées Portail non dépensés pour la victoire par fermeture. Continuez la partie.",
-                                                "Illustration": "" 
-                                              } 
-                                            },
-                                            { 
-                                              "Valeur": "oui", 
-                                              "Libelle": "Oui", 
-                                              "Noeud": { 
-                                                "Id": "phase3_victoire_fermeture_detectee", 
-                                                "Type": "ntInstruction", 
-                                                "Texte": "Toutes les conditions de victoire par fermeture totale sont réunies ! Cliquez sur « Terminer la partie ».",
-                                                "Illustration": "" 
-                                              } 
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "Id": "phase3_scellement_choix",
-                                    "Type": "ntChoix",
-                                    "Titre": "Souhaite-t-il sceller ce portail (5 pions Indice dépensés, ou un Signe des Anciens) ? Rappel : un portail ouvert dans un lieu stable (diamant vert) ou dans une rue ne peut jamais être scellé, seulement fermé.",
-                                    "Illustration": "",
-                                    "Branches": [
-                                      {
-                                        "Valeur": "non",
-                                        "Libelle": "Non",
-                                        "Noeud": {
-                                          "Id": "phase3_pas_de_scellement",
-                                          "Type": "ntInstruction",
-                                          "Texte": "Le portail reste fermé sans être scellé : il pourra s'y rouvrir plus tard.",
-                                          "Illustration": ""
-                                        }
-                                      },
-                                      {
+                            }
+                        },
+                        {
+                            "Valeur": "premiere_zone",
+                            "Libelle": "Il est dans la première zone d'un Autre Monde",
+                            "Noeud": {
+                                "Id": "phase2_vers_seconde_zone",
+                                "Type": "ntInstruction",
+                                "Texte": "Il ne reçoit aucun point de mouvement : déplacez-le vers la seconde zone de cet Autre Monde.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "seconde_zone",
+                            "Libelle": "Il est dans la seconde zone d'un Autre Monde",
+                            "Noeud": {
+                                "Id": "phase2_retour_choix",
+                                "Type": "ntChoix",
+                                "Titre": "Existe-t-il un portail actuellement ouvert vers cet Autre Monde ?",
+                                "Illustration": "",
+                                "Branches": [
+                                    {
                                         "Valeur": "oui",
                                         "Libelle": "Oui",
                                         "Noeud": {
-                                          "Id": "phase3_scellement_saisie",
-                                          "Type": "ntSaisie",
-                                          "Champ": "NombreSignesDesAnciens",
-                                          "Texte": "Appliquez la méthode choisie (dépense de 5 pions Indice, ou remise en boîte d'une carte Signe des Anciens contre 1 point de Santé Mentale et 1 point de Résistance). Placez un pion Destin, face Signe des Anciens visible, sur ce lieu. Indiquez le nombre total de lieux désormais scellés par un Signe des Anciens.",
-                                          "Illustration": ""
-                                        },
-                                        {
-                                          "Id": "phase3_condition_victoire_scellement",
-                                          "Type": "ntCondition",
-                                          "Champ": "SixSignesDesAnciensAtteint",
-                                          "Branches": [
-                                            { 
-                                              "Valeur": false, 
-                                              "Noeud": { 
-                                                "Id": "phase3_scellement_sans_victoire", 
-                                                "Type": "ntInstruction", 
-                                                "Texte": "Moins de six lieux sont scellés pour l'instant : la partie continue.",
-                                                "Illustration": "" 
-                                              } 
-                                            },
-                                            { 
-                                              "Valeur": true, 
-                                              "Noeud": { 
-                                                "Id": "phase3_victoire_scellement_detectee", 
-                                                "Type": "ntInstruction", 
-                                                "Texte": "Six lieux sont désormais scellés : les investigateurs ont gagné la partie ! Cliquez sur « Terminer la partie ».",
-                                                "Illustration": "" 
-                                              } 
-                                            }
-                                          ]
+                                            "Id": "phase2_retour_arkham",
+                                            "Type": "ntInstruction",
+                                            "Texte": "Il ne reçoit aucun point de mouvement : ramenez-le à Arkham sur le lieu de votre choix où un portail ouvert mène à cet Autre Monde, et placez un marqueur Exploré sous son pion.",
+                                            "Illustration": ""
                                         }
-                                      }
-                                    ]
-                                  }
+                                    },
+                                    {
+                                        "Valeur": "non",
+                                        "Libelle": "Non",
+                                        "Noeud": {
+                                            "Id": "phase2_perdu_temps_espace",
+                                            "Type": "ntInstruction",
+                                            "Texte": "Il est perdu dans le temps et l'espace : défaussez la moitié (arrondie à l'inférieur) de ses objets et de ses pions Indice ainsi que tous ses acomptes ; sa Santé Mentale et sa Résistance reviennent à 1. Placez-le sur la case « Perdu dans le Temps et l'Espace » et couchez son marqueur (il est retardé).",
+                                            "Illustration": ""
+                                        }
+                                    }
                                 ]
-                              }
                             }
-                          ]
                         }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Id": "phase4_rencontres_autre_monde_boucle",
-      "Type": "ntBouclePorInvestigateur",
-      "Titre": "Phase IV : Rencontres dans un Autre Monde",
-      "Enfants": [
-        {
-          "Id": "phase4_situation",
-          "Type": "ntChoix",
-          "Titre": "Cet investigateur est-il actuellement dans un Autre Monde ?",
-          "Illustration": "",
-          "Branches": [
-            {
-              "Valeur": "non",
-              "Libelle": "Non",
-              "Noeud": {
-                "Id": "phase4_non_concerne",
-                "Type": "ntInstruction",
-                "Texte": "Il n'a pas de rencontre à résoudre cette phase-ci.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "oui",
-              "Libelle": "Oui",
-              "Noeud": {
-                "Id": "phase4_rencontre",
-                "Type": "ntInstruction",
-                "Texte": "Piochez des cartes du paquet Portail jusqu'à obtenir une carte dont la couleur correspond au symbole de rencontre de la case occupée (défaussez les autres face cachée au fond du paquet). Lisez le paragraphe spécifique à cet Autre Monde, ou à défaut le paragraphe « Autre », et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Défaussez ensuite la carte face cachée au fond du paquet.",
-                "Illustration": ""
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Id": "phase5_mythe",
-      "Type": "ntSequence",
-      "Titre": "Phase V : Mythe",
-      "Enfants": [
-        {
-          "Id": "phase5_piocher",
-          "Type": "ntInstruction",
-          "Texte": "Le premier joueur pioche la première carte du paquet Mythe. Si c'est une Rumeur et qu'aucune autre carte Rumeur est actuellement en jeu, elle s'applique, sinon ses effets sont joués puis elle est défaussée (elle retourne sous le paquet). Si c'est une carte Environnement, elle remplace une autre carte Environnement de même type. Plusieurs cartes Environnement de types différents peuvent être actives en même temps.",
-          "Illustration": ""
+                    ]
+                }
+            ]
         },
         {
-          "Id": "phase5_etat_lieu",
-          "Type": "ntChoix",
-          "Titre": "Quel est l'état actuel du lieu indiqué en bas à gauche de la carte ?",
-          "Branches": [
-            {
-              "Valeur": "signe",
-              "Libelle": "Un Signe des Anciens y est posé",
-              "Noeud": {
-                "Id": "phase5_cas_signe",
-                "Type": "ntInstruction",
-                "Texte": "Il ne se passe rien : ce lieu est protégé, ni portail ni monstre n'apparaissent. Passez directement à la lecture de l'événement de la carte.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "portail_ouvert",
-              "Libelle": "Un portail y est déjà ouvert",
-              "Noeud": {
-                "Id": "phase5_cas_vague",
-                "Type": "ntInstruction",
-                "Texte": "Une vague de monstres se produit : piochez, dans la tasse des monstres, un nombre de monstres égal au nombre de portails actuellement ouverts ou au nombre d'investigateurs en jeu (le plus élevé des deux), et répartissez-les aussi équitablement que possible entre tous les portails ouverts, sans qu'aucun n'en reçoive plus que celui où la vague est apparue.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "aucun",
-              "Libelle": "Ni l'un ni l'autre",
-              "Noeud": {
-                "Id": "phase5_cas_nouveau_portail",
-                "Type": "ntSequence",
-                "Enfants": [
-                  {
-                    "Id": "phase5_saisie_destin",
-                    "Type": "ntSaisie",
-                    "Champ": "EchelleDestin",
-                    "Texte": "Placez un pion Destin (symbole œil visible) sur la première case libre de l'échelle du destin du Grand Ancien. Indiquez le nombre total de pions Destin désormais présents sur cette échelle.",
-                    "Illustration": ""
-                  },
-                  {
-                    "Id": "phase5_condition_destin_plein",
-                    "Type": "ntCondition",
-                    "Champ": "EchelleDestinPleine",
+            "Id": "phase3_rencontres_arkham_boucle",
+            "Type": "ntBouclePorInvestigateur",
+            "Titre": "Phase III : Rencontres à Arkham",
+            "Enfants": [
+                {
+                    "Id": "phase3_situation",
+                    "Type": "ntChoix",
+                    "Titre": "Cet investigateur est-il actuellement dans un lieu d'Arkham (pas une zone de rues, pas un Autre Monde) ?",
+                    "Illustration": "",
                     "Branches": [
-                      {
-                        "Valeur": true,
-                        "Noeud": {
-                          "Id": "phase5_reveil_destin",
-                          "Type": "ntInstruction",
-                          "Texte": "L'échelle du destin est complète : le Grand Ancien s'éveille immédiatement. Interrompez ce tour et passez à la séquence de Bataille Finale.",
-                          "Illustration": ""
-                        }
-                      },
-                      {
-                        "Valeur": false,
-                        "Noeud": {
-                          "Id": "phase5_pile_portail_vide",
-                          "Type": "ntChoix",
-                          "Titre": "La pile de marqueurs Portail est-elle vide ?",
-                          "Illustration": "",
-                          "Branches": [
-                            {
-                              "Valeur": "oui",
-                              "Libelle": "Oui",
-                              "Noeud": {
-                                "Id": "phase5_reveil_pile_vide",
+                        {
+                            "Valeur": "non",
+                            "Libelle": "Non",
+                            "Noeud": {
+                                "Id": "phase3_non_concerne",
                                 "Type": "ntInstruction",
-                                "Texte": "Il n'y a plus de marqueur Portail disponible : le Grand Ancien s'éveille immédiatement. Interrompez ce tour et passez à la séquence de Bataille Finale.",
+                                "Texte": "Il n'a pas de rencontre à résoudre cette phase-ci.",
                                 "Illustration": ""
-                              }
-                            },
-                            {
-                              "Valeur": "non",
-                              "Libelle": "Non",
-                              "Noeud": {
-                                "Id": "phase5_ouverture_portail",
+                            }
+                        },
+                        {
+                            "Valeur": "lieu_sans_portail",
+                            "Libelle": "Oui, un lieu sans portail",
+                            "Noeud": {
+                                "Id": "phase3_pas_portail",
+                                "Type": "ntInstruction",
+                                "Texte": "Si le lieu prossède une description, l'Investigateur peut choisir ed faire l'action décrite ou faire une Rencontre. Si le lieu n'a pas de description, il y a automatiquemet une Rencontre. S'il fait une rencontre : mélangez si nécessaire le paquet de cartes Lieu du quartier correspondant, piochez une carte, lisez le paragraphe de ce lieu à voix haute et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Remettez la carte dans le paquet une fois résolue.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "lieu_portail_pas_explore",
+                            "Libelle": "Oui, un lieu avec un portail (première visite)",
+                            "Noeud": {
+                                "Id": "phase3_aspire_portail",
+                                "Type": "ntInstruction",
+                                "Texte": "Il est aspiré par le portail : déplacez-le sur la première zone (celle de gauche) de l'Autre Monde indiqué par le marqueur Portail.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "lieu_portail_explore",
+                            "Libelle": "Oui, un lieu avec un portail (déjà exploré, marqueur Exploré présent)",
+                            "Noeud": {
+                                "Id": "phase3_fermer_portail_choix",
+                                "Type": "ntChoix",
+                                "Titre": "Tente-t-il de fermer ce portail ?",
+                                "Illustration": "",
+                                "Branches": [
+                                    {
+                                        "Valeur": "non",
+                                        "Libelle": "Non",
+                                        "Noeud": {
+                                            "Id": "phase3_ne_tente_pas",
+                                            "Type": "ntInstruction",
+                                            "Texte": "Il reste sur place sans tenter de fermer le portail ce tour-ci.",
+                                            "Image": ""
+                                        }
+                                    },
+                                    {
+                                        "Valeur": "oui",
+                                        "Libelle": "Oui",
+                                        "Noeud": {
+                                            "Id": "phase3_tentative_fermeture",
+                                            "Type": "ntSequence",
+                                            "Enfants": [
+                                                {
+                                                    "Id": "phase3_test_fermeture",
+                                                    "Type": "ntInstruction",
+                                                    "Texte": "Choisissez de faire un test de Savoir ou de Vigueur, en utilisant le nombre imprimé sur le marqueur Portail comme modificateur (difficulté de base 1).",
+                                                    "Illustration": ""
+                                                },
+                                                {
+                                                    "Id": "phase3_resultat_fermeture",
+                                                    "Type": "ntChoix",
+                                                    "Titre": "Le test est-il réussi ?",
+                                                    "Illustration": "",
+                                                    "Branches": [
+                                                        {
+                                                            "Valeur": "non",
+                                                            "Libelle": "Échec",
+                                                            "Noeud": {
+                                                                "Id": "phase3_fermeture_echec",
+                                                                "Type": "ntInstruction",
+                                                                "Texte": "Le portail reste ouvert. Il pourra retenter de le fermer aux tours suivants, tant qu'il ne quitte pas ce lieu.",
+                                                                "Illustration": ""
+                                                            }
+                                                        },
+                                                        {
+                                                            "Valeur": "oui",
+                                                            "Libelle": "Réussite",
+                                                            "Noeud": {
+                                                                "Id": "phase3_fermeture_reussie",
+                                                                "Type": "ntSequence",
+                                                                "Enfants": [
+                                                                    {
+                                                                        "Id": "phase3_saisie_portails_fermes",
+                                                                        "Type": "ntSaisie",
+                                                                        "Champ": "NombrePortailsOuverts",
+                                                                        "Texte": "Il ferme le portail et prend le marqueur Portail comme trophée. Tous les Monstres qui portent le même icône que le POrtail retournent dans la Tasse des Monstres. Indiquez le nombre de portails désormais ouverts sur le plateau.",
+                                                                        "Illustration": ""
+                                                                    },
+                                                                    {
+                                                                        "Id": "phase3_condition_derniere_fermeture",
+                                                                        "Type": "ntCondition",
+                                                                        "Champ": "PlusAucunPortailOuvert",
+                                                                        "Branches": [
+                                                                            {
+                                                                                "Valeur": false,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_pas_dernier_portail",
+                                                                                    "Type": "ntInstruction",
+                                                                                    "Texte": "D'autres portails restent ouverts : la partie continue.",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "Valeur": true,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_verification_trophees",
+                                                                                    "Type": "ntChoix",
+                                                                                    "Titre": "C'était le dernier portail ouvert. Le groupe possède-t-il un nombre de trophées Portail non dépensés au moins égal au nombre d'investigateurs en jeu ?",
+                                                                                    "Illustration": "",
+                                                                                    "Branches": [
+                                                                                        {
+                                                                                            "Valeur": "non",
+                                                                                            "Libelle": "Non, pas assez de trophées",
+                                                                                            "Noeud": {
+                                                                                                "Id": "phase3_fermeture_sans_victoire",
+                                                                                                "Type": "ntInstruction",
+                                                                                                "Texte": "Le dernier portail est fermé, mais il manque des trophées Portail non dépensés pour la victoire par fermeture. Continuez la partie.",
+                                                                                                "Illustration": ""
+                                                                                            }
+                                                                                        },
+                                                                                        {
+                                                                                            "Valeur": "oui",
+                                                                                            "Libelle": "Oui",
+                                                                                            "Noeud": {
+                                                                                                "Id": "phase3_victoire_fermeture_detectee",
+                                                                                                "Type": "ntInstruction",
+                                                                                                "Texte": "Toutes les conditions de victoire par fermeture totale sont réunies ! Cliquez sur « Terminer la partie ».",
+                                                                                                "Illustration": ""
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "Id": "phase3_scellement_choix",
+                                                                        "Type": "ntChoix",
+                                                                        "Titre": "Souhaite-t-il sceller ce portail (5 pions Indice dépensés, ou un Signe des Anciens) ? Rappel : un portail ouvert dans un lieu stable (diamant vert) ou dans une rue ne peut jamais être scellé, seulement fermé.",
+                                                                        "Illustration": "",
+                                                                        "Branches": [
+                                                                            {
+                                                                                "Valeur": "non",
+                                                                                "Libelle": "Non",
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_pas_de_scellement",
+                                                                                    "Type": "ntInstruction",
+                                                                                    "Texte": "Le portail reste fermé sans être scellé : il pourra s'y rouvrir plus tard.",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "Valeur": "oui",
+                                                                                "Libelle": "Oui",
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_scellement_saisie",
+                                                                                    "Type": "ntSaisie",
+                                                                                    "Champ": "NombreSignesDesAnciens",
+                                                                                    "Texte": "Appliquez la méthode choisie (dépense de 5 pions Indice, ou remise en boîte d'une carte Signe des Anciens contre 1 point de Santé Mentale et 1 point de Résistance). Placez un pion Destin, face Signe des Anciens visible, sur ce lieu. Indiquez le nombre total de lieux désormais scellés par un Signe des Anciens.",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "Id": "phase3_condition_victoire_scellement",
+                                                                        "Type": "ntCondition",
+                                                                        "Champ": "SixSignesDesAnciensAtteint",
+                                                                        "Branches": [
+                                                                            {
+                                                                                "Valeur": false,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_scellement_sans_victoire",
+                                                                                    "Type": "ntInstruction",
+                                                                                    "Texte": "Moins de six lieux sont scellés pour l'instant : la partie continue.",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "Valeur": true,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase3_victoire_scellement_detectee",
+                                                                                    "Type": "ntInstruction",
+                                                                                    "Texte": "Six lieux sont désormais scellés : les investigateurs ont gagné la partie ! Cliquez sur « Terminer la partie ».",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Id": "phase4_rencontres_autre_monde_boucle",
+            "Type": "ntBouclePorInvestigateur",
+            "Titre": "Phase IV : Rencontres dans un Autre Monde",
+            "Enfants": [
+                {
+                    "Id": "phase4_situation",
+                    "Type": "ntChoix",
+                    "Titre": "Cet investigateur est-il actuellement dans un Autre Monde ?",
+                    "Illustration": "",
+                    "Branches": [
+                        {
+                            "Valeur": "non",
+                            "Libelle": "Non",
+                            "Noeud": {
+                                "Id": "phase4_non_concerne",
+                                "Type": "ntInstruction",
+                                "Texte": "Il n'a pas de rencontre à résoudre cette phase-ci.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "oui",
+                            "Libelle": "Oui",
+                            "Noeud": {
+                                "Id": "phase4_rencontre",
+                                "Type": "ntInstruction",
+                                "Texte": "Piochez des cartes du paquet Portail jusqu'à obtenir une carte dont la couleur correspond au symbole de rencontre de la case occupée (défaussez les autres face cachée au fond du paquet). Lisez le paragraphe spécifique à cet Autre Monde, ou à défaut le paragraphe « Autre », et appliquez ses instructions. Si un monstre apparaît, combattez-le ou échappez-vous selon les règles habituelles. Défaussez ensuite la carte face cachée au fond du paquet.",
+                                "Illustration": ""
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Id": "phase5_mythe",
+            "Type": "ntSequence",
+            "Titre": "Phase V : Mythe",
+            "Enfants": [
+                {
+                    "Id": "phase5_piocher",
+                    "Type": "ntInstruction",
+                    "Texte": "Le premier joueur pioche la première carte du paquet Mythe. Si c'est une Rumeur et qu'aucune autre carte Rumeur est actuellement en jeu, elle s'applique, sinon ses effets sont joués puis elle est défaussée (elle retourne sous le paquet). Si c'est une carte Environnement, elle remplace une autre carte Environnement de même type. Plusieurs cartes Environnement de types différents peuvent être actives en même temps.",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase5_etat_lieu",
+                    "Type": "ntChoix",
+                    "Titre": "Quel est l'état actuel du lieu indiqué en bas à gauche de la carte ?",
+                    "Branches": [
+                        {
+                            "Valeur": "signe",
+                            "Libelle": "Un Signe des Anciens y est posé",
+                            "Noeud": {
+                                "Id": "phase5_cas_signe",
+                                "Type": "ntInstruction",
+                                "Texte": "Il ne se passe rien : ce lieu est protégé, ni portail ni monstre n'apparaissent. Passez directement à la lecture de l'événement de la carte.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "portail_ouvert",
+                            "Libelle": "Un portail y est déjà ouvert",
+                            "Noeud": {
+                                "Id": "phase5_cas_vague",
+                                "Type": "ntInstruction",
+                                "Texte": "Une vague de monstres se produit : piochez, dans la tasse des monstres, un nombre de monstres égal au nombre de portails actuellement ouverts ou au nombre d'investigateurs en jeu (le plus élevé des deux), et répartissez-les aussi équitablement que possible entre tous les portails ouverts, sans qu'aucun n'en reçoive plus que celui où la vague est apparue.",
+                                "Illustration": ""
+                            }
+                        },
+                        {
+                            "Valeur": "aucun",
+                            "Libelle": "Ni l'un ni l'autre",
+                            "Noeud": {
+                                "Id": "phase5_cas_nouveau_portail",
                                 "Type": "ntSequence",
                                 "Enfants": [
-                                  {
-                                    "Id": "phase5_saisie_portails",
-                                    "Type": "ntSaisie",
-                                    "Champ": "NombrePortailsOuverts",
-                                    "Texte": "Piochez un marqueur Portail dans la pile et placez-le face visible sur le lieu ; défaussez les pions Indice qui s'y trouvaient. Indiquez le nombre total de portails désormais ouverts sur le plateau.",
-                                    "Illustration": ""
-                                  },
-                                  {
-                                    "Id": "phase5_condition_seuil_portails",
-                                    "Type": "ntCondition",
-                                    "Champ": "SeuilReveilPortailsOuvertsAtteint",
-                                    "Branches": [
-                                      {
-                                        "Valeur": true,
-                                        "Noeud": {
-                                          "Id": "phase5_reveil_trop_portails",
-                                          "Type": "ntInstruction",
-                                          "Texte": "Trop de portails sont ouverts simultanément : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale.",
-                                          "Illustration": ""
-                                        }
-                                      },
-                                      {
-                                        "Valeur": false,
-                                        "Noeud": {
-                                          "Id": "phase5_tasse_vide",
-                                          "Type": "ntChoix",
-                                          "Titre": "La tasse des monstres est-elle vide ?",
-                                          "Branches": [
+                                    {
+                                        "Id": "phase5_saisie_destin",
+                                        "Type": "ntSaisie",
+                                        "Champ": "EchelleDestin",
+                                        "Texte": "Placez un pion Destin (symbole œil visible) sur la première case libre de l'échelle du destin du Grand Ancien. Indiquez le nombre total de pions Destin désormais présents sur cette échelle.",
+                                        "Illustration": ""
+                                    },
+                                    {
+                                        "Id": "phase5_condition_destin_plein",
+                                        "Type": "ntCondition",
+                                        "Champ": "EchelleDestinPleine",
+                                        "Branches": [
                                             {
-                                              "Valeur": "oui",
-                                              "Libelle": "Oui",
-                                              "Noeud": {
-                                                "Id": "phase5_reveil_tasse_vide",
-                                                "Type": "ntInstruction",
-                                                "Texte": "Il n'y a plus de marqueur Monstre disponible : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale.",
-                                                "Illustration": ""
-                                              }
+                                                "Valeur": true,
+                                                "Noeud": {
+                                                    "Id": "phase5_reveil_destin",
+                                                    "Type": "ntInstruction",
+                                                    "Texte": "L'échelle du destin est complète : le Grand Ancien s'éveille immédiatement. Interrompez ce tour et passez à la séquence de Bataille Finale.",
+                                                    "Illustration": ""
+                                                }
                                             },
                                             {
-                                              "Valeur": "non",
-                                              "Libelle": "Non",
-                                              "Noeud": {
-                                                "Id": "phase5_monstre_apparait",
-                                                "Type": "ntInstruction",
-                                                "Texte": "Piochez au hasard un marqueur Monstre dans la tasse et placez-le sur ce lieu (deux marqueurs si 5 investigateurs ou plus sont en jeu).",
-                                                "Illustration": ""
-                                              }
+                                                "Valeur": false,
+                                                "Noeud": {
+                                                    "Id": "phase5_pile_portail_vide",
+                                                    "Type": "ntChoix",
+                                                    "Titre": "La pile de marqueurs Portail est-elle vide ?",
+                                                    "Illustration": "",
+                                                    "Branches": [
+                                                        {
+                                                            "Valeur": "oui",
+                                                            "Libelle": "Oui",
+                                                            "Noeud": {
+                                                                "Id": "phase5_reveil_pile_vide",
+                                                                "Type": "ntInstruction",
+                                                                "Texte": "Il n'y a plus de marqueur Portail disponible : le Grand Ancien s'éveille immédiatement. Interrompez ce tour et passez à la séquence de Bataille Finale.",
+                                                                "Illustration": ""
+                                                            }
+                                                        },
+                                                        {
+                                                            "Valeur": "non",
+                                                            "Libelle": "Non",
+                                                            "Noeud": {
+                                                                "Id": "phase5_ouverture_portail",
+                                                                "Type": "ntSequence",
+                                                                "Enfants": [
+                                                                    {
+                                                                        "Id": "phase5_saisie_portails",
+                                                                        "Type": "ntSaisie",
+                                                                        "Champ": "NombrePortailsOuverts",
+                                                                        "Texte": "Piochez un marqueur Portail dans la pile et placez-le face visible sur le lieu ; défaussez les pions Indice qui s'y trouvaient. Indiquez le nombre total de portails désormais ouverts sur le plateau.",
+                                                                        "Illustration": ""
+                                                                    },
+                                                                    {
+                                                                        "Id": "phase5_condition_seuil_portails",
+                                                                        "Type": "ntCondition",
+                                                                        "Champ": "SeuilReveilPortailsOuvertsAtteint",
+                                                                        "Branches": [
+                                                                            {
+                                                                                "Valeur": true,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase5_reveil_trop_portails",
+                                                                                    "Type": "ntInstruction",
+                                                                                    "Texte": "Trop de portails sont ouverts simultanément : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale.",
+                                                                                    "Illustration": ""
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "Valeur": false,
+                                                                                "Noeud": {
+                                                                                    "Id": "phase5_tasse_vide",
+                                                                                    "Type": "ntChoix",
+                                                                                    "Titre": "La tasse des monstres est-elle vide ?",
+                                                                                    "Branches": [
+                                                                                        {
+                                                                                            "Valeur": "oui",
+                                                                                            "Libelle": "Oui",
+                                                                                            "Noeud": {
+                                                                                                "Id": "phase5_reveil_tasse_vide",
+                                                                                                "Type": "ntInstruction",
+                                                                                                "Texte": "Il n'y a plus de marqueur Monstre disponible : le Grand Ancien s'éveille immédiatement. Complétez l'échelle du destin si nécessaire, puis passez à la séquence de Bataille Finale.",
+                                                                                                "Illustration": ""
+                                                                                            }
+                                                                                        },
+                                                                                        {
+                                                                                            "Valeur": "non",
+                                                                                            "Libelle": "Non",
+                                                                                            "Noeud": {
+                                                                                                "Id": "phase5_monstre_apparait",
+                                                                                                "Type": "ntInstruction",
+                                                                                                "Texte": "Piochez au hasard un marqueur Monstre dans la tasse et placez-le sur ce lieu (deux marqueurs si 5 investigateurs ou plus sont en jeu).",
+                                                                                                "Illustration": ""
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             }
-                                          ]
-                                        }
-                                      }
-                                    ]
-                                  }
+                                        ]
+                                    }
                                 ]
-                              }
                             }
-                          ]
                         }
-                      }
                     ]
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "Id": "phase5_evenement",
-          "Type": "ntInstruction",
-          "Texte": "Lisez à voix haute le titre puis le texte de l'événement de la carte, et appliquez ses effets (Gros Titre, Environnement ou Rumeur selon l'attribut indiqué en haut de la carte).",
-          "Illustration": ""
-        },
-        {
-          "Id": "phase5_indice",
-          "Type": "ntInstruction",
-          "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide).",
-          "Illustration": ""
-        },
-        {
-          "Id": "phase5_verification_limite_monstres",
-          "Type": "ntInstruction",
-          "Texte": "Comptez les monstres actuellement dans les rues et lieux d'Arkham. Si leur nombre dépasse la limite affichée en haut de l'écran, déplacez l'excédent en Périphérie, dans la limite également affichée. Si la Périphérie déborde à son tour, remettez tous ses monstres dans la tasse : le niveau de Terreur augmente d'un point (à indiquer à l'étape suivante)."
-        },
-        {
-          "Id": "phase5_terreur_changement",
-          "Type": "ntChoix",
-          "Titre": "L'événement de la carte, ou un dépassement de la limite de la Périphérie, fait-il augmenter le niveau de Terreur ?",
-          "Branches": [
-            {
-              "Valeur": "non",
-              "Libelle": "Non",
-              "Noeud": {
-                "Id": "phase5_terreur_inchangee",
-                "Type": "ntInstruction",
-                "Texte": "Rien de particulier à faire concernant le niveau de Terreur.",
-                "Illustration": ""
-              }
-            },
-            {
-              "Valeur": "oui",
-              "Libelle": "Oui",
-              "Noeud": {
-                "Id": "phase5_terreur_augmente",
-                "Type": "ntCondition",
-                "Champ": "ArkhamEnvahie",
-                "Branches": [
-                  {
-                    "Valeur": true,
-                    "Noeud": {
-                      "Id": "phase5_terreur_deja_max",
-                      "Type": "ntSaisie",
-                      "Champ": "EchelleDestin",
-                      "Texte": "Le niveau de Terreur est déjà à son maximum (10) : il ne bouge plus. Pour chaque point d'augmentation qu'aurait normalement subi la Terreur, ajoutez directement un pion Destin à l'échelle du destin du Grand Ancien à la place. Indiquez le nombre total de pions Destin désormais présents.",
-                      "Illustration": ""
-                    }
-                  },
-                  {
-                    "Valeur": false,
-                    "Noeud": {
-                      "Id": "phase5_terreur_normale",
-                      "Type": "ntSequence",
-                      "Enfants": [
+                },
+                {
+                    "Id": "phase5_evenement",
+                    "Type": "ntInstruction",
+                    "Texte": "Lisez à voix haute le titre puis le texte de l'événement de la carte, et appliquez ses effets (Gros Titre, Environnement ou Rumeur selon l'attribut indiqué en haut de la carte).",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase5_indice",
+                    "Type": "ntInstruction",
+                    "Texte": "Si la carte indique un lieu où un indice apparaît et qu'aucun portail n'y est ouvert, placez-y un pion Indice. Si un ou plusieurs investigateurs se trouvent déjà sur ce lieu, l'un d'eux peut le ramasser immédiatement (à défaut d'accord entre eux, c'est le premier joueur qui décide).",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase5_verification_limite_monstres",
+                    "Type": "ntInstruction",
+                    "Texte": "Comptez les monstres actuellement dans les rues et lieux d'Arkham. Si leur nombre dépasse la limite affichée en haut de l'écran, déplacez l'excédent en Périphérie, dans la limite également affichée. Si la Périphérie déborde à son tour, remettez tous ses monstres dans la tasse : le niveau de Terreur augmente d'un point (à indiquer à l'étape suivante)."
+                },
+                {
+                    "Id": "phase5_terreur_changement",
+                    "Type": "ntChoix",
+                    "Titre": "L'événement de la carte, ou un dépassement de la limite de la Périphérie, fait-il augmenter le niveau de Terreur ?",
+                    "Branches": [
                         {
-                          "Id": "phase5_terreur_rappel_effets",
-                          "Type": "ntInstruction",
-                          "Texte": "Pour chaque point d'augmentation, retirez un Allié au hasard du paquet Allié et retirez-le du jeu. Rappel des paliers de fermeture de boutique : niveau 3 → le Magasin ferme ; niveau 6 → la Boutique de Souvenirs ferme ; niveau 9 → la Vieille Échoppe de Magie ferme. Appliquez la ou les fermetures nouvellement atteintes en déplaçant les investigateurs et monstres présents vers la zone de rues indiquée par la règle.",
-                          "Illustration": ""
-                        },
-                        {
-                          "Id": "phase5_terreur_saisie",
-                          "Type": "ntSaisie",
-                          "Champ": "NiveauTerreur",
-                          "Texte": "Indiquez le nouveau niveau de Terreur.",
-                          "Illustration": ""
-                        },
-                        {
-                          "Id": "phase5_condition_arkham_envahie",
-                          "Type": "ntCondition",
-                          "Champ": "ArkhamEnvahie",
-                          "Branches": [
-                            {
-                              "Valeur": true,
-                              "Noeud": {
-                                "Id": "phase5_arkham_envahie_rappel",
+                            "Valeur": "non",
+                            "Libelle": "Non",
+                            "Noeud": {
+                                "Id": "phase5_terreur_inchangee",
                                 "Type": "ntInstruction",
-                                "Texte": "Arkham est envahie : il n'y a plus de limite de monstres pour le reste de la partie. Ajoutez un pion Destin à l'échelle du destin. Vérifiez à chaque tour, tant que ce niveau est maintenu, si le nombre de monstres en jeu atteint le double de la limite normale de monstres : si oui, le Grand Ancien s'éveille immédiatement.",
+                                "Texte": "Rien de particulier à faire concernant le niveau de Terreur.",
                                 "Illustration": ""
-                              }
-                            },
-                            {
-                              "Valeur": false,
-                              "Noeud": {
-                                "Id": "phase5_arkham_pas_envahie",
-                                "Type": "ntInstruction",
-                                "Texte": "Le niveau de Terreur n'a pas atteint 10 : rien de plus à vérifier ici.",
-                                "Illustration": ""
-                              }
                             }
-                          ]
+                        },
+                        {
+                            "Valeur": "oui",
+                            "Libelle": "Oui",
+                            "Noeud": {
+                                "Id": "phase5_terreur_augmente",
+                                "Type": "ntCondition",
+                                "Champ": "ArkhamEnvahie",
+                                "Branches": [
+                                    {
+                                        "Valeur": true,
+                                        "Noeud": {
+                                            "Id": "phase5_terreur_deja_max",
+                                            "Type": "ntSaisie",
+                                            "Champ": "EchelleDestin",
+                                            "Texte": "Le niveau de Terreur est déjà à son maximum (10) : il ne bouge plus. Pour chaque point d'augmentation qu'aurait normalement subi la Terreur, ajoutez directement un pion Destin à l'échelle du destin du Grand Ancien à la place. Indiquez le nombre total de pions Destin désormais présents.",
+                                            "Illustration": ""
+                                        }
+                                    },
+                                    {
+                                        "Valeur": false,
+                                        "Noeud": {
+                                            "Id": "phase5_terreur_normale",
+                                            "Type": "ntSequence",
+                                            "Enfants": [
+                                                {
+                                                    "Id": "phase5_terreur_rappel_effets",
+                                                    "Type": "ntInstruction",
+                                                    "Texte": "Pour chaque point d'augmentation, retirez un Allié au hasard du paquet Allié et retirez-le du jeu. Rappel des paliers de fermeture de boutique : niveau 3 → le Magasin ferme ; niveau 6 → la Boutique de Souvenirs ferme ; niveau 9 → la Vieille Échoppe de Magie ferme. Appliquez la ou les fermetures nouvellement atteintes en déplaçant les investigateurs et monstres présents vers la zone de rues indiquée par la règle.",
+                                                    "Illustration": ""
+                                                },
+                                                {
+                                                    "Id": "phase5_terreur_saisie",
+                                                    "Type": "ntSaisie",
+                                                    "Champ": "NiveauTerreur",
+                                                    "Texte": "Indiquez le nouveau niveau de Terreur.",
+                                                    "Illustration": ""
+                                                },
+                                                {
+                                                    "Id": "phase5_condition_arkham_envahie",
+                                                    "Type": "ntCondition",
+                                                    "Champ": "ArkhamEnvahie",
+                                                    "Branches": [
+                                                        {
+                                                            "Valeur": true,
+                                                            "Noeud": {
+                                                                "Id": "phase5_arkham_envahie_rappel",
+                                                                "Type": "ntInstruction",
+                                                                "Texte": "Arkham est envahie : il n'y a plus de limite de monstres pour le reste de la partie. Ajoutez un pion Destin à l'échelle du destin. Vérifiez à chaque tour, tant que ce niveau est maintenu, si le nombre de monstres en jeu atteint le double de la limite normale de monstres : si oui, le Grand Ancien s'éveille immédiatement.",
+                                                                "Illustration": ""
+                                                            }
+                                                        },
+                                                        {
+                                                            "Valeur": false,
+                                                            "Noeud": {
+                                                                "Id": "phase5_arkham_pas_envahie",
+                                                                "Type": "ntInstruction",
+                                                                "Texte": "Le niveau de Terreur n'a pas atteint 10 : rien de plus à vérifier ici.",
+                                                                "Illustration": ""
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
                         }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "Id": "phase5_mouvement_monstres",
-          "Type": "ntInstruction",
-          "Texte": "Consultez le coin inférieur droit de la carte Mythe : déplacez chaque monstre du plateau dont le symbole figure dans l'une des deux zones de mouvement (blanche ou noire), en suivant la flèche de la couleur correspondante depuis son emplacement actuel. Un monstre partageant une case avec un investigateur ne bouge pas. Les monstres rapides (bordure rouge) se déplacent deux fois ; les immobiles (bordure jaune) ne bougent jamais ; les volants (bordure bleue) et les monstres à déplacement unique (bordure verte) suivent leurs règles propres (voir la face Combat de leur marqueur).",
-          "Illustration": ""
-        },
-        {
-          "Id": "phase5_verification_limite_monstres",
-          "Type": "ntInstruction",
-          "Texte": "Comptez les monstres actuellement dans les rues et lieux d'Arkham. Si leur nombre dépasse la limite affichée en haut de l'écran, déplacez l'excédent en Périphérie, dans la limite également affichée. Si la Périphérie déborde à son tour, remettez tous ses monstres dans la tasse : le niveau de Terreur augmente d'un point (à indiquer à l'étape suivante)."
-        },
-        {
-          "Id": "phase5_fin_tour",
-          "Type": "ntInstruction",
-          "Texte": "La phase du Mythe est terminée. Donnez le marqueur Premier Joueur au joueur humain suivant dans le sens horaire ; un nouveau tour commence à la phase d'Entretien.",
-          "Illustration": ""
+                    ]
+                },
+                {
+                    "Id": "phase5_mouvement_monstres",
+                    "Type": "ntInstruction",
+                    "Texte": "Consultez le coin inférieur droit de la carte Mythe : déplacez chaque monstre du plateau dont le symbole figure dans l'une des deux zones de mouvement (blanche ou noire), en suivant la flèche de la couleur correspondante depuis son emplacement actuel. Un monstre partageant une case avec un investigateur ne bouge pas. Les monstres rapides (bordure rouge) se déplacent deux fois ; les immobiles (bordure jaune) ne bougent jamais ; les volants (bordure bleue) et les monstres à déplacement unique (bordure verte) suivent leurs règles propres (voir la face Combat de leur marqueur).",
+                    "Illustration": ""
+                },
+                {
+                    "Id": "phase5_verification_limite_monstres",
+                    "Type": "ntInstruction",
+                    "Texte": "Comptez les monstres actuellement dans les rues et lieux d'Arkham. Si leur nombre dépasse la limite affichée en haut de l'écran, déplacez l'excédent en Périphérie, dans la limite également affichée. Si la Périphérie déborde à son tour, remettez tous ses monstres dans la tasse : le niveau de Terreur augmente d'un point (à indiquer à l'étape suivante)."
+                },
+                {
+                    "Id": "phase5_fin_tour",
+                    "Type": "ntInstruction",
+                    "Texte": "La phase du Mythe est terminée. Donnez le marqueur Premier Joueur au joueur humain suivant dans le sens horaire ; un nouveau tour commence à la phase d'Entretien.",
+                    "Illustration": ""
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }

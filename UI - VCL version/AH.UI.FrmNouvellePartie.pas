@@ -1,4 +1,4 @@
-unit AH.UI.FrmNouvellePartie;
+ï»¿unit AH.UI.FrmNouvellePartie;
 
   interface
 
@@ -9,28 +9,28 @@ unit AH.UI.FrmNouvellePartie;
       AH.Core.Contexte, AH.Core.Capacites, AH.Core.ConstructeurPartie;
 
     type
-      /// <summary>Étape courante de l'assistant de configuration d'une nouvelle partie.</summary>
+      /// <summary>Ã‰tape courante de l'assistant de configuration d'une nouvelle partie.</summary>
       TEtapeAssistant = (eaJoueursHumains, eaInvestigateurs);
 
       /// <summary>
-      /// Assistant de configuration d'une nouvelle partie : saisie des joueurs humains (1 à
-      /// NombreMaxJoueursHumains) puis des investigateurs qu'ils contrôlent (1 à
-      /// NombreMaxInvestigateurs, un joueur humain pouvant en contrôler plusieurs). Produit un
-      /// TContextePartie prêt à l'emploi, accessible via ContextePartieCreee après un ShowModal
-      /// ayant retourné mrOk.
+      /// Assistant de configuration d'une nouvelle partie : saisie des joueurs humains (1 Ã 
+      /// NombreMaxJoueursHumains) puis des investigateurs qu'ils contrÃ´lent (1 Ã 
+      /// NombreMaxInvestigateurs, un joueur humain pouvant en contrÃ´ler plusieurs). Produit un
+      /// TContextePartie prÃªt Ã  l'emploi, accessible via ContextePartieCreee aprÃ¨s un ShowModal
+      /// ayant retournÃ© mrOk.
       /// </summary>
       TFrmNouvellePartie = class(TForm)
         private
           FEtapeCourante : TEtapeAssistant;
 
           FNomsJoueursHumains : TList<string>;
-          /// <summary>Investigateurs ajoutés, dans l'ordre de saisie (réordonnés par TConstructeurPartie au moment de valider).</summary>
+          /// <summary>Investigateurs ajoutÃ©s, dans l'ordre de saisie (rÃ©ordonnÃ©s par TConstructeurPartie au moment de valider).</summary>
           FInvestigateurs : TList<TInvestigateurJoue>;
 
           FGestionnaireCapacites : TGestionnaireCapacites;
           FContextePartieCreee : TContextePartie;
 
-          /// <summary>Liste des noms d'investigateurs connus (issus de capacites_investigateurs.json), indépendamment de leur attribution.</summary>
+          /// <summary>Liste des noms d'investigateurs connus (issus de capacites_investigateurs.json), indÃ©pendamment de leur attribution.</summary>
           FInvestigateursDisponibles : TList<string>;
 
           procedure AfficherEtape(AEtape : TEtapeAssistant);
@@ -40,22 +40,22 @@ unit AH.UI.FrmNouvellePartie;
           procedure RafraichirEtatBoutons;
           procedure AfficherErreur(const AMessage : string);
 
-          /// <summary>Valide les deux étapes puis construit le TContextePartie dans l'ordre de jeu correct.</summary>
-          /// <param name="OContexte">Contexte créé si la fonction retourne True. Non affecté sinon.</param>
-          /// <param name="OMessageErreur">Message à afficher à l'utilisateur si la fonction retourne False.</param>
+          /// <summary>Valide les deux Ã©tapes puis construit le TContextePartie dans l'ordre de jeu correct.</summary>
+          /// <param name="OContexte">Contexte crÃ©Ã© si la fonction retourne True. Non affectÃ© sinon.</param>
+          /// <param name="OMessageErreur">Message Ã  afficher Ã  l'utilisateur si la fonction retourne False.</param>
           function TenterCreerContextePartie(out OContexte : TContextePartie; out OMessageErreur : string) : Boolean;
 
           /// <summary>
-          /// Met à jour ComboNomInvestigateur avec uniquement les investigateurs connus non encore
-          /// attribués à un joueur (FInvestigateursDisponibles filtré par FInvestigateurs).
+          /// Met Ã  jour ComboNomInvestigateur avec uniquement les investigateurs connus non encore
+          /// attribuÃ©s Ã  un joueur (FInvestigateursDisponibles filtrÃ© par FInvestigateurs).
           /// </summary>
           procedure RafraichirInvestigateursDisponibles;
 
           procedure RafraichirComboPremierJoueur;
         public
           /// <summary>
-          /// Partie configurée, disponible uniquement après un ShowModal ayant retourné mrOk.
-          /// L'appelant en devient propriétaire : ce formulaire ne la libère jamais.
+          /// Partie configurÃ©e, disponible uniquement aprÃ¨s un ShowModal ayant retournÃ© mrOk.
+          /// L'appelant en devient propriÃ©taire : ce formulaire ne la libÃ¨re jamais.
           /// </summary>
           property ContextePartieCreee : TContextePartie read FContextePartieCreee;
         published
@@ -119,8 +119,8 @@ unit AH.UI.FrmNouvellePartie;
           FGestionnaireCapacites.ChargerDepuisFichier(CheminJSON);
           FInvestigateursDisponibles.AddRange(FGestionnaireCapacites.NomsConnus);
         except
-          // Le préremplissage des noms est un confort, pas une nécessité : un fichier absent ou
-          // invalide ne doit pas empêcher l'assistant de démarrer, la saisie libre reste possible.
+          // Le prÃ©remplissage des noms est un confort, pas une nÃ©cessitÃ© : un fichier absent ou
+          // invalide ne doit pas empÃªcher l'assistant de dÃ©marrer, la saisie libre reste possible.
         end;
 
         AfficherEtape(eaJoueursHumains);
@@ -136,8 +136,8 @@ unit AH.UI.FrmNouvellePartie;
 
     procedure TFrmNouvellePartie.FormShow(Sender : TObject);
       begin
-        // Cette instance est réutilisée d'une partie à l'autre (formulaire auto-créé) : on repart
-        // d'un état vierge à chaque ouverture plutôt qu'à chaque création.
+        // Cette instance est rÃ©utilisÃ©e d'une partie Ã  l'autre (formulaire auto-crÃ©Ã©) : on repart
+        // d'un Ã©tat vierge Ã  chaque ouverture plutÃ´t qu'Ã  chaque crÃ©ation.
         FNomsJoueursHumains.Clear;
         FInvestigateurs.Clear;
         EditNomJoueur.Clear;
@@ -159,10 +159,10 @@ unit AH.UI.FrmNouvellePartie;
         PanelInvestigateurs.Visible := AEtape = eaInvestigateurs;
 
         case AEtape of
-          eaJoueursHumains: LabelTitre.Caption := 'Étape 1 / 2 — Joueurs humains';
+          eaJoueursHumains: LabelTitre.Caption := 'Ã‰tape 1 / 2 â€” Joueurs humains';
           eaInvestigateurs:
             begin
-              LabelTitre.Caption := 'Étape 2 / 2 — Investigateurs';
+              LabelTitre.Caption := 'Ã‰tape 2 / 2 â€” Investigateurs';
               RafraichirComboJoueurControleur;
               RafraichirInvestigateursDisponibles;
             end;
@@ -194,7 +194,7 @@ unit AH.UI.FrmNouvellePartie;
         try
           ListeInvestigateurs.Items.Clear;
           for Investigateur in FInvestigateurs do
-            ListeInvestigateurs.Items.Add(Format('%s — joué par %s',
+            ListeInvestigateurs.Items.Add(Format('%s â€” jouÃ© par %s',
               [Investigateur.NomInvestigateur, FNomsJoueursHumains[Investigateur.IndexJoueurHumain]]));
         finally
           ListeInvestigateurs.Items.EndUpdate;
@@ -234,7 +234,7 @@ unit AH.UI.FrmNouvellePartie;
             end;
           eaInvestigateurs:
             begin
-              BoutonSuivant.Caption := 'Créer la partie';
+              BoutonSuivant.Caption := 'CrÃ©er la partie';
               BoutonSuivant.Enabled := (FInvestigateurs.Count > 0)
                                        and TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
                                              FNomsJoueursHumains.Count, FInvestigateurs.ToArray);
@@ -263,7 +263,7 @@ unit AH.UI.FrmNouvellePartie;
         Nom := Trim(EditNomJoueur.Text);
         if Nom = EmptyStr then
           begin
-            AfficherErreur('Saisissez un prénom avant de l''ajouter.');
+            AfficherErreur('Saisissez un prÃ©nom avant de l''ajouter.');
             Exit;
           end;
 
@@ -276,7 +276,7 @@ unit AH.UI.FrmNouvellePartie;
         for NomExistant in FNomsJoueursHumains do
           if SameText(NomExistant, Nom) then
             begin
-              AfficherErreur('Ce prénom est déjà utilisé par un autre joueur.');
+              AfficherErreur('Ce prÃ©nom est dÃ©jÃ  utilisÃ© par un autre joueur.');
               Exit;
             end;
 
@@ -305,7 +305,7 @@ unit AH.UI.FrmNouvellePartie;
 
         if NombreInvestigateursTouches > 0 then
           if MessageDlg(
-               Format('Ce joueur contrôle %d investigateur(s). Les retirer également ?', [NombreInvestigateursTouches]),
+               Format('Ce joueur contrÃ´le %d investigateur(s). Les retirer Ã©galement ?', [NombreInvestigateursTouches]),
                mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
             Exit;
 
@@ -334,7 +334,7 @@ unit AH.UI.FrmNouvellePartie;
 
         if ComboJoueurControleur.ItemIndex < 0 then
           begin
-            AfficherErreur('Choisissez le joueur humain qui contrôle cet investigateur.');
+            AfficherErreur('Choisissez le joueur humain qui contrÃ´le cet investigateur.');
             Exit;
           end;
 
@@ -346,7 +346,7 @@ unit AH.UI.FrmNouvellePartie;
 
         if TConstructeurPartie.NomDejaUtilise(FInvestigateurs.ToArray, Nom) then
           begin
-            AfficherErreur('Cet investigateur est déjà en jeu : un seul joueur peut le contrôler à la fois.');
+            AfficherErreur('Cet investigateur est dÃ©jÃ  en jeu : un seul joueur peut le contrÃ´ler Ã  la fois.');
             Exit;
           end;
 
@@ -420,7 +420,7 @@ unit AH.UI.FrmNouvellePartie;
         if not TConstructeurPartie.TousLesJoueursControlentAuMoinsUnInvestigateur(
                  FNomsJoueursHumains.Count, FInvestigateurs.ToArray) then
         begin
-          OMessageErreur := 'Chaque joueur humain doit contrôler au moins un investigateur.';
+          OMessageErreur := 'Chaque joueur humain doit contrÃ´ler au moins un investigateur.';
           Exit(False);
         end;
 

@@ -1,4 +1,4 @@
-unit AH.Core.Conseils;
+ï»¿unit AH.Core.Conseils;
 
   interface
 
@@ -9,19 +9,19 @@ unit AH.Core.Conseils;
 
       EConseilsInvalidesException = class(Exception);
 
-      /// <summary>Un conseil stratégique associé à une étape du guide, affiché en complément du texte de règle.</summary>
+      /// <summary>Un conseil stratÃ©gique associÃ© Ã  une Ã©tape du guide, affichÃ© en complÃ©ment du texte de rÃ¨gle.</summary>
       TConseil = record
         Texte : string;
-        /// <summary>Référence optionnelle de la source du conseil (ex. nom du site). Purement informatif.</summary>
+        /// <summary>RÃ©fÃ©rence optionnelle de la source du conseil (ex. nom du site). Purement informatif.</summary>
         Source : string;
       end;
 
       /// <summary>
-      /// Charge et expose les conseils stratégiques définis dans un fichier de configuration JSON,
-      /// indexés par l'identifiant du nœud d'étape (TNoeudEtape.Id) auquel ils se rattachent.
-      /// L'affichage effectif de ces conseils dans l'UI est gouverné par
+      /// Charge et expose les conseils stratÃ©giques dÃ©finis dans un fichier de configuration JSON,
+      /// indexÃ©s par l'identifiant du nÅ“ud d'Ã©tape (TNoeudEtape.Id) auquel ils se rattachent.
+      /// L'affichage effectif de ces conseils dans l'UI est gouvernÃ© par
       /// TParametresApplication.AfficherConseils, pas par cette classe : celle-ci se contente
-      /// d'exposer le contenu, elle ne décide jamais s'il doit être montré.
+      /// d'exposer le contenu, elle ne dÃ©cide jamais s'il doit Ãªtre montrÃ©.
       /// </summary>
       TGestionnaireConseils = class
         private
@@ -30,15 +30,15 @@ unit AH.Core.Conseils;
           constructor Create;
           destructor Destroy; override;
 
-          /// <param name="ACheminFichier">Chemin d'un fichier .json conforme au schéma de conseils.</param>
-          /// <exception cref="EFileNotFoundException">Levée si ACheminFichier n'existe pas.</exception>
+          /// <param name="ACheminFichier">Chemin d'un fichier .json conforme au schÃ©ma de conseils.</param>
+          /// <exception cref="EFileNotFoundException">LevÃ©e si ACheminFichier n'existe pas.</exception>
           /// <exception cref="EConseilsInvalidesException">
-          /// Levée si le JSON est malformé ou si une entrée n'a pas de "IdEtape".
+          /// LevÃ©e si le JSON est malformÃ© ou si une entrÃ©e n'a pas de "IdEtape".
           /// </exception>
           procedure ChargerDepuisFichier(const ACheminFichier : string);
 
-          /// <param name="AIdEtape">Identifiant du nœud d'étape pour lequel chercher des conseils.</param>
-          /// <returns>Les conseils associés à cette étape, dans l'ordre du fichier de configuration. Tableau vide si aucun.</returns>
+          /// <param name="AIdEtape">Identifiant du nÅ“ud d'Ã©tape pour lequel chercher des conseils.</param>
+          /// <returns>Les conseils associÃ©s Ã  cette Ã©tape, dans l'ordre du fichier de configuration. Tableau vide si aucun.</returns>
           function ConseilsPour(const AIdEtape : string): TArray<TConseil>;
       end;
 
@@ -95,7 +95,7 @@ unit AH.Core.Conseils;
               IdEtape := Entree.S['IdEtape'];
               if IdEtape = EmptyStr then
                 raise EConseilsInvalidesException.CreateFmt(
-                  'Un conseil sans "IdEtape" a été rencontré dans "%s".',
+                  'Un conseil sans "IdEtape" a Ã©tÃ© rencontrÃ© dans "%s".',
                   [ACheminFichier]);
 
               Conseil.Texte := Entree.S['Texte'];

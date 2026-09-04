@@ -1,4 +1,4 @@
-unit AH.UI.FrmPrincipal;
+ï»¿unit AH.UI.FrmPrincipal;
 
   interface
 
@@ -12,15 +12,15 @@ unit AH.UI.FrmPrincipal;
       AH.UI.FrameEtape, AH.UI.FrmNouvellePartie, AH.UI.FrmAide;
 
     type
-      /// <summary>Fichier de contenu actuellement piloté par FMoteur.</summary>
+      /// <summary>Fichier de contenu actuellement pilotÃ© par FMoteur.</summary>
       TFichierContenu = (fcPreparation, fcTour, fcBatailleFinale, fcFinDePartie);
 
       /// <summary>
-      /// Fenêtre principale : orchestre l'enchaînement des quatre fichiers de contenu, héberge
-      /// TFrameEtape, et tient à jour les panneaux annexes (conseils, capacité de l'investigateur
-      /// courant, règle spéciale du Grand Ancien). Le moteur (AH.Core.Moteur) ne sait piloter
-      /// qu'un seul arbre à la fois : c'est cette unité qui décide quand et vers quel fichier
-      /// basculer, notamment via l'Id du dernier nœud affiché (voir GererFinDeFichier).
+      /// FenÃªtre principale : orchestre l'enchaÃ®nement des quatre fichiers de contenu, hÃ©berge
+      /// TFrameEtape, et tient Ã  jour les panneaux annexes (conseils, capacitÃ© de l'investigateur
+      /// courant, rÃ¨gle spÃ©ciale du Grand Ancien). Le moteur (AH.Core.Moteur) ne sait piloter
+      /// qu'un seul arbre Ã  la fois : c'est cette unitÃ© qui dÃ©cide quand et vers quel fichier
+      /// basculer, notamment via l'Id du dernier nÅ“ud affichÃ© (voir GererFinDeFichier).
       /// </summary>
       TFrmPrincipal = class(TForm)
     btnRappelCombat: TButton;
@@ -37,15 +37,15 @@ unit AH.UI.FrmPrincipal;
           FMoteur : TMoteurSequenceur;
           FFichierActif : TFichierContenu;
           /// <summary>
-          /// Id du dernier nœud affiché avant le Suivant qui a retourné nil — seul moyen de savoir,
-          /// une fois l'arbre épuisé, quelle feuille terminale a été atteinte (voir GererFinDeFichier).
+          /// Id du dernier nÅ“ud affichÃ© avant le Suivant qui a retournÃ© nil â€” seul moyen de savoir,
+          /// une fois l'arbre Ã©puisÃ©, quelle feuille terminale a Ã©tÃ© atteinte (voir GererFinDeFichier).
           /// </summary>
           FDernierIdAffiche : string;
 
-          /// <returns>Chemin absolu d'un fichier sous Data\Content\, à côté de l'exécutable.</returns>
+          /// <returns>Chemin absolu d'un fichier sous Data\Content\, Ã  cÃ´tÃ© de l'exÃ©cutable.</returns>
           function CheminContenu(const ANomFichier : string) : string;
 
-          /// <summary>Charge les quatre arbres de contenu et les trois gestionnaires annexes. Fatal en cas d'échec sur un arbre de contenu.</summary>
+          /// <summary>Charge les quatre arbres de contenu et les trois gestionnaires annexes. Fatal en cas d'Ã©chec sur un arbre de contenu.</summary>
           procedure ChargerContenuStatique;
           procedure ChargerFichier(AFichier : TFichierContenu);
           procedure AvancerEtAfficher;
@@ -118,7 +118,7 @@ unit AH.UI.FrmPrincipal;
 
       IdsFinBatailleFinale: array[0..1] of string = ('bf_victoire', 'bf_defaite');
 
-    /// <summary>Recherche simple d'une valeur dans un petit tableau de chaînes (les constantes ci-dessus).</summary>
+    /// <summary>Recherche simple d'une valeur dans un petit tableau de chaÃ®nes (les constantes ci-dessus).</summary>
     function TableauContientId(const ATableau : array of string; const AId : string) : Boolean;
         var
           Element: string;
@@ -155,7 +155,7 @@ unit AH.UI.FrmPrincipal;
             end;
         end;
 
-        // Contenu annexe : un échec de chargement n'empêche pas l'application de fonctionner,
+        // Contenu annexe : un Ã©chec de chargement n'empÃªche pas l'application de fonctionner,
         // les panneaux correspondants resteront simplement vides.
         try
           FGestionnaireConseils.ChargerDepuisFichier(CheminContenu('conseils.json'));
@@ -236,7 +236,7 @@ unit AH.UI.FrmPrincipal;
     begin
       case FFichierActif of
         fcPreparation :
-          ChargerFichier(fcTour); // Le réveil du Grand Ancien ne peut plus survenir pendant la préparation (voir prep14 simplifié).
+          ChargerFichier(fcTour); // Le rÃ©veil du Grand Ancien ne peut plus survenir pendant la prÃ©paration (voir prep14 simplifiÃ©).
 
         fcTour:
           if TableauContientId(IdsReveilTour, FDernierIdAffiche) then
@@ -264,9 +264,9 @@ unit AH.UI.FrmPrincipal;
         if TableauContientId(IdsFinBatailleFinale, FDernierIdAffiche)
            and (FDernierIdAffiche = 'bf_defaite')
         then
-          LabelEtatTerminal.Caption := 'La partie est terminée : défaite.'
+          LabelEtatTerminal.Caption := 'La partie est terminÃ©e : dÃ©faite.'
         else
-          LabelEtatTerminal.Caption := 'La partie est terminée.';
+          LabelEtatTerminal.Caption := 'La partie est terminÃ©e.';
 
         FrameEtape.Visible := False;
         PanelEtatTerminal.Visible := True;
@@ -278,23 +278,23 @@ unit AH.UI.FrmPrincipal;
         PrefixePhase : string;
       begin
         case FFichierActif of
-          fcPreparation: PrefixePhase := 'Préparation';
+          fcPreparation: PrefixePhase := 'PrÃ©paration';
           fcTour: PrefixePhase := Format('Tour %d', [FContexte.TourCourant]);
           fcBatailleFinale: PrefixePhase := 'Bataille finale';
           fcFinDePartie: PrefixePhase := 'Fin de partie';
         end;
 
         if FMoteur.EstDansBouclePorInvestigateur then
-          LabelEnTete.Caption := Format('%s — %s (joué par %s)',
+          LabelEnTete.Caption := Format('%s â€” %s (jouÃ© par %s)',
             [PrefixePhase, FContexte.NomInvestigateurCourant, FContexte.NomJoueurHumainCourant])
         else
           if FFichierActif = fcTour then
-            LabelEnTete.Caption := Format('%s — Limite de monstres à Arkham : %d · Limite en Périphérie : %d',
+            LabelEnTete.Caption := Format('%s â€” Limite de monstres Ã  Arkham : %d Â· Limite en PÃ©riphÃ©rie : %d',
               [PrefixePhase, FContexte.LimiteMonstres, FContexte.LimitePeripherie])
           else
             LabelEnTete.Caption := PrefixePhase;
 
-        LabelFilAriane.Caption := string.Join(' › ', FMoteur.TitresPhaseActifs);
+        LabelFilAriane.Caption := string.Join(' â€º ', FMoteur.TitresPhaseActifs);
         LabelIdTechnique.Caption := 'Id : ' + FDernierIdAffiche;
       end;
 
@@ -313,7 +313,7 @@ unit AH.UI.FrmPrincipal;
           begin
             TexteConseils := EmptyStr;
             for Conseil in Conseils do
-              TexteConseils := TexteConseils + '• ' + Conseil.Texte + sLineBreak + sLineBreak;
+              TexteConseils := TexteConseils + 'â€¢ ' + Conseil.Texte + sLineBreak + sLineBreak;
             MemoConseils.Lines.Text := Trim(TexteConseils);
             PanelConseils.Visible := True;
           end
@@ -402,14 +402,14 @@ unit AH.UI.FrmPrincipal;
             RafraichirPanneauxAnnexes;
             RafraichirEtatBoutons;
           end;
-        // Si nil : déjà au tout début du fichier courant, rien à faire — le bouton reste actif
-        // faute d'un moyen simple de savoir à l'avance qu'on est sur la toute première étape.
+        // Si nil : dÃ©jÃ  au tout dÃ©but du fichier courant, rien Ã  faire â€” le bouton reste actif
+        // faute d'un moyen simple de savoir Ã  l'avance qu'on est sur la toute premiÃ¨re Ã©tape.
       end;
 
     procedure TFrmPrincipal.GererClicReveilManuel(Sender : TObject);
       begin
         if MessageDlg(
-             'Confirmer le réveil du Grand Ancien et passer à la Bataille Finale ?',
+             'Confirmer le rÃ©veil du Grand Ancien et passer Ã  la Bataille Finale ?',
              mtConfirmation, [mbYes, mbNo], 0) = mrYes then
           ChargerFichier(fcBatailleFinale);
       end;
@@ -501,7 +501,7 @@ unit AH.UI.FrmPrincipal;
             if GrandAncien.Bataille.Combat <> 0 then
               Texte := Texte + Format('Modificateur de Combat contre le Grand Ancien : %d.', [GrandAncien.Bataille.Combat]) + sLineBreak;
             if GrandAncien.Bataille.Defense <> EmptyStr then
-              Texte := Texte + 'Défense : ' + GrandAncien.Bataille.Defense + sLineBreak;
+              Texte := Texte + 'DÃ©fense : ' + GrandAncien.Bataille.Defense + sLineBreak;
           end;
 
         MemoGrandAncienGeneral.Lines.Text := Trim(Texte);

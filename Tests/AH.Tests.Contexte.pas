@@ -1,4 +1,4 @@
-unit AH.Tests.Contexte;
+ï»¿unit AH.Tests.Contexte;
 
   interface
 
@@ -154,8 +154,8 @@ unit AH.Tests.Contexte;
       var
         Contexte : TContextePartie;
       begin
-        // 2 joueurs humains, 4 investigateurs (Alice en contrôle 3, Bob 1) :
-        // les seuils doivent correspondre à 4 investigateurs, pas à 2 joueurs humains.
+        // 2 joueurs humains, 4 investigateurs (Alice en contrÃ´le 3, Bob 1) :
+        // les seuils doivent correspondre Ã  4 investigateurs, pas Ã  2 joueurs humains.
         Contexte := TContextePartie.Create(['Alice', 'Bob'],
                                            [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 0), Investigateur('Michael', 1)]);
         try
@@ -190,7 +190,7 @@ unit AH.Tests.Contexte;
         Contexte := TContextePartie.Create(['Alice', 'Bob'],
                                            [Investigateur('Amanda', 0), Investigateur('Michael', 1)]);
         try
-          Contexte.IndexInvestigateurCourant := 1; // Michael, contrôlé par Bob
+          Contexte.IndexInvestigateurCourant := 1; // Michael, contrÃ´lÃ© par Bob
           Assert.AreEqual('Michael', Contexte.NomInvestigateurCourant);
           Assert.AreEqual('Bob', Contexte.NomJoueurHumainCourant);
         finally
@@ -250,9 +250,9 @@ unit AH.Tests.Contexte;
       var
         ContexteYig, ContexteAutre : TContextePartie;
       begin
-        // Deux Grands Anciens différents doivent pouvoir avoir des tailles d'échelle différentes
-        // dans deux parties distinctes — c'est précisément ce que corrige le passage d'une
-        // constante globale à un champ d'instance.
+        // Deux Grands Anciens diffÃ©rents doivent pouvoir avoir des tailles d'Ã©chelle diffÃ©rentes
+        // dans deux parties distinctes â€” c'est prÃ©cisÃ©ment ce que corrige le passage d'une
+        // constante globale Ã  un champ d'instance.
         ContexteYig := TContextePartie.Create(['Alice'],
                                               [Investigateur('Amanda', 0)]);
         ContexteAutre := TContextePartie.Create(['Bob'],
@@ -290,7 +290,7 @@ unit AH.Tests.Contexte;
       var
         Contexte : TContextePartie;
       begin
-        // Alice : Amanda(0), Harvey(0) ; Bob : Jenny(1), Kate(1). Premier joueur initial : Alice (index 0 par défaut).
+        // Alice : Amanda(0), Harvey(0) ; Bob : Jenny(1), Kate(1). Premier joueur initial : Alice (index 0 par dÃ©faut).
         Contexte := TContextePartie.Create(
           ['Alice', 'Bob'],
           [Investigateur('Amanda', 0), Investigateur('Harvey', 0), Investigateur('Jenny', 1), Investigateur('Kate', 1)]);

@@ -1,4 +1,4 @@
-object FrmPrincipal: TFrmPrincipal
+﻿object FrmPrincipal: TFrmPrincipal
   Left = 0
   Top = 0
   Caption = 'Horreur '#224' Arkham '#8212' Guide de partie'

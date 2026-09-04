@@ -1,4 +1,4 @@
-unit AH.Core.Moteur;
+Ôªøunit AH.Core.Moteur;
 
   interface
 
@@ -9,8 +9,8 @@ unit AH.Core.Moteur;
     type
 
       /// <summary>
-      /// Position du parcours ‡ l'intÈrieur d'un núud conteneur (ntSequence ou ntBouclePorInvestigateur) :
-      /// index du prochain enfant ‡ visiter, et nombre de passages restants pour une boucle par investigateur.
+      /// Position du parcours √† l'int√©rieur d'un n≈ìud conteneur (ntSequence ou ntBouclePorInvestigateur) :
+      /// index du prochain enfant √† visiter, et nombre de passages restants pour une boucle par investigateur.
       /// </summary>
       TFrameParcours = record
         Noeud : TNoeudEtape;
@@ -18,7 +18,7 @@ unit AH.Core.Moteur;
         InvestigateursRestants : Integer; // Non significatif hors ntBouclePorInvestigateur.
       end;
 
-      /// <summary>InstantanÈ de l'Ètat de parcours, capturÈ avant chaque Suivant pour permettre Precedent.</summary>
+      /// <summary>Instantan√© de l'√©tat de parcours, captur√© avant chaque Suivant pour permettre Precedent.</summary>
       TInstantane = record
         NoeudCourant : TNoeudEtape;
         Pile : TArray<TFrameParcours>;
@@ -28,9 +28,9 @@ unit AH.Core.Moteur;
       end;
 
       /// <summary>
-      /// SÈquenceur d'Ètapes : parcourt l'arbre TNoeudEtape en profondeur, rÈsout automatiquement
-      /// les núuds ntCondition et les rÈpÈtitions de ntBouclePorInvestigateur, et expose ‡ l'appelant
-      /// UI uniquement les núuds nÈcessitant une interaction humaine (ntInstruction, ntChoix, ntSaisie).
+      /// S√©quenceur d'√©tapes : parcourt l'arbre TNoeudEtape en profondeur, r√©sout automatiquement
+      /// les n≈ìuds ntCondition et les r√©p√©titions de ntBouclePorInvestigateur, et expose √† l'appelant
+      /// UI uniquement les n≈ìuds n√©cessitant une interaction humaine (ntInstruction, ntChoix, ntSaisie).
       /// </summary>
       TMoteurSequenceur = class
         private
@@ -48,57 +48,57 @@ unit AH.Core.Moteur;
           function CapturerInstantane : TInstantane;
           procedure RestaurerInstantane(const AInstantane : TInstantane);
         public
-          /// <param name="ARacine">Arbre de contenu chargÈ. ConservÈ par rÈfÈrence, non libÈrÈ par ce moteur.</param>
-          /// <param name="AContexte">Contexte de partie utilisÈ pour rÈsoudre les núuds ntCondition et ntSaisie. ConservÈ par rÈfÈrence.</param>
+          /// <param name="ARacine">Arbre de contenu charg√©. Conserv√© par r√©f√©rence, non lib√©r√© par ce moteur.</param>
+          /// <param name="AContexte">Contexte de partie utilis√© pour r√©soudre les n≈ìuds ntCondition et ntSaisie. Conserv√© par r√©f√©rence.</param>
           constructor Create(ARacine : TNoeudEtape; AContexte : TContextePartie);
           destructor Destroy; override;
 
           /// <summary>
-          /// Avance jusqu'au prochain núud nÈcessitant une interaction utilisateur, en rÈsolvant
-          /// silencieusement tous les núuds automatiques rencontrÈs en chemin.
+          /// Avance jusqu'au prochain n≈ìud n√©cessitant une interaction utilisateur, en r√©solvant
+          /// silencieusement tous les n≈ìuds automatiques rencontr√©s en chemin.
           /// </summary>
-          /// <returns>Le núud ‡ afficher, ou nil si l'arbre est entiËrement ÈpuisÈ (fin de sÈquence).</returns>
+          /// <returns>Le n≈ìud √† afficher, ou nil si l'arbre est enti√®rement √©puis√© (fin de s√©quence).</returns>
           /// <exception cref="EInvalidOpException">
-          /// LevÈe si le núud courant est un ntChoix ou ntSaisie n'ayant pas encore reÁu de rÈponse.
+          /// Lev√©e si le n≈ìud courant est un ntChoix ou ntSaisie n'ayant pas encore re√ßu de r√©ponse.
           /// </exception>
           function Suivant : TNoeudEtape;
 
-          /// <summary>Revient ‡ l'Ètat affichÈ avant le dernier appel ‡ Suivant.</summary>
-          /// <returns>Le núud prÈcÈdemment affichÈ, ou nil si l'historique est vide (dÈj‡ ‡ la racine).</returns>
+          /// <summary>Revient √† l'√©tat affich√© avant le dernier appel √† Suivant.</summary>
+          /// <returns>Le n≈ìud pr√©c√©demment affich√©, ou nil si l'historique est vide (d√©j√† √† la racine).</returns>
           function Precedent : TNoeudEtape;
 
           /// <summary>
-          /// Indique si le núud actuellement affichÈ se trouve ‡ l'intÈrieur d'une boucle par
+          /// Indique si le n≈ìud actuellement affich√© se trouve √† l'int√©rieur d'une boucle par
           /// investigateur active (donc si FContexte.NomInvestigateurCourant/NomJoueurHumainCourant
-          /// sont pertinents pour cette Ètape). False pour toute Ètape hors d'une telle boucle
-          /// (ex. la rÈvÈlation du Grand Ancien, qui concerne le groupe entier).
+          /// sont pertinents pour cette √©tape). False pour toute √©tape hors d'une telle boucle
+          /// (ex. la r√©v√©lation du Grand Ancien, qui concerne le groupe entier).
           /// </summary>
           function EstDansBouclePorInvestigateur : Boolean;
 
-          /// <summary>Indique si Precedent peut faire reculer la navigation (False juste aprËs le chargement d'un nouvel arbre).</summary>
+          /// <summary>Indique si Precedent peut faire reculer la navigation (False juste apr√®s le chargement d'un nouvel arbre).</summary>
           function PeutReculer: Boolean;
 
           /// <summary>
-          /// Enregistre la rÈponse de l'utilisateur pour le núud courant (ntChoix ou ntSaisie),
-          /// prÈalable obligatoire ‡ l'appel de Suivant pour ces deux types de núud.
+          /// Enregistre la r√©ponse de l'utilisateur pour le n≈ìud courant (ntChoix ou ntSaisie),
+          /// pr√©alable obligatoire √† l'appel de Suivant pour ces deux types de n≈ìud.
           /// </summary>
           /// <param name="AValeur">
-          /// Pour ntChoix : ValeurDeclenchante de la branche sÈlectionnÈe. Pour ntSaisie : valeur saisie,
-          /// affectÈe au champ de contexte dÈsignÈ par NoeudCourant.ChampContexte.
+          /// Pour ntChoix : ValeurDeclenchante de la branche s√©lectionn√©e. Pour ntSaisie : valeur saisie,
+          /// affect√©e au champ de contexte d√©sign√© par NoeudCourant.ChampContexte.
           /// </param>
           /// <exception cref="EInvalidOpException">
-          /// LevÈe si le núud courant n'est ni ntChoix ni ntSaisie, ou si aucun núud courant n'existe.
+          /// Lev√©e si le n≈ìud courant n'est ni ntChoix ni ntSaisie, ou si aucun n≈ìud courant n'existe.
           /// </exception>
           /// <exception cref="EArgumentException">
-          /// LevÈe (cas ntChoix) si AValeur ne correspond ‡ aucune branche dÈclarÈe du núud courant.
+          /// Lev√©e (cas ntChoix) si AValeur ne correspond √† aucune branche d√©clar√©e du n≈ìud courant.
           /// </exception>
           procedure EnregistrerReponse(const AValeur : Variant);
 
           /// <summary>
-          /// Titres (non vides) des núuds conteneurs actuellement actifs sur la pile de navigation, du
-          /// plus englobant au plus proche du núud courant ó ex. ["Phase II : Mouvement"]. Permet ‡
+          /// Titres (non vides) des n≈ìuds conteneurs actuellement actifs sur la pile de navigation, du
+          /// plus englobant au plus proche du n≈ìud courant ‚Äî ex. ["Phase II : Mouvement"]. Permet √†
           /// l'UI d'afficher ces titres tant que leurs enfants sont en cours de parcours, alors que le
-          /// moteur ne retourne jamais directement un núud conteneur ‡ l'appelant.
+          /// moteur ne retourne jamais directement un n≈ìud conteneur √† l'appelant.
           /// </summary>
           function TitresPhaseActifs : TArray<string>;
 
@@ -127,8 +127,8 @@ unit AH.Core.Moteur;
         else
           // La racine n'est pas un conteneur (ex. fin_de_partie.json, dont la racine est un
           // ntChoix) : Enfants y vaut nil, PousserFrame planterait dessus. On la traite comme
-          // n'importe quel núud rencontrÈ en cours de route, via la rÈsolution habituelle
-          // (TraiterNoeud, invoquÈe par AvancerJusquInteractif dËs le premier Suivant).
+          // n'importe quel n≈ìud rencontr√© en cours de route, via la r√©solution habituelle
+          // (TraiterNoeud, invoqu√©e par AvancerJusquInteractif d√®s le premier Suivant).
           FBrancheChoisieEnAttente := FRacine;
       end;
 
@@ -174,7 +174,7 @@ unit AH.Core.Moteur;
             if NoeudResolu.PossedeValeurForcee then
               begin
                 FContexte.AffecterChamp(NoeudResolu.ChampContexte, NoeudResolu.ValeurForcee);
-                Result := nil; // Auto-rÈsolu : la boucle d'AvancerJusquInteractif passe au frËre suivant.
+                Result := nil; // Auto-r√©solu : la boucle d'AvancerJusquInteractif passe au fr√®re suivant.
               end
             else
               Result := NoeudResolu;
@@ -188,7 +188,7 @@ unit AH.Core.Moteur;
       Frame : TFrameParcours;
       EnfantSuivant, Trouve : TNoeudEtape;
     begin
-      // Reprise aprËs rÈponse ‡ un ntChoix : la branche choisie doit Ítre visitÈe avant
+      // Reprise apr√®s r√©ponse √† un ntChoix : la branche choisie doit √™tre visit√©e avant
       // de reprendre le parcours normal de la pile.
       if Assigned(FBrancheChoisieEnAttente) then
         begin
@@ -211,7 +211,7 @@ unit AH.Core.Moteur;
               if Assigned(Trouve) then
                 Exit(Trouve);
 
-              // Sinon TraiterNoeud a poussÈ une frame : la boucle continue et y redescend.
+              // Sinon TraiterNoeud a pouss√© une frame : la boucle continue et y redescend.
             end
           else
           begin
@@ -228,7 +228,7 @@ unit AH.Core.Moteur;
               FPile.Delete(FPile.Count - 1);
           end;
         end;
-      Result := nil; // Pile vide : arbre entiËrement parcouru.
+      Result := nil; // Pile vide : arbre enti√®rement parcouru.
     end;
 
   function TMoteurSequenceur.CapturerInstantane: TInstantane;
@@ -257,7 +257,7 @@ unit AH.Core.Moteur;
     begin
       if FEnAttenteReponse then
         raise EInvalidOpException.CreateFmt(
-          'Le núud "%s" attend une rÈponse (EnregistrerReponse) avant de pouvoir avancer.',
+          'Le n≈ìud "%s" attend une r√©ponse (EnregistrerReponse) avant de pouvoir avancer.',
           [FNoeudCourant.Id]);
 
       FHistorique.Push(CapturerInstantane);
@@ -281,7 +281,7 @@ unit AH.Core.Moteur;
       BrancheTrouvee : Boolean;
     begin
       if not Assigned(FNoeudCourant) then
-        raise EInvalidOpException.Create('Aucune Ètape courante en attente de rÈponse.');
+        raise EInvalidOpException.Create('Aucune √©tape courante en attente de r√©ponse.');
 
       case FNoeudCourant.TypeNoeud of
         ntSaisie:
@@ -298,12 +298,12 @@ unit AH.Core.Moteur;
                 end;
             if not BrancheTrouvee then
               raise EArgumentException.CreateFmt(
-                'Aucune branche du núud "%s" ne correspond ‡ la rÈponse fournie.',
+                'Aucune branche du n≈ìud "%s" ne correspond √† la r√©ponse fournie.',
                 [FNoeudCourant.Id]);
           end;
       else
         raise EInvalidOpException.CreateFmt(
-          'Le núud "%s" n''attend pas de rÈponse (EnregistrerReponse rÈservÈ ‡ ntChoix et ntSaisie).',
+          'Le n≈ìud "%s" n''attend pas de r√©ponse (EnregistrerReponse r√©serv√© √† ntChoix et ntSaisie).',
           [FNoeudCourant.Id]);
       end;
 

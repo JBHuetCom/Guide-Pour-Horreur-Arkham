@@ -118,6 +118,7 @@
         <VerInfo_Locale>1036</VerInfo_Locale>
         <VerInfo_Debug>true</VerInfo_Debug>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
+        <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -160,13 +161,10 @@
         <DCCReference Include="..\Core\AH.Core.Capacites.pas"/>
         <DCCReference Include="..\Core\AH.Core.Parametres.pas"/>
         <DCCReference Include="..\Core\AH.Core.ConstructeurPartie.pas"/>
-        <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="..\Core\AH.Core.GrandsAnciens.pas"/>
         <DCCReference Include="AH.UI.Images.pas"/>
         <DCCReference Include="AH.UI.FrmAide.pas">
             <Form>FrmAide</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

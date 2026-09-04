@@ -1,4 +1,4 @@
-unit AH.Core.Contexte;
+ï»¿unit AH.Core.Contexte;
 
   interface
 
@@ -8,29 +8,29 @@ unit AH.Core.Contexte;
 
     const
 
-      /// <summary>Nombre maximum de joueurs humains autour de la table (règle maison).</summary>
+      /// <summary>Nombre maximum de joueurs humains autour de la table (rÃ¨gle maison).</summary>
       NombreMaxJoueursHumains = 8;
       /// <summary>
-      /// Nombre maximum d'investigateurs en jeu (règle maison), qu'ils soient répartis entre
-      /// plusieurs joueurs humains ou cumulés par un seul.
+      /// Nombre maximum d'investigateurs en jeu (rÃ¨gle maison), qu'ils soient rÃ©partis entre
+      /// plusieurs joueurs humains ou cumulÃ©s par un seul.
       /// </summary>
       NombreMaxInvestigateurs = 8;
 
     type
 
-      /// <summary>Association entre un investigateur en jeu et le joueur humain qui le contrôle.</summary>
+      /// <summary>Association entre un investigateur en jeu et le joueur humain qui le contrÃ´le.</summary>
       TInvestigateurJoue = record
         NomInvestigateur : string;
-        /// <summary>Index (base 0) du joueur humain contrôleur, dans la liste fournie à TContextePartie.Create.</summary>
+        /// <summary>Index (base 0) du joueur humain contrÃ´leur, dans la liste fournie Ã  TContextePartie.Create.</summary>
         IndexJoueurHumain : Integer;
       end;
 
       /// <summary>
-      /// État global d'une partie en cours, limité aux compteurs nécessaires aux branchements
-      /// de règles gérés par l'application (mode "Guide assisté"). Distingue les joueurs humains
-      /// (qui valident les étapes) des investigateurs (unités de jeu physiques, sur lesquelles
-      /// portent les règles de mouvement/rencontres/limites) : un même joueur humain peut
-      /// contrôler plusieurs investigateurs.
+      /// Ã‰tat global d'une partie en cours, limitÃ© aux compteurs nÃ©cessaires aux branchements
+      /// de rÃ¨gles gÃ©rÃ©s par l'application (mode "Guide assistÃ©"). Distingue les joueurs humains
+      /// (qui valident les Ã©tapes) des investigateurs (unitÃ©s de jeu physiques, sur lesquelles
+      /// portent les rÃ¨gles de mouvement/rencontres/limites) : un mÃªme joueur humain peut
+      /// contrÃ´ler plusieurs investigateurs.
       /// </summary>
       TContextePartie = class
         private
@@ -41,10 +41,10 @@ unit AH.Core.Contexte;
           FNombreSignesDesAnciens : Integer;
           FEchelleDestin : Integer;
           /// <summary>
-          /// Nombre total de cases de l'échelle du destin du Grand Ancien affronté cette partie
-          /// (varie selon le Grand Ancien : imprimé sur sa feuille). Vaut 0 tant qu'il n'a pas
-          /// été renseigné, ce qui doit se produire lors de la révélation du Grand Ancien
-          /// pendant la préparation, avant toute résolution d'un nœud ntCondition sur
+          /// Nombre total de cases de l'Ã©chelle du destin du Grand Ancien affrontÃ© cette partie
+          /// (varie selon le Grand Ancien : imprimÃ© sur sa feuille). Vaut 0 tant qu'il n'a pas
+          /// Ã©tÃ© renseignÃ©, ce qui doit se produire lors de la rÃ©vÃ©lation du Grand Ancien
+          /// pendant la prÃ©paration, avant toute rÃ©solution d'un nÅ“ud ntCondition sur
           /// EchelleDestinPleine.
           /// </summary>
           FTailleEchelleDestin : Integer;
@@ -54,40 +54,40 @@ unit AH.Core.Contexte;
           FIndexPremierInvestigateur : Integer;
         public
           /// <param name="ANomsJoueursHumains">
-          /// Prénoms des joueurs humains autour de la table. Entre 1 et NombreMaxJoueursHumains (8) éléments.
+          /// PrÃ©noms des joueurs humains autour de la table. Entre 1 et NombreMaxJoueursHumains (8) Ã©lÃ©ments.
           /// </param>
           /// <param name="AInvestigateurs">
-          /// Investigateurs en jeu, déjà ordonnés (ordre horaire des joueurs humains depuis le premier
-          /// joueur, investigateurs d'un même joueur consécutifs). Entre 1 et NombreMaxInvestigateurs (8)
-          /// éléments. Chaque IndexJoueurHumain doit être un index valide de ANomsJoueursHumains.
+          /// Investigateurs en jeu, dÃ©jÃ  ordonnÃ©s (ordre horaire des joueurs humains depuis le premier
+          /// joueur, investigateurs d'un mÃªme joueur consÃ©cutifs). Entre 1 et NombreMaxInvestigateurs (8)
+          /// Ã©lÃ©ments. Chaque IndexJoueurHumain doit Ãªtre un index valide de ANomsJoueursHumains.
           /// </param>
           /// <exception cref="EArgumentOutOfRangeException">
-          /// EArgumentOutOfRangeException levée si le nombre de joueurs humains ou d'investigateurs est hors de l'intervalle [1;8],
-          /// ou si un IndexJoueurHumain référence un joueur humain inexistant.
+          /// EArgumentOutOfRangeException levÃ©e si le nombre de joueurs humains ou d'investigateurs est hors de l'intervalle [1;8],
+          /// ou si un IndexJoueurHumain rÃ©fÃ©rence un joueur humain inexistant.
           /// </exception>
           constructor Create(const ANomsJoueursHumains : TArray<string>; const AInvestigateurs : TArray<TInvestigateurJoue>);
 
           function NombreJoueursHumains : Integer;
           function NombreInvestigateurs : Integer;
 
-          /// <summary>Limite de monstres autorisée à Arkham (règle page 17) : NombreInvestigateurs + 3.</summary>
+          /// <summary>Limite de monstres autorisÃ©e Ã  Arkham (rÃ¨gle page 17) : NombreInvestigateurs + 3.</summary>
           function LimiteMonstres : Integer;
 
           /// <summary>
-          /// Nombre de portails ouverts simultanément déclenchant le réveil du Grand Ancien (règle
-          /// page 19, table bornée au maximum de 6 investigateurs autorisé par la règle maison).
+          /// Nombre de portails ouverts simultanÃ©ment dÃ©clenchant le rÃ©veil du Grand Ancien (rÃ¨gle
+          /// page 19, table bornÃ©e au maximum de 6 investigateurs autorisÃ© par la rÃ¨gle maison).
           /// </summary>
           function SeuilReveilPortailsOuverts : Integer;
 
-          /// <summary>Indique si le niveau de terreur a atteint la valeur maximale de l'échelle (10).</summary>
+          /// <summary>Indique si le niveau de terreur a atteint la valeur maximale de l'Ã©chelle (10).</summary>
           function ArkhamEnvahie : Boolean;
 
           /// <summary>
-          /// Indique si la dernière case de l'échelle du destin est occupée (le Grand Ancien se réveille).
+          /// Indique si la derniÃ¨re case de l'Ã©chelle du destin est occupÃ©e (le Grand Ancien se rÃ©veille).
           /// </summary>
           /// <exception cref="EInvalidOpException">
-          /// Levée si TailleEchelleDestin n'a pas encore été renseigné (n'a pas dû être résolu lors
-          /// de la révélation du Grand Ancien avant cet appel — erreur d'ordonnancement du contenu).
+          /// LevÃ©e si TailleEchelleDestin n'a pas encore Ã©tÃ© renseignÃ© (n'a pas dÃ» Ãªtre rÃ©solu lors
+          /// de la rÃ©vÃ©lation du Grand Ancien avant cet appel â€” erreur d'ordonnancement du contenu).
           /// </exception>
           function EchelleDestinPleine : Boolean;
 
@@ -97,51 +97,51 @@ unit AH.Core.Contexte;
           /// <summary>Nom de l'investigateur actuellement actif.</summary>
           function NomInvestigateurCourant  : string;
 
-          /// <summary>Prénom du joueur humain qui contrôle l'investigateur actuellement actif.</summary>
+          /// <summary>PrÃ©nom du joueur humain qui contrÃ´le l'investigateur actuellement actif.</summary>
           function NomJoueurHumainCourant : string;
 
           /// <summary>Fait passer l'index de l'investigateur courant au suivant dans l'ordre de jeu, en bouclant.</summary>
           procedure PasserAlInvestigateurSuivant;
 
-          /// <summary>Repositionne l'investigateur courant sur le premier de l'ordre de jeu (début de chaque phase).</summary>
+          /// <summary>Repositionne l'investigateur courant sur le premier de l'ordre de jeu (dÃ©but de chaque phase).</summary>
           procedure RevenirAuPremierInvestigateur;
 
           /// <summary>
-          /// Affecte par nom un champ modifiable du contexte, utilisé par le moteur pour résoudre
-          /// les nœuds ntSaisie sans connaître statiquement la liste des champs.
+          /// Affecte par nom un champ modifiable du contexte, utilisÃ© par le moteur pour rÃ©soudre
+          /// les nÅ“uds ntSaisie sans connaÃ®tre statiquement la liste des champs.
           /// </summary>
-          /// <param name="ANomChamp">Nom du champ ciblé (ex. "NiveauTerreur", "TailleEchelleDestin"). Insensible à la casse.</param>
-          /// <param name="AValeur">Valeur à affecter, convertie selon le type réel du champ.</param>
+          /// <param name="ANomChamp">Nom du champ ciblÃ© (ex. "NiveauTerreur", "TailleEchelleDestin"). Insensible Ã  la casse.</param>
+          /// <param name="AValeur">Valeur Ã  affecter, convertie selon le type rÃ©el du champ.</param>
           /// <exception cref="EArgumentException">
-          /// Levée si ANomChamp ne correspond à aucun champ modifiable connu.
+          /// LevÃ©e si ANomChamp ne correspond Ã  aucun champ modifiable connu.
           /// </exception>
           procedure AffecterChamp(const ANomChamp : string; const AValeur : Variant);
 
           /// <summary>
-          /// Lit par nom un champ du contexte, utilisé par TEvaluateurCondition pour résoudre
-          /// les nœuds ntCondition sans connaître statiquement la liste des champs.
+          /// Lit par nom un champ du contexte, utilisÃ© par TEvaluateurCondition pour rÃ©soudre
+          /// les nÅ“uds ntCondition sans connaÃ®tre statiquement la liste des champs.
           /// </summary>
-          /// <param name="ANomChamp">Nom du champ interrogé (ex. "ArkhamEnvahie"). Insensible à la casse.</param>
+          /// <param name="ANomChamp">Nom du champ interrogÃ© (ex. "ArkhamEnvahie"). Insensible Ã  la casse.</param>
           /// <returns>La valeur courante du champ, sous forme de Variant.</returns>
           /// <exception cref="EArgumentException">
-          /// Levée si ANomChamp ne correspond à aucun champ connu.
+          /// LevÃ©e si ANomChamp ne correspond Ã  aucun champ connu.
           /// </exception>
           function LireChamp(const ANomChamp : string) : Variant;
 
-          /// <summary>Copie des prénoms des joueurs humains, dans l'ordre fourni à la création.</summary>
+          /// <summary>Copie des prÃ©noms des joueurs humains, dans l'ordre fourni Ã  la crÃ©ation.</summary>
           function NomsJoueursHumains: TArray<string>;
 
-          /// <summary>Copie des investigateurs en jeu, dans l'ordre de résolution des phases.</summary>
-          function Investigateurs: TArray<TInvestigateurJoue>;          /// <summary>Index (base 0) de l'investigateur courant. Exposé pour la sauvegarde d'historique du moteur.</summary>
+          /// <summary>Copie des investigateurs en jeu, dans l'ordre de rÃ©solution des phases.</summary>
+          function Investigateurs: TArray<TInvestigateurJoue>;          /// <summary>Index (base 0) de l'investigateur courant. ExposÃ© pour la sauvegarde d'historique du moteur.</summary>
 
           /// <summary>
-          /// Fait passer le marqueur Premier Joueur au joueur humain suivant dans l'ordre horaire —
-          /// concrètement, au premier investigateur (dans l'ordre de jeu) contrôlé par ce joueur suivant.
-          /// À appeler une fois par tour, à la fin de la phase du Mythe.
+          /// Fait passer le marqueur Premier Joueur au joueur humain suivant dans l'ordre horaire â€”
+          /// concrÃ¨tement, au premier investigateur (dans l'ordre de jeu) contrÃ´lÃ© par ce joueur suivant.
+          /// Ã€ appeler une fois par tour, Ã  la fin de la phase du Mythe.
           /// </summary>
           procedure PasserMarqueurPremierJoueur;
 
-          /// <summary>Maximum de monstres pouvant s'accumuler en Périphérie (règle page 18) : 8 - NombreInvestigateurs, jamais négatif.</summary>
+          /// <summary>Maximum de monstres pouvant s'accumuler en PÃ©riphÃ©rie (rÃ¨gle page 18) : 8 - NombreInvestigateurs, jamais nÃ©gatif.</summary>
           function LimitePeripherie : Integer;
 
           property IndexPremierInvestigateur : Integer read FIndexPremierInvestigateur write FIndexPremierInvestigateur;
@@ -151,12 +151,12 @@ unit AH.Core.Contexte;
           property NombreSignesDesAnciens : Integer read FNombreSignesDesAnciens write FNombreSignesDesAnciens;
           property EchelleDestin : Integer read FEchelleDestin write FEchelleDestin;
           /// <summary>
-          /// Nombre total de cases de l'échelle du destin du Grand Ancien affronté cette partie.
-          /// À renseigner lors de sa révélation (valeur imprimée sur sa feuille) ; vaut 0 tant que non renseigné.
+          /// Nombre total de cases de l'Ã©chelle du destin du Grand Ancien affrontÃ© cette partie.
+          /// Ã€ renseigner lors de sa rÃ©vÃ©lation (valeur imprimÃ©e sur sa feuille) ; vaut 0 tant que non renseignÃ©.
           /// </summary>
           property TailleEchelleDestin : Integer read FTailleEchelleDestin write FTailleEchelleDestin;
           property TourCourant : Integer read FTourCourant write FTourCourant;
-          /// <summary>Nom du Grand Ancien affronté cette partie, renseigné lors de sa révélation. Vide tant que non renseigné.</summary>
+          /// <summary>Nom du Grand Ancien affrontÃ© cette partie, renseignÃ© lors de sa rÃ©vÃ©lation. Vide tant que non renseignÃ©.</summary>
           property NomGrandAncien : string read FNomGrandAncien write FNomGrandAncien;
       end;
 
@@ -179,14 +179,14 @@ unit AH.Core.Contexte;
            or (Length(ANomsJoueursHumains) > NombreMaxJoueursHumains)
         then
           raise EArgumentOutOfRangeException.CreateFmt(
-            'Le nombre de joueurs humains doit être compris entre 1 et %d (valeur reçue : %d).',
+            'Le nombre de joueurs humains doit Ãªtre compris entre 1 et %d (valeur reÃ§ue : %d).',
             [NombreMaxJoueursHumains, Length(ANomsJoueursHumains)]);
 
         if (Length(AInvestigateurs) < 1)
            or (Length(AInvestigateurs) > NombreMaxInvestigateurs)
         then
           raise EArgumentOutOfRangeException.CreateFmt(
-            'Le nombre d''investigateurs doit être compris entre 1 et %d (valeur reçue : %d).',
+            'Le nombre d''investigateurs doit Ãªtre compris entre 1 et %d (valeur reÃ§ue : %d).',
             [NombreMaxInvestigateurs, Length(AInvestigateurs)]);
 
         for Investigateur in AInvestigateurs do
@@ -194,7 +194,7 @@ unit AH.Core.Contexte;
              or (Investigateur.IndexJoueurHumain >= Length(ANomsJoueursHumains))
           then
             raise EArgumentOutOfRangeException.CreateFmt(
-              'L''investigateur "%s" référence un joueur humain inexistant (index %d).',
+              'L''investigateur "%s" rÃ©fÃ©rence un joueur humain inexistant (index %d).',
               [Investigateur.NomInvestigateur, Investigateur.IndexJoueurHumain]);
 
         FNomsJoueursHumains := Copy(ANomsJoueursHumains);
@@ -227,7 +227,7 @@ unit AH.Core.Contexte;
           7..8 : Result := 5;
         else
           raise EInvalidOpException.CreateFmt(
-            'Nombre d''investigateurs hors limite (%d) : la validation du constructeur aurait dû l''empêcher.',
+            'Nombre d''investigateurs hors limite (%d) : la validation du constructeur aurait dÃ» l''empÃªcher.',
             [NombreInvestigateurs]);
         end;
       end;
@@ -241,8 +241,8 @@ unit AH.Core.Contexte;
       begin
         if FTailleEchelleDestin <= 0 then
           raise EInvalidOpException.Create(
-            'La taille de l''échelle du destin du Grand Ancien n''a pas encore été renseignée ' +
-            '(le nœud ntSaisie "TailleEchelleDestin" doit être résolu lors de la révélation du Grand Ancien, avant tout appel à EchelleDestinPleine).');
+            'La taille de l''Ã©chelle du destin du Grand Ancien n''a pas encore Ã©tÃ© renseignÃ©e ' +
+            '(le nÅ“ud ntSaisie "TailleEchelleDestin" doit Ãªtre rÃ©solu lors de la rÃ©vÃ©lation du Grand Ancien, avant tout appel Ã  EchelleDestinPleine).');
         Result := FEchelleDestin >= FTailleEchelleDestin;
       end;
 

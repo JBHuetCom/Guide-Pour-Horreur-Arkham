@@ -1,4 +1,4 @@
-program ArkhamHorrorGuideTests;
+ï»¿program ArkhamHorrorGuideTests;
 
   {$IFNDEF TESTINSIGHT}
   {$APPTYPE CONSOLE}
@@ -7,7 +7,14 @@ program ArkhamHorrorGuideTests;
   {$STRONGLINKTYPES ON}
   uses
   FastMM5,
-  {$IFDEF DEBUG MEMOIRE}
+  {$IFDEF TESTINSIGHT}
+  TestInsight.DUnitX,
+  {$ELSE}
+  DUnitX.Loggers.Console,
+  DUnitX.Loggers.Xml.NUnit,
+  {$ENDIF }
+  DUnitX.TestFramework,
+  {$IFDEF DEBUG}
   DUnitX.MemoryLeakMonitor.FastMM5,
   {$ENDIF }
   System.Classes,
@@ -20,13 +27,8 @@ program ArkhamHorrorGuideTests;
   AH.Core.Moteur,
   AH.Core.Capacites,
   AH.Core.Conseils,
-  {$IFDEF TESTINSIGHT}
-  TestInsight.DUnitX,
-  {$ELSE}
-  DUnitX.Loggers.Console,
-  DUnitX.Loggers.Xml.NUnit,
-  {$ENDIF }
-  DUnitX.TestFramework,
+  AH.Core.Contexte,
+  AH.Core.GrandsAnciens,
   AH.Tests.Moteur in 'AH.Tests.Moteur.pas',
   AH.Tests.EvaluateurCondition in 'AH.Tests.EvaluateurCondition.pas',
   AH.Tests.ChargeurContenu in 'AH.Tests.ChargeurContenu.pas',
@@ -48,99 +50,79 @@ program ArkhamHorrorGuideTests;
     nunitLogger : ITestLogger;
     GFastMMLogFileName : string;
     GFastMMStateFileName : string;
-	CurrentThread: TThread;
   {$ENDIF}
 
-  procedure AmorcerLesSpecialisationsGeneriques;
-  { Certaines spécialisations génériques (TDictionary<...>, TObjectList<...>, TList<...>, etc.)
-    allouent, à leur toute première utilisation dans le process, un comparateur par défaut mis
-    en cache pour la durée de vie de l'application (System.Generics.Defaults). Allocation
-    normale et volontaire côté RTL, jamais libérée avant la fin du process — FastMM5/DUnitX la
-    signale néanmoins comme fuite et l'attribue au premier test qui la déclenche. On amorce donc
-    ici, avant l'exécution des tests, chaque spécialisation utilisée par l'application, pour que
-    ce coût unique soit payé hors de la fenêtre de mesure des fuites. }
-    var
-      NoeudSequence, NoeudCondition : TNoeudEtape;
-      Capacites : TDictionary<string, TCapaciteInvestigateur>;
-      Conseils : TObjectDictionary<string, TList<TConseil>>;
-      ListeConseils : TList<TConseil>;
-      Pile : TList<TFrameParcours>;
-      Historique : TStack<TInstantane>;
-      TemporaryFilePath : string;
-      Utf8Encoding : TEncoding;
-      Utf8ByteCount : Integer;
-      JsonWarmup : ISuperObject;
-	    RttiContext : TSuperRttiContext;
-    begin
-      // L'accès au thread courant peut créer paresseusement un TExternalThread
-      // global de la RTL. Son initialisation est effectuée avant le runner afin
-      // que DUnitX ne l'attribue pas au premier test qui manipule des fichiers,
-      // du JSON ou des assertions.
-      CurrentThread := TThread.Current;
-      if not Assigned(CurrentThread) then
-      raise EInvalidOpException.Create(
-        'Impossible d''amorcer l''enveloppe RTL du thread principal.');
-		  
-	    NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);
-      NoeudSequence.Free;
-	  
-      NoeudCondition := TNoeudEtape.Create('amorce_condition', ntCondition);
-      NoeudCondition.Free;
+procedure AmorcerLesSpecialisationsGeneriques;
+{ Certaines spÃ©cialisations gÃ©nÃ©riques (TDictionary<...>, TObjectList<...>, TList<...>, etc.)
+  allouent, Ã  leur toute premiÃ¨re utilisation dans le process, un comparateur par dÃ©faut mis
+  en cache pour la durÃ©e de vie de l'application (System.Generics.Defaults). Allocation
+  normale et volontaire cÃ´tÃ© RTL, jamais libÃ©rÃ©e avant la fin du process â€” FastMM5/DUnitX la
+  signale nÃ©anmoins comme fuite et l'attribue au premier test qui la dÃ©clenche. On amorce donc
+  ici, avant l'exÃ©cution des tests, chaque spÃ©cialisation utilisÃ©e dans le projet â€” y compris
+  via les classes gestionnaires (instanciÃ©es puis libÃ©rÃ©es pour amorcer leurs dictionnaires
+  internes), et explicitement pour les types qu'un simple Create/Free de ces classes ne
+  suffit pas Ã  dÃ©clencher (les dictionnaires internes crÃ©Ã©s seulement lors du chargement
+  effectif d'un fichier). Ã€ mettre Ã  jour si une nouvelle unitÃ© introduit une nouvelle
+  spÃ©cialisation gÃ©nÃ©rique. Ne compense JAMAIS une vraie fuite par appel (voir
+  AH.Core.GrandsAnciens.TSuperAvlIterator, corrigÃ© sÃ©parÃ©ment par un ObjectFindClose manquant
+  â€” un objet rÃ©ellement recrÃ©Ã© Ã  chaque appel ne doit jamais Ãªtre "amorti" ici). }
+  var
+    NoeudSequence, NoeudCondition : TNoeudEtape;
+    Pile : TList<TFrameParcours>;
+    Historique : TStack<TInstantane>;
+    ListeInvestigateurs : TList<TInvestigateurJoue>;
+    MappingEntiers : TDictionary<Integer, Integer>;
+    Capacites : TGestionnaireCapacites;
+    Conseils : TGestionnaireConseils;
+    ListeConseils : TList<TConseil>;
+    GrandsAnciens : TGestionnaireGrandsAnciens;
+    ReglesEtapes : TDictionary<string, string>;
+    RttiContext : TSuperRttiContext;
+  begin
+    NoeudSequence := TNoeudEtape.Create('amorce_sequence', ntSequence);
+    NoeudSequence.Free;
+    NoeudCondition := TNoeudEtape.Create('amorce_condition', ntCondition);
+    NoeudCondition.Free;
 
-      Capacites := TDictionary<string, TCapaciteInvestigateur>.Create;
-      Capacites.Free;
+    Pile := TList<TFrameParcours>.Create;
+    Pile.Free;
 
-      Conseils := TObjectDictionary<string, TList<TConseil>>.Create([doOwnsValues]);
-      Conseils.Free;
+    Historique := TStack<TInstantane>.Create;
+    Historique.Free;
 
-      ListeConseils := TList<TConseil>.Create;
-      ListeConseils.Free;
+    ListeInvestigateurs := TList<TInvestigateurJoue>.Create;
+    ListeInvestigateurs.Free;
 
-      Pile := TList<TFrameParcours>.Create;
-      Pile.Free;
+    MappingEntiers := TDictionary<Integer, Integer>.Create;
+    MappingEntiers.Free;
 
-      Historique := TStack<TInstantane>.Create;
-      Historique.Free;
+    Capacites := TGestionnaireCapacites.Create;
+    Capacites.Free;
 
-      // TPath et TFile peuvent initialiser des ressources internes à leur première
-      // utilisation. L'amorçage est volontairement réalisé avant l'exécution des
-      // tests afin que FastMM5 ne l'attribue pas au premier test utilisateur.
-      TemporaryFilePath := TPath.Combine(
-        TPath.GetTempPath,
-        'arkham_horror_guide_warmup_file_does_not_exist.tmp');
+    Conseils := TGestionnaireConseils.Create;
+    Conseils.Free;
 
-      TFile.Exists(TemporaryFilePath);
+    ListeConseils := TList<TConseil>.Create;
+    ListeConseils.Free;
 
-      // TFile.WriteAllText utilise l'encodage UTF-8 par défaut. Cette initialisation
-      // est également effectuée hors de la fenêtre de surveillance des tests.
-      Utf8Encoding := TEncoding.UTF8;
-      Utf8ByteCount := Utf8Encoding.GetByteCount(EmptyStr);
+    GrandsAnciens := TGestionnaireGrandsAnciens.Create;
+    GrandsAnciens.Free;
 
-      if Utf8ByteCount <> 0 then
-        raise EInvalidOpException.Create(
-          'L''amorçage UTF-8 a produit une taille inattendue.');
+    ReglesEtapes := TDictionary<string, string>.Create;
+    ReglesEtapes.Free;
 
-      // SuperObject initialise certaines ressources internes lors de la première
-      // analyse JSON. Cette initialisation est effectuée avant la surveillance
-      // DUnitX/FastMM5 afin de ne pas être attribuée au premier test utilisateur.
-      JsonWarmup := SO('{"Warmup":true}');
-
-      if not Assigned(JsonWarmup) or not JsonWarmup.B['Warmup'] then
-        raise EInvalidOpException.Create(
-          'L''amorçage du parseur SuperObject a échoué.');
-			
-      RttiContext := TSuperRttiContext.Create;
-      RttiContext.Free;
-    end;
-
+    RttiContext := TSuperRttiContext.Create;
+    RttiContext.Free;
+  end;
+  
 	/// <summary>
-	/// Retourne le répertoire contenant l'exécutable de tests.
-	/// Ce répertoire existe avant l'exécution et sert de destination stable pour
+	/// Retourne le rÃ©pertoire contenant l'exÃ©cutable de tests.
+	/// Ce rÃ©pertoire existe avant l'exÃ©cution et sert de destination stable pour
 	/// les diagnostics FastMM5.
 	/// </summary>
-	/// <returns>Chemin absolu du répertoire de l'exécutable de tests, sans séparateur final.</returns>
+	/// <returns>Chemin absolu du rÃ©pertoire de l'exÃ©cutable de tests, sans sÃ©parateur final.</returns>
 	/// <exception cref="System.SysUtils.EInvalidOp">
-	/// Levée si le chemin de l'exécutable ne permet pas de déterminer un répertoire de diagnostic exploitable.
+	/// LevÃ©e si le chemin de l'exÃ©cutable ne permet pas de dÃ©terminer un rÃ©pertoire de diagnostic exploitable.
 	/// </exception>
 	function GetFastMMDiagnosticsDirectory: string;
 		begin
@@ -148,14 +130,14 @@ program ArkhamHorrorGuideTests;
 
 		  if Result = EmptyStr then
 			raise EInvalidOpException.Create(
-			  'Impossible de déterminer le répertoire de diagnostic FastMM5.');
+			  'Impossible de dÃ©terminer le rÃ©pertoire de diagnostic FastMM5.');
 		end;
 
 	/// <summary>
 	/// Configure temporairement FastMM5 pour produire des rapports de diagnostic
-	/// dans le même répertoire que l'exécutable de tests.
-	/// Cette configuration est réservée aux investigations et ne doit pas être
-	/// activée dans les builds de livraison.
+	/// dans le mÃªme rÃ©pertoire que l'exÃ©cutable de tests.
+	/// Cette configuration est rÃ©servÃ©e aux investigations et ne doit pas Ãªtre
+	/// activÃ©e dans les builds de livraison.
 	/// </summary>
 	procedure ConfigureFastMMDiagnostics;
 		var
@@ -171,8 +153,8 @@ program ArkhamHorrorGuideTests;
 			DiagnosticsDirectory,
 			'ArkhamHorrorGuideTests.FastMM.State.log');
 
-		  // Les chaînes sont globales afin que les pointeurs transmis à FastMM restent
-		  // valides pendant toute l'exécution du processus.
+		  // Les chaÃ®nes sont globales afin que les pointeurs transmis Ã  FastMM restent
+		  // valides pendant toute l'exÃ©cution du processus.
 		  FastMM_SetEventLogFilename(PWideChar(GFastMMLogFileName));
 		  FastMM_DeleteEventLogFile;
 
@@ -191,7 +173,7 @@ program ArkhamHorrorGuideTests;
 		end;
 
 begin
-  {$IFDEF DEBUG MEMOIRE}
+  {$IFDEF DEBUG}
   ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
 
@@ -202,12 +184,12 @@ begin
   TestInsight.DUnitX.RunRegisteredTests;
  {$ELSE}
   try
-    {$IFDEF DEBUG MEMOIRE}
+    {$IFDEF DEBUG}
     ConfigureFastMMDiagnostics;
     AmorcerLesSpecialisationsGeneriques;
     {$ENDIF}
 
-    //Pause par défaut en sortie ; CheckCommandLine peut écraser cette valeur si un
+    //Pause par dÃ©faut en sortie ; CheckCommandLine peut Ã©craser cette valeur si un
     //argument de ligne de commande explicite est fourni (utile en CI).
     TDUnitX.Options.ExitBehavior := TDUnitXExitBehavior.Pause;
     //Check command line options, will exit if invalid
@@ -234,12 +216,12 @@ begin
     results := runner.Execute;
 
     if not FastMM_LogStateToFile(PWideChar(GFastMMStateFileName)) then
-      System.Writeln('FastMM n''a pas pu écrire le rapport d''état : ' + GFastMMStateFileName)
+      System.Writeln('FastMM n''a pas pu Ã©crire le rapport d''Ã©tat : ' + GFastMMStateFileName)
     else
       if not TFile.Exists(GFastMMStateFileName) then
-        System.Writeln('FastMM a retourné True, mais le fichier est introuvable : ' + GFastMMStateFileName)
+        System.Writeln('FastMM a retournÃ© True, mais le fichier est introuvable : ' + GFastMMStateFileName)
       else
-        System.Writeln('Rapport d''état FastMM créé : ' + GFastMMStateFileName);
+        System.Writeln('Rapport d''Ã©tat FastMM crÃ©Ã© : ' + GFastMMStateFileName);
 
     if not results.AllPassed then
       System.ExitCode := EXIT_ERRORS;

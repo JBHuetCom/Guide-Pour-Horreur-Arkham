@@ -1,4 +1,4 @@
-unit AH.Core.Session;
+ï»¿unit AH.Core.Session;
 
   interface
 
@@ -12,9 +12,9 @@ unit AH.Core.Session;
       ESessionInvalideException = class(Exception);
 
       /// <summary>
-      /// Photographie complète d'une partie en cours, suffisante pour la reconstruire à
-      /// l'identique : état de TContextePartie, identification du fichier de contenu actif, et
-      /// position exacte de navigation au sein de ce fichier (rejouée par
+      /// Photographie complÃ¨te d'une partie en cours, suffisante pour la reconstruire Ã 
+      /// l'identique : Ã©tat de TContextePartie, identification du fichier de contenu actif, et
+      /// position exacte de navigation au sein de ce fichier (rejouÃ©e par
       /// TGestionnaireSession.RestaurerPosition).
       /// </summary>
       TSessionPartie = record
@@ -29,26 +29,26 @@ unit AH.Core.Session;
         IndexInvestigateurCourant : Integer;
         /// <summary>
         /// Identifie le fichier de contenu actif au moment de la sauvegarde (ex. "preparation",
-        /// "tour", "bataille_finale", "fin_de_partie"). Charge libre, propre à l'application
-        /// appelante : cette unité ne charge elle-même aucun fichier de contenu.
+        /// "tour", "bataille_finale", "fin_de_partie"). Charge libre, propre Ã  l'application
+        /// appelante : cette unitÃ© ne charge elle-mÃªme aucun fichier de contenu.
         /// </summary>
         FichierContenuActif : string;
-        /// <summary>Nombre total d'appels réussis à Suivant effectués dans le fichier actif depuis son chargement.</summary>
+        /// <summary>Nombre total d'appels rÃ©ussis Ã  Suivant effectuÃ©s dans le fichier actif depuis son chargement.</summary>
         NombreEtapesTraversees : Integer;
         /// <summary>
-        /// Valeurs fournies à EnregistrerReponse, dans l'ordre, pour chaque nœud ntChoix/ntSaisie
-        /// déjà répondu parmi les NombreEtapesTraversees premières étapes (le nœud courant, s'il
-        /// attend encore une réponse, n'y figure pas).
+        /// Valeurs fournies Ã  EnregistrerReponse, dans l'ordre, pour chaque nÅ“ud ntChoix/ntSaisie
+        /// dÃ©jÃ  rÃ©pondu parmi les NombreEtapesTraversees premiÃ¨res Ã©tapes (le nÅ“ud courant, s'il
+        /// attend encore une rÃ©ponse, n'y figure pas).
         /// </summary>
         ReponsesEnregistrees : TArray<Variant>;
       end;
 
       /// <summary>
-      /// Décore un TMoteurSequenceur pour journaliser automatiquement chaque étape traversée et
-      /// chaque réponse fournie, afin de pouvoir reconstituer un TSessionPartie à tout moment sans
-      /// faire porter cette responsabilité à l'appelant (UI). Toute navigation doit passer par ce
-      /// décorateur plutôt que directement par le TMoteurSequenceur sous-jacent, sous peine de
-      /// désynchroniser le journal.
+      /// DÃ©core un TMoteurSequenceur pour journaliser automatiquement chaque Ã©tape traversÃ©e et
+      /// chaque rÃ©ponse fournie, afin de pouvoir reconstituer un TSessionPartie Ã  tout moment sans
+      /// faire porter cette responsabilitÃ© Ã  l'appelant (UI). Toute navigation doit passer par ce
+      /// dÃ©corateur plutÃ´t que directement par le TMoteurSequenceur sous-jacent, sous peine de
+      /// dÃ©synchroniser le journal.
       /// </summary>
       TMoteurSequenceurJournalise = class
         private
@@ -56,73 +56,73 @@ unit AH.Core.Session;
           FNombreEtapesTraversees : Integer;
           FReponsesEnregistrees : TList<Variant>;
 
-          // Parallèle à chaque étape traversée : True si le Suivant qui l'a produite était
-          // immédiatement précédé d'un EnregistrerReponse (donc si Precedent doit dépiler
-          // une réponse en l'annulant), False sinon.
+          // ParallÃ¨le Ã  chaque Ã©tape traversÃ©e : True si le Suivant qui l'a produite Ã©tait
+          // immÃ©diatement prÃ©cÃ©dÃ© d'un EnregistrerReponse (donc si Precedent doit dÃ©piler
+          // une rÃ©ponse en l'annulant), False sinon.
           FEtapesAvecReponse: TList<Boolean>;
 
-          // Vrai entre un appel à EnregistrerReponse et le prochain Suivant qui en tient compte.
+          // Vrai entre un appel Ã  EnregistrerReponse et le prochain Suivant qui en tient compte.
           FReponseEnAttente: Boolean;
 
           function GetNoeudCourant : TNoeudEtape;
         public
-          /// <param name="AMoteur">Moteur à décorer. Conservé par référence, non libéré par ce décorateur.</param>
+          /// <param name="AMoteur">Moteur Ã  dÃ©corer. ConservÃ© par rÃ©fÃ©rence, non libÃ©rÃ© par ce dÃ©corateur.</param>
           constructor Create(AMoteur : TMoteurSequenceur);
           destructor Destroy; override;
 
-          /// <summary>Équivalent journalisé de TMoteurSequenceur.Suivant.</summary>
+          /// <summary>Ã‰quivalent journalisÃ© de TMoteurSequenceur.Suivant.</summary>
           function Suivant : TNoeudEtape;
 
           /// <summary>
-          /// Équivalent journalisé de TMoteurSequenceur.Precedent : dépile la dernière étape du
-          /// journal (et sa réponse éventuelle) en même temps que le moteur sous-jacent recule.
+          /// Ã‰quivalent journalisÃ© de TMoteurSequenceur.Precedent : dÃ©pile la derniÃ¨re Ã©tape du
+          /// journal (et sa rÃ©ponse Ã©ventuelle) en mÃªme temps que le moteur sous-jacent recule.
           /// </summary>
           function Precedent : TNoeudEtape;
 
-          /// <summary>Équivalent journalisé de TMoteurSequenceur.EnregistrerReponse.</summary>
+          /// <summary>Ã‰quivalent journalisÃ© de TMoteurSequenceur.EnregistrerReponse.</summary>
           procedure EnregistrerReponse(const AValeur : Variant);
 
           /// <summary>
-          /// Construit l'instantané de session correspondant à l'état courant du contexte et à la
+          /// Construit l'instantanÃ© de session correspondant Ã  l'Ã©tat courant du contexte et Ã  la
           /// position actuelle de navigation.
           /// </summary>
-          /// <param name="AContexte">Contexte de partie associé à ce moteur (mêmes valeurs que celles passées à TMoteurSequenceur.Create).</param>
-          /// <param name="AFichierContenuActif">Identifiant du fichier de contenu actif, à des fins de restauration ultérieure.</param>
+          /// <param name="AContexte">Contexte de partie associÃ© Ã  ce moteur (mÃªmes valeurs que celles passÃ©es Ã  TMoteurSequenceur.Create).</param>
+          /// <param name="AFichierContenuActif">Identifiant du fichier de contenu actif, Ã  des fins de restauration ultÃ©rieure.</param>
           function CapturerSession(AContexte : TContextePartie; const AFichierContenuActif : string): TSessionPartie;
 
           property NoeudCourant : TNoeudEtape read GetNoeudCourant;
       end;
 
       /// <summary>
-      /// Sérialise/désérialise un TSessionPartie en JSON (via SuperObject), reconstruit un
-      /// TContextePartie à partir d'une session chargée, et rejoue la position de navigation
-      /// exacte sur un moteur fraîchement créé pour le fichier de contenu correspondant.
+      /// SÃ©rialise/dÃ©sÃ©rialise un TSessionPartie en JSON (via SuperObject), reconstruit un
+      /// TContextePartie Ã  partir d'une session chargÃ©e, et rejoue la position de navigation
+      /// exacte sur un moteur fraÃ®chement crÃ©Ã© pour le fichier de contenu correspondant.
       /// </summary>
       TGestionnaireSession = class
         public
-          /// <param name="ASession">Session à sauvegarder.</param>
-          /// <param name="ACheminFichier">Chemin du fichier .json à écrire (créé s'il n'existe pas, écrasé sinon).</param>
+          /// <param name="ASession">Session Ã  sauvegarder.</param>
+          /// <param name="ACheminFichier">Chemin du fichier .json Ã  Ã©crire (crÃ©Ã© s'il n'existe pas, Ã©crasÃ© sinon).</param>
           class procedure SauvegarderDansFichier(const ASession : TSessionPartie; const ACheminFichier : string);
 
           /// <param name="ACheminFichier">Chemin d'un fichier .json produit par SauvegarderDansFichier.</param>
-          /// <exception cref="EFileNotFoundException">Levée si ACheminFichier n'existe pas.</exception>
-          /// <exception cref="ESessionInvalideException">Levée si le JSON est malformé ou incomplet.</exception>
+          /// <exception cref="EFileNotFoundException">LevÃ©e si ACheminFichier n'existe pas.</exception>
+          /// <exception cref="ESessionInvalideException">LevÃ©e si le JSON est malformÃ© ou incomplet.</exception>
           class function ChargerDepuisFichier(const ACheminFichier : string): TSessionPartie;
 
-          /// <param name="ASession">Session dont l'état de partie doit être restauré.</param>
-          /// <returns>Un TContextePartie neuf, dans l'état exact enregistré dans ASession. L'appelant en devient propriétaire.</returns>
+          /// <param name="ASession">Session dont l'Ã©tat de partie doit Ãªtre restaurÃ©.</param>
+          /// <returns>Un TContextePartie neuf, dans l'Ã©tat exact enregistrÃ© dans ASession. L'appelant en devient propriÃ©taire.</returns>
           class function RecreerContexte(const ASession : TSessionPartie): TContextePartie;
 
           /// <summary>
-          /// Rejoue, sur AMoteur fraîchement créé (contenu déjà chargé, position au tout début),
-          /// exactement la séquence d'appels Suivant/EnregistrerReponse enregistrée dans ASession,
-          /// pour ramener AMoteur à la position exacte où la partie avait été sauvegardée.
+          /// Rejoue, sur AMoteur fraÃ®chement crÃ©Ã© (contenu dÃ©jÃ  chargÃ©, position au tout dÃ©but),
+          /// exactement la sÃ©quence d'appels Suivant/EnregistrerReponse enregistrÃ©e dans ASession,
+          /// pour ramener AMoteur Ã  la position exacte oÃ¹ la partie avait Ã©tÃ© sauvegardÃ©e.
           /// </summary>
-          /// <param name="AMoteur">Moteur journalisé fraîchement créé sur le contenu correspondant à ASession.FichierContenuActif, pas encore avancé.</param>
-          /// <param name="ASession">Session contenant la position à restaurer.</param>
+          /// <param name="AMoteur">Moteur journalisÃ© fraÃ®chement crÃ©Ã© sur le contenu correspondant Ã  ASession.FichierContenuActif, pas encore avancÃ©.</param>
+          /// <param name="ASession">Session contenant la position Ã  restaurer.</param>
           /// <exception cref="ESessionInvalideException">
-          /// Levée si le contenu rechargé a divergé de celui utilisé à la sauvegarde (nombre d'étapes
-          /// ou de réponses insuffisant), signe que les fichiers JSON de contenu ont changé entre-temps.
+          /// LevÃ©e si le contenu rechargÃ© a divergÃ© de celui utilisÃ© Ã  la sauvegarde (nombre d'Ã©tapes
+          /// ou de rÃ©ponses insuffisant), signe que les fichiers JSON de contenu ont changÃ© entre-temps.
           /// </exception>
           class procedure RestaurerPosition(AMoteur : TMoteurSequenceurJournalise; const ASession : TSessionPartie);
       end;
@@ -219,7 +219,7 @@ unit AH.Core.Session;
 
     {$REGION 'GestionnaireSession'}
 
-    /// <summary>Sérialise une valeur Variant hétérogène (chaîne ou entier dans cette application) en un couple (Type, Valeur) textuel.</summary>
+    /// <summary>SÃ©rialise une valeur Variant hÃ©tÃ©rogÃ¨ne (chaÃ®ne ou entier dans cette application) en un couple (Type, Valeur) textuel.</summary>
     procedure EcrireValeurVariant(const AEntree : ISuperObject; const AValeur : Variant);
       begin
         case VarType(AValeur) and varTypeMask of
@@ -317,7 +317,7 @@ unit AH.Core.Session;
 
         if Racine.S['FichierContenuActif'] = EmptyStr then
           raise ESessionInvalideException.CreateFmt(
-            'Le fichier "%s" ne précise pas "FichierContenuActif".', [ACheminFichier]);
+            'Le fichier "%s" ne prÃ©cise pas "FichierContenuActif".', [ACheminFichier]);
 
         TableauNoms := Racine.A['NomsJoueursHumains'];
         if not Assigned(TableauNoms) or (TableauNoms.Length = 0) then
@@ -394,8 +394,8 @@ unit AH.Core.Session;
             Noeud := AMoteur.Suivant;
             if not Assigned(Noeud) then
               raise ESessionInvalideException.CreateFmt(
-                'Le contenu rechargé ne contient plus assez d''étapes pour restaurer la session ' +
-                '(arrêt après %d étape(s) sur %d attendues) : les fichiers de contenu ont probablement changé depuis la sauvegarde.',
+                'Le contenu rechargÃ© ne contient plus assez d''Ã©tapes pour restaurer la session ' +
+                '(arrÃªt aprÃ¨s %d Ã©tape(s) sur %d attendues) : les fichiers de contenu ont probablement changÃ© depuis la sauvegarde.',
                 [i - 1, ASession.NombreEtapesTraversees]);
 
             if (i < ASession.NombreEtapesTraversees)
@@ -404,8 +404,8 @@ unit AH.Core.Session;
               begin
                 if IndexReponse >= Length(ASession.ReponsesEnregistrees) then
                   raise ESessionInvalideException.Create(
-                    'Le contenu rechargé attend plus de réponses que la session n''en contient : ' +
-                    'les fichiers de contenu ont probablement changé depuis la sauvegarde.');
+                    'Le contenu rechargÃ© attend plus de rÃ©ponses que la session n''en contient : ' +
+                    'les fichiers de contenu ont probablement changÃ© depuis la sauvegarde.');
                 AMoteur.EnregistrerReponse(ASession.ReponsesEnregistrees[IndexReponse]);
                 Inc(IndexReponse);
               end;

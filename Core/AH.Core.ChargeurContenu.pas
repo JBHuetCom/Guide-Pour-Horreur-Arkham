@@ -1,4 +1,4 @@
-unit AH.Core.ChargeurContenu;
+Ôªøunit AH.Core.ChargeurContenu;
 
   interface
 
@@ -10,30 +10,30 @@ unit AH.Core.ChargeurContenu;
 
     type
 
-      /// <summary>Erreur de contenu : JSON malformÈ ou incohÈrent avec le schÈma attendu.</summary>
+      /// <summary>Erreur de contenu : JSON malform√© ou incoh√©rent avec le sch√©ma attendu.</summary>
       EChargeurContenuException = class(Exception);
 
       /// <summary>
-      /// Construit un arbre TNoeudEtape ‡ partir d'un contenu JSON conforme au schÈma dÈcrit
-      /// dans la documentation de conception : núuds ntSequence/ntBouclePorJoueur portant un
-      /// tableau "Enfants", núuds ntCondition/ntChoix portant un tableau "Branches"
-      /// ({"Valeur":..., "Libelle":"...", "Noeud":{...}}), núuds ntInstruction/ntSaisie portant
-      /// "Texte" et Èventuellement "Illustration".
+      /// Construit un arbre TNoeudEtape √† partir d'un contenu JSON conforme au sch√©ma d√©crit
+      /// dans la documentation de conception : n≈ìuds ntSequence/ntBouclePorJoueur portant un
+      /// tableau "Enfants", n≈ìuds ntCondition/ntChoix portant un tableau "Branches"
+      /// ({"Valeur":..., "Libelle":"...", "Noeud":{...}}), n≈ìuds ntInstruction/ntSaisie portant
+      /// "Texte" et √©ventuellement "Illustration".
       /// </summary>
       TChargeurContenu = class
         public
-          /// <param name="ACheminFichier">Chemin d'un fichier .json conforme au schÈma de contenu.</param>
-          /// <returns>La racine de l'arbre construit. L'appelant en devient propriÈtaire.</returns>
-          /// <exception cref="EFileNotFoundException">LevÈe si ACheminFichier n'existe pas.</exception>
+          /// <param name="ACheminFichier">Chemin d'un fichier .json conforme au sch√©ma de contenu.</param>
+          /// <returns>La racine de l'arbre construit. L'appelant en devient propri√©taire.</returns>
+          /// <exception cref="EFileNotFoundException">Lev√©e si ACheminFichier n'existe pas.</exception>
           /// <exception cref="EChargeurContenuException">
-          /// LevÈe si le JSON est malformÈ ou si un champ obligatoire est manquant.
+          /// Lev√©e si le JSON est malform√© ou si un champ obligatoire est manquant.
           /// </exception>
           class function ChargerDepuisFichier(const ACheminFichier : string) : TNoeudEtape;
 
-          /// <param name="AJSON">Contenu JSON dÈj‡ parsÈ, racine d'un núud unique.</param>
-          /// <returns>Le núud TNoeudEtape (et son sous-arbre complet) correspondant ‡ AJSON.</returns>
+          /// <param name="AJSON">Contenu JSON d√©j√† pars√©, racine d'un n≈ìud unique.</param>
+          /// <returns>Le n≈ìud TNoeudEtape (et son sous-arbre complet) correspondant √† AJSON.</returns>
           /// <exception cref="EChargeurContenuException">
-          /// LevÈe si un champ obligatoire est manquant ou si "Type" ne correspond ‡ aucun TTypeNoeud connu.
+          /// Lev√©e si un champ obligatoire est manquant ou si "Type" ne correspond √† aucun TTypeNoeud connu.
           /// </exception>
           class function ChargerNoeud(const AJSON : ISuperObject) : TNoeudEtape;
       end;
@@ -88,15 +88,18 @@ unit AH.Core.ChargeurContenu;
         Enfants, Branches, TableauTexteListe : ISuperArray;
         BrancheJSON : ISuperObject;
         TypeNoeud : TTypeNoeud;
+        ValeurBranche : Variant;
+        LibelleBranche : string;
+        NoeudBranche : TNoeudEtape;
       begin
         Id := AJSON.S['Id'];
         if Id = EmptyStr then
-          raise EChargeurContenuException.Create('Un núud de contenu sans "Id" a ÈtÈ rencontrÈ.');
+          raise EChargeurContenuException.Create('Un n≈ìud de contenu sans "Id" a √©t√© rencontr√©.');
 
         TypeTexte := AJSON.S['Type'];
         if not TryStrToTypeNoeud(TypeTexte, TypeNoeud) then
           raise EChargeurContenuException.CreateFmt(
-            'Núud "%s" : type inconnu "%s".',
+            'N≈ìud "%s" : type inconnu "%s".',
             [Id, TypeTexte]);
 
         Result := TNoeudEtape.Create(Id, TypeNoeud);
@@ -132,19 +135,26 @@ unit AH.Core.ChargeurContenu;
                    or (Branches.Length = 0)
                 then
                   raise EChargeurContenuException.CreateFmt(
-                    'Núud "%s" (%s) : au moins une branche est requise.',
+                    'N≈ìud "%s" (%s) : au moins une branche est requise.',
                     [Id, TypeTexte]);
 
                 for i := 0 to Branches.Length - 1 do
                   begin
                     BrancheJSON := Branches.O[i];
-                    Result.AjouterBranche(
-                      ValeurVariantDepuisJSON(BrancheJSON['Valeur']),
-                      BrancheJSON.S['Libelle'],
-                      ChargerNoeud(BrancheJSON.O['Noeud']));
+
+                    // Ordre d'√©valuation explicite et garanti : Delphi ne garantit pas l'ordre
+                    // d'√©valuation des arguments d'un appel de fonction (empiriquement droite-√†-gauche),
+                    // ce qui est fragile ici puisque NoeudBranche est construit par un appel r√©cursif
+                    // potentiellement profond (tout un sous-arbre). On force l'ordre via des variables
+                    // locales plut√¥t que de le laisser √† la discr√©tion du compilateur.
+                    ValeurBranche := ValeurVariantDepuisJSON(BrancheJSON['Valeur']);
+                    LibelleBranche := BrancheJSON.S['Libelle'];
+                    NoeudBranche := ChargerNoeud(BrancheJSON.O['Noeud']);
+
+                    Result.AjouterBranche(ValeurBranche, LibelleBranche, NoeudBranche);
                   end;
               end;
-            ntSaisie:
+              ntSaisie:
               if AJSON.O['ValeurForcee'] <> nil then
                 begin
                   Result.ValeurForcee := ValeurVariantDepuisJSON(AJSON.O['ValeurForcee']);

@@ -1,4 +1,4 @@
-unit AH.Tests.Moteur;
+Ôªøunit AH.Tests.Moteur;
 
   interface
 
@@ -17,7 +17,7 @@ unit AH.Tests.Moteur;
 
         function Investigateur(const ANom : string; AIndexJoueur : Integer) : TInvestigateurJoue;
 
-        /// <summary>Construit une racine ntSequence ‡ deux instructions, pour les cas simples.</summary>
+        /// <summary>Construit une racine ntSequence √† deux instructions, pour les cas simples.</summary>
         function ConstruireSequenceDeuxInstructions : TNoeudEtape;
       public
         [TearDown]
@@ -86,9 +86,9 @@ unit AH.Tests.Moteur;
       begin
         Racine := TNoeudEtape.Create('racine', ntSequence);
         Etape1 := TNoeudEtape.Create('etape1', ntInstruction);
-        Etape1.Texte := 'PremiËre Ètape';
+        Etape1.Texte := 'Premi√®re √©tape';
         Etape2 := TNoeudEtape.Create('etape2', ntInstruction);
-        Etape2.Texte := 'DeuxiËme Ètape';
+        Etape2.Texte := 'Deuxi√®me √©tape';
         Racine.AjouterEnfant(Etape1);
         Racine.AjouterEnfant(Etape2);
         Result := Racine;
@@ -174,7 +174,7 @@ unit AH.Tests.Moteur;
 
         FMoteur.Suivant; // etape1
         FMoteur.Suivant; // etape2
-        Assert.IsNull(FMoteur.Suivant); // Arbre ÈpuisÈ
+        Assert.IsNull(FMoteur.Suivant); // Arbre √©puis√©
       end;
 
     procedure TTestMoteurSequenceur.Suivant_SurNtCondition_ResoutAutomatiquementSansExposerLeNoeudCondition;
@@ -226,7 +226,7 @@ unit AH.Tests.Moteur;
         FContexte := TContextePartie.Create(['Alice'],
                                             [Investigateur('Amanda', 0)]);
         FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
-        FMoteur.Suivant; // Retourne le núud "choix", en attente de rÈponse
+        FMoteur.Suivant; // Retourne le n≈ìud "choix", en attente de r√©ponse
 
         Assert.WillRaise(
           procedure
@@ -275,12 +275,12 @@ unit AH.Tests.Moteur;
         Racine := TNoeudEtape.Create('racine', ntSequence);
         Boucle := TNoeudEtape.Create('boucle', ntBouclePorInvestigateur);
         Etape := TNoeudEtape.Create('etape_investigateur', ntInstruction);
-        Etape.Texte := 'Restaurez vos cartes dÈchargÈes';
+        Etape.Texte := 'Restaurez vos cartes d√©charg√©es';
         Boucle.AjouterEnfant(Etape);
         Racine.AjouterEnfant(Boucle);
         FRacine := Racine;
 
-        // Alice contrÙle Amanda ET Harvey (2 investigateurs), Bob contrÙle Jenny (1 investigateur).
+        // Alice contr√¥le Amanda ET Harvey (2 investigateurs), Bob contr√¥le Jenny (1 investigateur).
         // Ordre de jeu attendu : Amanda, Harvey (Alice), puis Jenny (Bob).
         FContexte := TContextePartie.Create(
           ['Alice', 'Bob'],
@@ -299,7 +299,7 @@ unit AH.Tests.Moteur;
         Assert.AreEqual('Jenny', FContexte.NomInvestigateurCourant);
         Assert.AreEqual('Bob', FContexte.NomJoueurHumainCourant);
 
-        Assert.IsNull(FMoteur.Suivant); // Boucle ÈpuisÈe aprËs le troisiËme investigateur
+        Assert.IsNull(FMoteur.Suivant); // Boucle √©puis√©e apr√®s le troisi√®me investigateur
       end;
 
     procedure TTestMoteurSequenceur.Precedent_ApresUnSuivant_RestitueLeNoeudPrecedent;
@@ -334,12 +334,12 @@ unit AH.Tests.Moteur;
         begin
           Racine := TNoeudEtape.Create('racine', ntSequence);
           HorsBoucle := TNoeudEtape.Create('hors_boucle', ntInstruction);
-          HorsBoucle.Texte := '…tape gÈnÈrale';
+          HorsBoucle.Texte := '√âtape g√©n√©rale';
           Racine.AjouterEnfant(HorsBoucle);
 
           Boucle := TNoeudEtape.Create('boucle', ntBouclePorInvestigateur);
           DansBoucle := TNoeudEtape.Create('dans_boucle', ntInstruction);
-          DansBoucle.Texte := '…tape par investigateur';
+          DansBoucle.Texte := '√âtape par investigateur';
           Boucle.AjouterEnfant(DansBoucle);
           Racine.AjouterEnfant(Boucle);
           FRacine := Racine;
@@ -366,14 +366,14 @@ unit AH.Tests.Moteur;
           Racine.AjouterEnfant(Saisie);
 
           EtapeSuivante := TNoeudEtape.Create('etape_suivante', ntInstruction);
-          EtapeSuivante.Texte := 'AprËs';
+          EtapeSuivante.Texte := 'Apr√®s';
           Racine.AjouterEnfant(EtapeSuivante);
           FRacine := Racine;
 
           FContexte := TContextePartie.Create(['Alice'], [Investigateur('Amanda', 0)]);
           FMoteur := TMoteurSequenceur.Create(FRacine, FContexte);
 
-          Assert.AreEqual('etape_suivante', FMoteur.Suivant.Id); // saisie_forcee sautÈ, jamais affichÈ
+          Assert.AreEqual('etape_suivante', FMoteur.Suivant.Id); // saisie_forcee saut√©, jamais affich√©
           Assert.AreEqual(3, FContexte.NiveauTerreur);
         end;
 
@@ -394,7 +394,7 @@ unit AH.Tests.Moteur;
         Resultat : TNoeudEtape;
       begin
         // Reproduit fin_de_partie.json : une racine directement de type ntChoix (pas ntSequence),
-        // ce qui provoquait une violation d'accËs (Enfants est nil pour ntChoix).
+        // ce qui provoquait une violation d'acc√®s (Enfants est nil pour ntChoix).
         Racine := TNoeudEtape.Create('racine_choix', ntChoix);
         BrancheA := TNoeudEtape.Create('branche_a', ntInstruction);
         BrancheA.Texte := 'Option A';

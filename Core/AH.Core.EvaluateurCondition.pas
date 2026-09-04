@@ -1,4 +1,4 @@
-unit AH.Core.EvaluateurCondition;
+Ôªøunit AH.Core.EvaluateurCondition;
 
   interface
 
@@ -8,16 +8,16 @@ unit AH.Core.EvaluateurCondition;
 
   type
     /// <summary>
-    /// RÈsout la branche applicable d'un núud ntCondition en comparant la valeur du champ
-    /// dÈsignÈ dans TContextePartie ‡ la ValeurDeclenchante de chaque branche dÈclarÈe.
+    /// R√©sout la branche applicable d'un n≈ìud ntCondition en comparant la valeur du champ
+    /// d√©sign√© dans TContextePartie √† la ValeurDeclenchante de chaque branche d√©clar√©e.
     /// </summary>
     TEvaluateurCondition = class
       public
-        /// <param name="ANoeud">Núud de type ntCondition ‡ rÈsoudre.</param>
-        /// <param name="AContexte">Contexte de partie utilisÈ pour l'Èvaluation.</param>
-        /// <returns>Le sous-núud de la premiËre branche dont ValeurDeclenchante correspond ‡ la valeur courante du champ.</returns>
+        /// <param name="ANoeud">N≈ìud de type ntCondition √† r√©soudre.</param>
+        /// <param name="AContexte">Contexte de partie utilis√© pour l'√©valuation.</param>
+        /// <returns>Le sous-n≈ìud de la premi√®re branche dont ValeurDeclenchante correspond √† la valeur courante du champ.</returns>
         /// <exception cref="EArgumentException">
-        /// LevÈe si aucune branche ne correspond ‡ la valeur courante du champ (contenu mal formÈ).
+        /// Lev√©e si aucune branche ne correspond √† la valeur courante du champ (contenu mal form√©).
         /// </exception>
         class function ResoudreBranche(ANoeud : TNoeudEtape; AContexte : TContextePartie) : TNoeudEtape;
     end;

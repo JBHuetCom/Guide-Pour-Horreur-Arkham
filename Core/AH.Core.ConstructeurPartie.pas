@@ -1,4 +1,4 @@
-unit AH.Core.ConstructeurPartie;
+ï»¿unit AH.Core.ConstructeurPartie;
 
   interface
 
@@ -9,58 +9,58 @@ unit AH.Core.ConstructeurPartie;
 
     type
       /// <summary>
-      /// Logique de construction et d'édition, indépendante de toute UI, de la liste ordonnée
-      /// des investigateurs d'une partie en cours de configuration. Sépare la logique métier
+      /// Logique de construction et d'Ã©dition, indÃ©pendante de toute UI, de la liste ordonnÃ©e
+      /// des investigateurs d'une partie en cours de configuration. SÃ©pare la logique mÃ©tier
       /// (ordre de jeu, suppression en cascade) de l'assistant de configuration
-      /// (AH.UI.FrmNouvellePartie) pour la rendre testable sans dépendance à la VCL.
+      /// (AH.UI.FrmNouvellePartie) pour la rendre testable sans dÃ©pendance Ã  la VCL.
       /// </summary>
       TConstructeurPartie = class
         public
           /// <summary>
           /// Reconstruit la liste des investigateurs dans l'ordre de jeu attendu par
           /// TContextePartie.Create : joueurs humains dans l'ordre de ANomsJoueursHumains,
-          /// investigateurs d'un même joueur consécutifs dans leur ordre d'apparition dans
+          /// investigateurs d'un mÃªme joueur consÃ©cutifs dans leur ordre d'apparition dans
           /// AInvestigateurs.
           /// </summary>
           /// <param name="ANomsJoueursHumains">Joueurs humains, dans l'ordre de jeu (le premier est le premier joueur).</param>
-          /// <param name="AInvestigateurs">Investigateurs déjà saisis, dans un ordre quelconque.</param>
-          /// <returns>Les mêmes investigateurs, réordonnés.</returns>
+          /// <param name="AInvestigateurs">Investigateurs dÃ©jÃ  saisis, dans un ordre quelconque.</param>
+          /// <returns>Les mÃªmes investigateurs, rÃ©ordonnÃ©s.</returns>
           class function OrdonnerParJoueur(const ANomsJoueursHumains : TArray<string>;
             const AInvestigateurs : TArray<TInvestigateurJoue>) : TArray<TInvestigateurJoue>; static;
 
           /// <summary>
-          /// Retire de AInvestigateurs tous les investigateurs contrôlés par le joueur humain
-          /// d'index AIndexJoueurSupprime, et décale d'une unité vers le bas l'IndexJoueurHumain
-          /// de tous les investigateurs contrôlés par un joueur humain situé après lui — pour
-          /// rester cohérent une fois ce joueur retiré de la liste des joueurs humains.
+          /// Retire de AInvestigateurs tous les investigateurs contrÃ´lÃ©s par le joueur humain
+          /// d'index AIndexJoueurSupprime, et dÃ©cale d'une unitÃ© vers le bas l'IndexJoueurHumain
+          /// de tous les investigateurs contrÃ´lÃ©s par un joueur humain situÃ© aprÃ¨s lui â€” pour
+          /// rester cohÃ©rent une fois ce joueur retirÃ© de la liste des joueurs humains.
           /// </summary>
-          /// <param name="AInvestigateurs">Liste modifiée en place.</param>
-          /// <param name="AIndexJoueurSupprime">Index (base 0) du joueur humain retiré.</param>
-          /// <returns>Le nombre d'investigateurs retirés (utile pour avertir l'utilisateur avant confirmation).</returns>
+          /// <param name="AInvestigateurs">Liste modifiÃ©e en place.</param>
+          /// <param name="AIndexJoueurSupprime">Index (base 0) du joueur humain retirÃ©.</param>
+          /// <returns>Le nombre d'investigateurs retirÃ©s (utile pour avertir l'utilisateur avant confirmation).</returns>
           class function SupprimerJoueurEtRepercuter(AInvestigateurs : TList<TInvestigateurJoue>;
             AIndexJoueurSupprime : Integer) : Integer; static;
 
-          /// <param name="AInvestigateurs">Investigateurs déjà saisis.</param>
-          /// <param name="ANomInvestigateur">Nom à vérifier, comparé sans tenir compte de la casse.</param>
-          /// <returns>True si un investigateur de ce nom existe déjà dans AInvestigateurs.</returns>
+          /// <param name="AInvestigateurs">Investigateurs dÃ©jÃ  saisis.</param>
+          /// <param name="ANomInvestigateur">Nom Ã  vÃ©rifier, comparÃ© sans tenir compte de la casse.</param>
+          /// <returns>True si un investigateur de ce nom existe dÃ©jÃ  dans AInvestigateurs.</returns>
           class function NomDejaUtilise(const AInvestigateurs : TArray<TInvestigateurJoue>;
             const ANomInvestigateur : string) : Boolean; static;
 
           /// <summary>
-          /// Replace le joueur humain d'index AIndexJoueurChoisi en tête de ANomsJoueursHumains
-          /// (premier joueur), en conservant l'ordre relatif des autres, et met à jour en conséquence
+          /// Replace le joueur humain d'index AIndexJoueurChoisi en tÃªte de ANomsJoueursHumains
+          /// (premier joueur), en conservant l'ordre relatif des autres, et met Ã  jour en consÃ©quence
           /// le IndexJoueurHumain de chaque investigateur de AInvestigateurs.
           /// </summary>
-          /// <param name="ANomsJoueursHumains">Liste modifiée en place.</param>
-          /// <param name="AInvestigateurs">Liste modifiée en place.</param>
-          /// <param name="AIndexJoueurChoisi">Index (base 0), avant réordonnancement, du joueur humain à placer en premier.</param>
-          /// <exception cref="EArgumentOutOfRangeException">Levée si AIndexJoueurChoisi est hors limites.</exception>
+          /// <param name="ANomsJoueursHumains">Liste modifiÃ©e en place.</param>
+          /// <param name="AInvestigateurs">Liste modifiÃ©e en place.</param>
+          /// <param name="AIndexJoueurChoisi">Index (base 0), avant rÃ©ordonnancement, du joueur humain Ã  placer en premier.</param>
+          /// <exception cref="EArgumentOutOfRangeException">LevÃ©e si AIndexJoueurChoisi est hors limites.</exception>
           class procedure PlacerJoueurEnPremier(ANomsJoueursHumains: TList<string>;
             AInvestigateurs: TList<TInvestigateurJoue>; AIndexJoueurChoisi: Integer); static;
 
-          /// <param name="ANombreJoueursHumains">Nombre de joueurs humains configurés.</param>
-          /// <param name="AInvestigateurs">Investigateurs déjà saisis.</param>
-          /// <returns>True si chaque joueur humain (index 0 à ANombreJoueursHumains-1) contrôle au moins un investigateur.</returns>
+          /// <param name="ANombreJoueursHumains">Nombre de joueurs humains configurÃ©s.</param>
+          /// <param name="AInvestigateurs">Investigateurs dÃ©jÃ  saisis.</param>
+          /// <returns>True si chaque joueur humain (index 0 Ã  ANombreJoueursHumains-1) contrÃ´le au moins un investigateur.</returns>
           class function TousLesJoueursControlentAuMoinsUnInvestigateur(ANombreJoueursHumains : Integer;
             const AInvestigateurs : TArray<TInvestigateurJoue>) : Boolean; static;
       end;
@@ -142,7 +142,7 @@ unit AH.Core.ConstructeurPartie;
             raise EArgumentOutOfRangeException.CreateFmt('Index de joueur hors limites : %d.', [AIndexJoueurChoisi]);
 
           if AIndexJoueurChoisi = 0 then
-            Exit; // Déjà premier, rien à faire.
+            Exit; // DÃ©jÃ  premier, rien Ã  faire.
 
           MappingAncienVersNouveau := TDictionary<Integer, Integer>.Create;
           try

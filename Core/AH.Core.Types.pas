@@ -1,22 +1,22 @@
-unit AH.Core.Types;
+Ôªøunit AH.Core.Types;
 
   interface
 
     type
-      /// <summary>Nature d'un núud dans l'arbre de contenu d'une partie.</summary>
+      /// <summary>Nature d'un n≈ìud dans l'arbre de contenu d'une partie.</summary>
       TTypeNoeud = (
-        ntSequence,               // Regroupe des enfants exÈcutÈs dans l'ordre
-        ntBouclePorInvestigateur, // RÈpËte ses enfants pour chaque investigateur, dans l'ordre de jeu
-        ntInstruction,            // Feuille : texte informatif validÈ par le joueur
+        ntSequence,               // Regroupe des enfants ex√©cut√©s dans l'ordre
+        ntBouclePorInvestigateur, // R√©p√®te ses enfants pour chaque investigateur, dans l'ordre de jeu
+        ntInstruction,            // Feuille : texte informatif valid√© par le joueur
         ntChoix,                  // Feuille : plusieurs branches choisies manuellement par les joueurs
-        ntCondition,              // Branchement automatique ÈvaluÈ sur TContextePartie
+        ntCondition,              // Branchement automatique √©valu√© sur TContextePartie
         ntSaisie                  // Demande une valeur au joueur, alimentant TContextePartie
       );
 
-    /// <summary>Convertit le nom textuel d'un núud (tel qu'Ècrit dans le JSON de contenu) en TTypeNoeud.</summary>
-    /// <param name="ATypeNoeudTexte">ChaÓne ‡ convertir, insensible ‡ la casse (ex. "ntCondition").</param>
+    /// <summary>Convertit le nom textuel d'un n≈ìud (tel qu'√©crit dans le JSON de contenu) en TTypeNoeud.</summary>
+    /// <param name="ATypeNoeudTexte">Cha√Æne √† convertir, insensible √† la casse (ex. "ntCondition").</param>
     /// <param name="ATypeNoeud">(OUT) Valeur convertie si la fonction retourne True.</param>
-    /// <returns>True si AText correspond ‡ une valeur connue de TTypeNoeud, False sinon.</returns>
+    /// <returns>True si AText correspond √† une valeur connue de TTypeNoeud, False sinon.</returns>
     function TryStrToTypeNoeud(const ATypeNoeudTexte : string; out ATypeNoeud : TTypeNoeud) : Boolean;
 
   implementation

@@ -1,4 +1,4 @@
-unit AH.Core.Noeud;
+Ôªøunit AH.Core.Noeud;
 
   interface
 
@@ -11,37 +11,37 @@ unit AH.Core.Noeud;
       TNoeudEtape = class;
 
       /// <summary>
-      /// …tat partagÈ d'une branche. L'Ètat possËde exclusivement le núud cible.
-      /// Il est dÈtruit automatiquement lorsque le dernier TBrancheEtape qui le
-      /// rÈfÈrence est finalisÈ.
+      /// √âtat partag√© d'une branche. L'√©tat poss√®de exclusivement le n≈ìud cible.
+      /// Il est d√©truit automatiquement lorsque le dernier TBrancheEtape qui le
+      /// r√©f√©rence est finalis√©.
       /// </summary>
       IBrancheEtapeState = interface
         ['{FD2E037B-6F78-4B39-A6C7-1CB81D0D3D2C}']
 
-        /// <summary>Retourne la valeur dÈclenchante de la branche.</summary>
-        /// <returns>Valeur de contexte utilisÈe pour identifier la branche sÈlectionnÈe.</returns>
+        /// <summary>Retourne la valeur d√©clenchante de la branche.</summary>
+        /// <returns>Valeur de contexte utilis√©e pour identifier la branche s√©lectionn√©e.</returns>
         function GetTriggerValue : Variant;
 
-        /// <summary>Retourne le libellÈ affichable de la branche.</summary>
-        /// <returns>LibellÈ de la branche ou EmptyStr lorsqu'aucun libellÈ n'est dÈfini.</returns>
+        /// <summary>Retourne le libell√© affichable de la branche.</summary>
+        /// <returns>Libell√© de la branche ou EmptyStr lorsqu'aucun libell√© n'est d√©fini.</returns>
         function GetLabelText : string;
 
-        /// <summary>Retourne le núud cible possÈdÈ par l'Ètat.</summary>
-        /// <returns>Núud cible ou nil si la branche ne possËde pas de núud.</returns>
+        /// <summary>Retourne le n≈ìud cible poss√©d√© par l'√©tat.</summary>
+        /// <returns>N≈ìud cible ou nil si la branche ne poss√®de pas de n≈ìud.</returns>
         function GetNode : TNoeudEtape;
       end;
 
     /// <summary>
-    /// ReprÈsente une branche conditionnelle de l'arbre de contenu.
-    /// Les copies du record partagent le mÍme Ètat interne et ne clonent jamais
-    /// implicitement le sous-arbre. Le clonage profond est exclusivement rÈalisÈ
+    /// Repr√©sente une branche conditionnelle de l'arbre de contenu.
+    /// Les copies du record partagent le m√™me √©tat interne et ne clonent jamais
+    /// implicitement le sous-arbre. Le clonage profond est exclusivement r√©alis√©
     /// par TNoeudEtape.Clone.
     /// </summary>
     TBrancheEtape = record
       type
         /// <summary>
-        /// ImplÈmentation interne de l'Ètat d'une branche.
-        /// L'instance possËde exclusivement FNode.
+        /// Impl√©mentation interne de l'√©tat d'une branche.
+        /// L'instance poss√®de exclusivement FNode.
         /// </summary>
         TBrancheEtapeState = class(TInterfacedObject, IBrancheEtapeState)
           private
@@ -50,94 +50,94 @@ unit AH.Core.Noeud;
             FNode : TNoeudEtape;
           public
             /// <summary>
-            /// CrÈe l'Ètat d'une branche et enregistre le núud dont il devient propriÈtaire.
+            /// Cr√©e l'√©tat d'une branche et enregistre le n≈ìud dont il devient propri√©taire.
             /// </summary>
             /// <param name="ATriggerValue">
-            /// Valeur dÈclenchante de la branche.
+            /// Valeur d√©clenchante de la branche.
             /// </param>
             /// <param name="ALabelText">
-            /// LibellÈ de la branche.
+            /// Libell√© de la branche.
             /// </param>
             /// <param name="ANode">
-            /// Núud cible possÈdÈ par l'Ètat aprËs la construction rÈussie.
+            /// N≈ìud cible poss√©d√© par l'√©tat apr√®s la construction r√©ussie.
             /// </param>
             constructor Create(const ATriggerValue: Variant;
               const ALabelText: string; ANode: TNoeudEtape);
 
-            /// <summary>DÈtruit le núud cible possÈdÈ par l'Ètat.</summary>
+            /// <summary>D√©truit le n≈ìud cible poss√©d√© par l'√©tat.</summary>
             destructor Destroy; override;
 
-            /// <summary>Retourne la valeur dÈclenchante de la branche.</summary>
+            /// <summary>Retourne la valeur d√©clenchante de la branche.</summary>
             function GetTriggerValue : Variant;
 
-            /// <summary>Retourne le libellÈ de la branche.</summary>
+            /// <summary>Retourne le libell√© de la branche.</summary>
             function GetLabelText : string;
 
-            /// <summary>Retourne le núud cible de la branche.</summary>
+            /// <summary>Retourne le n≈ìud cible de la branche.</summary>
             function GetNode : TNoeudEtape;
         end;
       private
         FState : IBrancheEtapeState;
 
-        /// <summary>Retourne la valeur dÈclenchante de l'Ètat interne.</summary>
-        /// <returns>Valeur dÈclenchante ou Unassigned pour une branche non initialisÈe.</returns>
+        /// <summary>Retourne la valeur d√©clenchante de l'√©tat interne.</summary>
+        /// <returns>Valeur d√©clenchante ou Unassigned pour une branche non initialis√©e.</returns>
         function GetValeurDeclenchante : Variant;
 
-        /// <summary>Retourne le libellÈ de l'Ètat interne.</summary>
-        /// <returns>LibellÈ de la branche ou EmptyStr pour une branche non initialisÈe.</returns>
+        /// <summary>Retourne le libell√© de l'√©tat interne.</summary>
+        /// <returns>Libell√© de la branche ou EmptyStr pour une branche non initialis√©e.</returns>
         function GetLibelle : string;
 
-        /// <summary>Retourne le núud possÈdÈ par l'Ètat interne.</summary>
-        /// <returns>Núud cible ou nil pour une branche non initialisÈe.</returns>
+        /// <summary>Retourne le n≈ìud poss√©d√© par l'√©tat interne.</summary>
+        /// <returns>N≈ìud cible ou nil pour une branche non initialis√©e.</returns>
         function GetNoeud : TNoeudEtape;
       public
-        /// <summary>Initialise le record sans Ètat interne.</summary>
-        /// <param name="ADestination">Instance du record ‡ initialiser.</param>
+        /// <summary>Initialise le record sans √©tat interne.</summary>
+        /// <param name="ADestination">Instance du record √† initialiser.</param>
         class operator Initialize(out ADestination : TBrancheEtape);
 
         /// <summary>
-        /// LibËre la rÈfÈrence vers l'Ètat interne.
-        /// Si cette rÈfÈrence est la derniËre, l'Ètat dÈtruit automatiquement le
-        /// núud cible qu'il possËde.
+        /// Lib√®re la r√©f√©rence vers l'√©tat interne.
+        /// Si cette r√©f√©rence est la derni√®re, l'√©tat d√©truit automatiquement le
+        /// n≈ìud cible qu'il poss√®de.
         /// </summary>
         /// <param name="ADestination">Instance du record en cours de finalisation.</param>
         class operator Finalize(var ADestination : TBrancheEtape);
 
         /// <summary>
         /// Copie une branche sans cloner son sous-arbre.
-        /// La source et la destination partagent le mÍme Ètat interne.
+        /// La source et la destination partagent le m√™me √©tat interne.
         /// </summary>
         /// <param name="ADestination">Branche de destination.</param>
-        /// <param name="ASource">Branche source qui reste inchangÈe.</param>
+        /// <param name="ASource">Branche source qui reste inchang√©e.</param>
         class operator Assign(var ADestination : TBrancheEtape; const [ref] ASource : TBrancheEtape);
 
         /// <summary>
-        /// CrÈe une branche et transfËre la propriÈtÈ de son núud cible ‡ l'Ètat interne.
-        /// AprËs un retour normal, l'appelant ne doit plus libÈrer ANoeud.
+        /// Cr√©e une branche et transf√®re la propri√©t√© de son n≈ìud cible √† l'√©tat interne.
+        /// Apr√®s un retour normal, l'appelant ne doit plus lib√©rer ANoeud.
         /// </summary>
-        /// <param name="ATriggerValue">Valeur de contexte dÈclenchant la branche.</param>
-        /// <param name="ALabelText">LibellÈ associÈ ‡ la branche.</param>
-        /// <param name="ANode">Núud cible dont la propriÈtÈ est transfÈrÈe ‡ la branche.</param>
-        /// <returns>Nouvelle branche possÈdant ANode.</returns>
+        /// <param name="ATriggerValue">Valeur de contexte d√©clenchant la branche.</param>
+        /// <param name="ALabelText">Libell√© associ√© √† la branche.</param>
+        /// <param name="ANode">N≈ìud cible dont la propri√©t√© est transf√©r√©e √† la branche.</param>
+        /// <returns>Nouvelle branche poss√©dant ANode.</returns>
         /// <exception cref="System.SysUtils.EOutOfMemory">
-        /// Peut Ítre levÈe si l'Ètat interne ne peut pas Ítre crÈÈ. Dans ce cas, l'appelant conserve la propriÈtÈ de ANode.
+        /// Peut √™tre lev√©e si l'√©tat interne ne peut pas √™tre cr√©√©. Dans ce cas, l'appelant conserve la propri√©t√© de ANode.
         /// </exception>
         class function Create(const ATriggerValue : Variant; const ALabelText : string; ANode : TNoeudEtape) : TBrancheEtape; static;
 
-        /// <summary>Valeur utilisÈe pour sÈlectionner cette branche.</summary>
+        /// <summary>Valeur utilis√©e pour s√©lectionner cette branche.</summary>
         property ValeurDeclenchante : Variant read GetValeurDeclenchante;
 
-        /// <summary>LibellÈ associÈ ‡ cette branche.</summary>
+        /// <summary>Libell√© associ√© √† cette branche.</summary>
         property Libelle : string read GetLibelle;
 
-        /// <summary>Núud cible dÈtenu par l'Ètat interne de la branche.</summary>
+        /// <summary>N≈ìud cible d√©tenu par l'√©tat interne de la branche.</summary>
         property Noeud : TNoeudEtape read GetNoeud;
 
       end;
 
       /// <summary>
-      /// Núud de l'arbre de contenu d'une partie. La possession des enfants et des branches
-      /// est exclusive : dÈtruire un núud dÈtruit rÈcursivement tout son sous-arbre.
+      /// N≈ìud de l'arbre de contenu d'une partie. La possession des enfants et des branches
+      /// est exclusive : d√©truire un n≈ìud d√©truit r√©cursivement tout son sous-arbre.
       /// </summary>
       TNoeudEtape = class
         private
@@ -153,31 +153,31 @@ unit AH.Core.Noeud;
           FValeurForcee: Variant;
           FPossedeValeurForcee: Boolean;
         public
-          /// <param name="AId">Identifiant unique du núud, utilisÈ pour le diagnostic et les tests.</param>
-          /// <param name="ATypeNoeud">Nature du núud, dÈtermine son mode de rÈsolution par le moteur.</param>
+          /// <param name="AId">Identifiant unique du n≈ìud, utilis√© pour le diagnostic et les tests.</param>
+          /// <param name="ATypeNoeud">Nature du n≈ìud, d√©termine son mode de r√©solution par le moteur.</param>
           constructor Create(const AId : string; ATypeNoeud : TTypeNoeud);
           destructor Destroy; override;
 
-          /// <summary>Ajoute un enfant en fin de liste. Le núud devient propriÈtaire de AEnfant.</summary>
-          /// <param name="AEnfant">Sous-núud ‡ ajouter.</param>
-          /// <exception cref="EInvalidOpException">LevÈe si TypeNoeud n'est ni ntSequence ni ntBouclePorInvestigateur.</exception>
+          /// <summary>Ajoute un enfant en fin de liste. Le n≈ìud devient propri√©taire de AEnfant.</summary>
+          /// <param name="AEnfant">Sous-n≈ìud √† ajouter.</param>
+          /// <exception cref="EInvalidOpException">Lev√©e si TypeNoeud n'est ni ntSequence ni ntBouclePorInvestigateur.</exception>
           procedure AjouterEnfant(AEnfant : TNoeudEtape);
 
           /// <summary>
-          /// Ajoute une branche au núud et prend possession de son núud cible.
-          /// AprËs un retour normal, l'appelant ne doit plus libÈrer ANoeud.
-          /// En cas d'exception, cette mÈthode garantit la libÈration de ANoeud.
+          /// Ajoute une branche au n≈ìud et prend possession de son n≈ìud cible.
+          /// Apr√®s un retour normal, l'appelant ne doit plus lib√©rer ANoeud.
+          /// En cas d'exception, cette m√©thode garantit la lib√©ration de ANoeud.
           /// </summary>
-          /// <param name="ATriggerValue">Valeur de contexte qui sÈlectionne la branche.</param>
-          /// <param name="ALabelText">LibellÈ associÈ ‡ la branche.</param>
-          /// <param name="ANode">Núud cible dont la propriÈtÈ est transfÈrÈe.</param>
-          /// <exception cref="System.SysUtils.EInvalidOp">LevÈe si le type du núud ne peut pas contenir de branches.</exception>
+          /// <param name="ATriggerValue">Valeur de contexte qui s√©lectionne la branche.</param>
+          /// <param name="ALabelText">Libell√© associ√© √† la branche.</param>
+          /// <param name="ANode">N≈ìud cible dont la propri√©t√© est transf√©r√©e.</param>
+          /// <exception cref="System.SysUtils.EInvalidOp">Lev√©e si le type du n≈ìud ne peut pas contenir de branches.</exception>
           procedure AjouterBranche(const ATriggerValue : Variant; const ALabelText : string; ANode : TNoeudEtape);
 
-          /// <summary>CrÈe une copie profonde du núud, de ses enfants et de ses branches.</summary>
-          /// <returns>Une nouvelle instance indÈpendante dont l'appelant devient propriÈtaire.</returns>
+          /// <summary>Cr√©e une copie profonde du n≈ìud, de ses enfants et de ses branches.</summary>
+          /// <returns>Une nouvelle instance ind√©pendante dont l'appelant devient propri√©taire.</returns>
           /// <exception cref="System.SysUtils.EInvalidOp">
-          /// Peut Ítre levÈe si l'arbre contient une rÈfÈrence circulaire ou un Ètat incompatible avec un clonage rÈcursif.
+          /// Peut √™tre lev√©e si l'arbre contient une r√©f√©rence circulaire ou un √©tat incompatible avec un clonage r√©cursif.
           /// </exception>
           function Clone : TNoeudEtape;
 
@@ -187,28 +187,28 @@ unit AH.Core.Noeud;
           property Texte : string read FTexte write FTexte;
 
           /// <summary>
-          /// Alternative ‡ Texte pour un contenu qui se lit mieux comme une liste ‡ puces (ex. une
-          /// ÈnumÈration d'options ou d'effets). Si non vide, l'UI l'affiche ‡ la place de Texte.
+          /// Alternative √† Texte pour un contenu qui se lit mieux comme une liste √† puces (ex. une
+          /// √©num√©ration d'options ou d'effets). Si non vide, l'UI l'affiche √† la place de Texte.
           /// </summary>
           property TexteListe : TArray<string> read FTexteListe write FTexteListe;
 
           property Illustration : string read FIllustration write FIllustration;
           /// <summary>
-          /// Pour ntCondition : nom du champ de TContextePartie ÈvaluÈ pour choisir la branche.
-          /// Pour ntSaisie : nom du champ de TContextePartie renseignÈ par la rÈponse utilisateur.
-          /// Sans effet pour les autres types de núud.
+          /// Pour ntCondition : nom du champ de TContextePartie √©valu√© pour choisir la branche.
+          /// Pour ntSaisie : nom du champ de TContextePartie renseign√© par la r√©ponse utilisateur.
+          /// Sans effet pour les autres types de n≈ìud.
           /// </summary>
           property ChampContexte : string read FChampContexte write FChampContexte;
           property Enfants : TObjectList<TNoeudEtape> read FEnfants;
           property Branches : TList<TBrancheEtape> read FBranches;
           /// <summary>
-          /// Pour ntSaisie uniquement : si renseignÈe, le moteur affecte automatiquement cette valeur
-          /// au champ de contexte dÈsignÈ par ChampContexte, sans jamais interroger l'utilisateur ó
-          /// utile quand la valeur est dÈj‡ connue avec certitude (ex. le tout premier pion Destin
-          /// de la partie vaut toujours 1). Sans effet pour les autres types de núud.
+          /// Pour ntSaisie uniquement : si renseign√©e, le moteur affecte automatiquement cette valeur
+          /// au champ de contexte d√©sign√© par ChampContexte, sans jamais interroger l'utilisateur ‚Äî
+          /// utile quand la valeur est d√©j√† connue avec certitude (ex. le tout premier pion Destin
+          /// de la partie vaut toujours 1). Sans effet pour les autres types de n≈ìud.
           /// </summary>
           property ValeurForcee: Variant read FValeurForcee write FValeurForcee;
-          /// <summary>True si ValeurForcee a ÈtÈ explicitement renseignÈe par le contenu.</summary>
+          /// <summary>True si ValeurForcee a √©t√© explicitement renseign√©e par le contenu.</summary>
           property PossedeValeurForcee: Boolean read FPossedeValeurForcee write FPossedeValeurForcee;
 
       end;
@@ -300,11 +300,11 @@ unit AH.Core.Noeud;
     procedure TNoeudEtape.AjouterEnfant(AEnfant : TNoeudEtape);
       begin
         if not Assigned(AEnfant) then
-          raise EArgumentNilException.Create('Un enfant ajoutÈ ‡ une Ètape ne peut pas Ítre nil.');
+          raise EArgumentNilException.Create('Un enfant ajout√© √† une √©tape ne peut pas √™tre nil.');
 
             if not (FTypeNoeud in [ntSequence, ntBouclePorInvestigateur]) then
           raise EInvalidOpException.CreateFmt(
-            'Le núud "%s" (%s) ne peut pas recevoir d''enfants directs.',
+            'Le n≈ìud "%s" (%s) ne peut pas recevoir d''enfants directs.',
             [FId, GetEnumName(TypeInfo(TTypeNoeud), Ord(FTypeNoeud))]);
 
         FEnfants.Add(AEnfant);
@@ -317,13 +317,13 @@ unit AH.Core.Noeud;
         try
           if not (FTypeNoeud in [ntCondition, ntChoix]) then
             raise EInvalidOpException.CreateFmt(
-              'Le núud "%s" (%s) ne peut pas recevoir de branches.',
+              'Le n≈ìud "%s" (%s) ne peut pas recevoir de branches.',
               [FId, GetEnumName(TypeInfo(TTypeNoeud), Ord(FTypeNoeud))]);
 
           NewBranche := TBrancheEtape.Create(ATriggerValue, ALabelText, ANode);
 
-          // La propriÈtÈ est dÈsormais dans NewBranche. Le pointeur local ne doit
-          // plus Ítre libÈrÈ dans le gestionnaire d'exception ci-dessous.
+          // La propri√©t√© est d√©sormais dans NewBranche. Le pointeur local ne doit
+          // plus √™tre lib√©r√© dans le gestionnaire d'exception ci-dessous.
           ANode := nil;
 
           FBranches.Add(NewBranche);
@@ -393,8 +393,8 @@ unit AH.Core.Noeud;
       begin
         inherited Create;
 
-        // Les affectations potentiellement gÈrÈes sont rÈalisÈes avant le transfert
-        // effectif de propriÈtÈ du núud.
+        // Les affectations potentiellement g√©r√©es sont r√©alis√©es avant le transfert
+        // effectif de propri√©t√© du n≈ìud.
         FTriggerValue := ATriggerValue;
         FLabelText := ALabelText;
         FNode := ANode;

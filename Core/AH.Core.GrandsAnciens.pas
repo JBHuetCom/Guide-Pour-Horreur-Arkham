@@ -169,9 +169,13 @@
                 EtapesJSON := ReglesJSON.O['Etapes'];
                 if Assigned(EtapesJSON) then
                   if ObjectFindFirst(EtapesJSON, Iter) then
-                    repeat
-                      ReglesEtapes.AddOrSetValue(Iter.key, Iter.val.AsString);
-                    until not ObjectFindNext(Iter);
+                    try
+                      repeat
+                        ReglesEtapes.AddOrSetValue(Iter.key, Iter.val.AsString);
+                      until not ObjectFindNext(Iter);
+                    finally
+                      ObjectFindClose(Iter);
+                    end;
               end;
 
             NomCle := LowerCase(GrandAncien.Nom);

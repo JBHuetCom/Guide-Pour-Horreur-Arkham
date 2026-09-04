@@ -1,4 +1,4 @@
-unit AH.UI.FrameEtape;
+ï»¿unit AH.UI.FrameEtape;
 
   interface
 
@@ -10,17 +10,17 @@ unit AH.UI.FrameEtape;
 
     type
       /// <summary>
-      /// Événement déclenché quand l'utilisateur termine son interaction avec l'étape affichée.
-      /// AValeur vaut Unassigned pour un ntInstruction (aucune réponse à transmettre), la
+      /// Ã‰vÃ©nement dÃ©clenchÃ© quand l'utilisateur termine son interaction avec l'Ã©tape affichÃ©e.
+      /// AValeur vaut Unassigned pour un ntInstruction (aucune rÃ©ponse Ã  transmettre), la
       /// ValeurDeclenchante de la branche choisie pour un ntChoix, ou le texte saisi (converti
       /// plus tard par TContextePartie.AffecterChamp, jamais ici) pour un ntSaisie.
       /// </summary>
       TAhEtapeValideeEvent = procedure(Sender : TObject; const AValeur : Variant) of object;
 
       /// <summary>
-      /// Affiche un nœud interactif (ntInstruction, ntChoix ou ntSaisie) et capture la réaction de
-      /// l'utilisateur. Ne connaît ni TMoteurSequenceur ni TContextePartie : c'est à l'appelant
-      /// (AH.UI.FrmPrincipal) de piloter la navigation à partir de l'événement OnEtapeValidee.
+      /// Affiche un nÅ“ud interactif (ntInstruction, ntChoix ou ntSaisie) et capture la rÃ©action de
+      /// l'utilisateur. Ne connaÃ®t ni TMoteurSequenceur ni TContextePartie : c'est Ã  l'appelant
+      /// (AH.UI.FrmPrincipal) de piloter la navigation Ã  partir de l'Ã©vÃ©nement OnEtapeValidee.
       /// </summary>
       TFrameEtape = class(TFrame)
         private
@@ -32,30 +32,30 @@ unit AH.UI.FrameEtape;
           procedure ViderBoutonsChoix;
           procedure ConstruireBoutonsChoix(ANoeud : TNoeudEtape);
         public
-          /// <param name="AOwner">Propriétaire standard VCL de la frame.</param>
+          /// <param name="AOwner">PropriÃ©taire standard VCL de la frame.</param>
           constructor Create(AOwner : TComponent); override;
           destructor Destroy; override;
 
           /// <param name="ANoeud">
-          /// Nœud à afficher. Doit être de type ntInstruction, ntChoix ou ntSaisie — c'est-à-dire
+          /// NÅ“ud Ã  afficher. Doit Ãªtre de type ntInstruction, ntChoix ou ntSaisie â€” c'est-Ã -dire
           /// exactement ce que retourne TMoteurSequenceur.Suivant/Precedent quand il n'est pas nil.
           /// </param>
           /// <exception cref="EArgumentException">
-          /// Levée si ANoeud est d'un type structurel (ntSequence, ntBouclePorInvestigateur,
+          /// LevÃ©e si ANoeud est d'un type structurel (ntSequence, ntBouclePorInvestigateur,
           /// ntCondition), qui ne devrait jamais atteindre l'UI.
           /// </exception>
           procedure AfficherNoeud(ANoeud : TNoeudEtape);
 
           /// <summary>
-          /// Affiche un message d'erreur sous le champ de saisie, sans changer de nœud affiché.
+          /// Affiche un message d'erreur sous le champ de saisie, sans changer de nÅ“ud affichÃ©.
           /// </summary>
-          /// <param name="AMessage">Message à afficher. Une chaîne vide efface le message précédent.</param>
+          /// <param name="AMessage">Message Ã  afficher. Une chaÃ®ne vide efface le message prÃ©cÃ©dent.</param>
           /// <exception cref="EInvalidOpException">
-          /// Levée si le nœud actuellement affiché n'est pas de type ntSaisie.
+          /// LevÃ©e si le nÅ“ud actuellement affichÃ© n'est pas de type ntSaisie.
           /// </exception>
           procedure AfficherErreurSaisie(const AMessage : string);
 
-          /// <summary>Nœud actuellement affiché, ou nil si AfficherNoeud n'a pas encore été appelée.</summary>
+          /// <summary>NÅ“ud actuellement affichÃ©, ou nil si AfficherNoeud n'a pas encore Ã©tÃ© appelÃ©e.</summary>
           property NoeudCourant : TNoeudEtape read FNoeudCourant;
 
         published
@@ -77,15 +77,15 @@ unit AH.UI.FrameEtape;
           procedure GererClicContinuer(Sender : TObject);
           procedure GererClicValiderSaisie(Sender : TObject);
           /// <summary>
-          /// Bascule le champ de saisie affiché entre texte libre (par défaut) et liste déroulante.
+          /// Bascule le champ de saisie affichÃ© entre texte libre (par dÃ©faut) et liste dÃ©roulante.
           /// </summary>
-          /// <param name="AOptions">Options à proposer. Tableau vide pour revenir à la saisie libre.</param>
+          /// <param name="AOptions">Options Ã  proposer. Tableau vide pour revenir Ã  la saisie libre.</param>
           procedure DefinirOptionsSaisie(const AOptions: TArray<string>);
 
-          /// <param name="ADossierImages">Dossier de base pour résoudre les chemins d'illustration relatifs (ex. Data\Images).</param>
+          /// <param name="ADossierImages">Dossier de base pour rÃ©soudre les chemins d'illustration relatifs (ex. Data\Images).</param>
           procedure DefinirDossierImages(const ADossierImages: string);
 
-          /// <summary>Déclenché quand l'utilisateur valide l'étape affichée (voir TAhEtapeValideeEvent).</summary>
+          /// <summary>DÃ©clenchÃ© quand l'utilisateur valide l'Ã©tape affichÃ©e (voir TAhEtapeValideeEvent).</summary>
           property OnEtapeValidee : TAhEtapeValideeEvent read FOnEtapeValidee write FOnEtapeValidee;
       end;
 
@@ -154,15 +154,15 @@ unit AH.UI.FrameEtape;
 
         if not (ANoeud.TypeNoeud in [ntInstruction, ntChoix, ntSaisie]) then
           raise EArgumentException.CreateFmt(
-            'AfficherNoeud attend un nœud interactif ; le nœud "%s" est d''un type structurel.',
+            'AfficherNoeud attend un nÅ“ud interactif ; le nÅ“ud "%s" est d''un type structurel.',
             [ANoeud.Id]);
 
         FNoeudCourant := ANoeud;
         DecalageVertical := 0;
 
-        // Détruit les boutons de choix résiduels dès qu'on quitte un ntChoix, plutôt que de se
-        // contenter de masquer le panneau — évite qu'un contenu périmé influence la géométrie
-        // calculée par la ScrollBox pour les étapes suivantes.
+        // DÃ©truit les boutons de choix rÃ©siduels dÃ¨s qu'on quitte un ntChoix, plutÃ´t que de se
+        // contenter de masquer le panneau â€” Ã©vite qu'un contenu pÃ©rimÃ© influence la gÃ©omÃ©trie
+        // calculÃ©e par la ScrollBox pour les Ã©tapes suivantes.
         if ANoeud.TypeNoeud <> ntChoix then
           ViderBoutonsChoix;
 
@@ -182,7 +182,7 @@ unit AH.UI.FrameEtape;
             LabelTexte.Visible := False;
             MemoTexteListe.Lines.Clear;
             for var Ligne in ANoeud.TexteListe do
-              MemoTexteListe.Lines.Add('•  ' + Ligne);
+              MemoTexteListe.Lines.Add('â€¢  ' + Ligne);
             MemoTexteListe.Top := DecalageVertical;
             MemoTexteListe.Height := EnsureRange(MemoTexteListe.Lines.Count * 24, 60, 260);
             MemoTexteListe.Visible := True;
@@ -226,7 +226,7 @@ unit AH.UI.FrameEtape;
       begin
         if not Assigned(FNoeudCourant) or (FNoeudCourant.TypeNoeud <> ntSaisie) then
           raise EInvalidOpException.Create(
-            'AfficherErreurSaisie ne peut être appelée que lorsqu''un nœud ntSaisie est affiché.');
+            'AfficherErreurSaisie ne peut Ãªtre appelÃ©e que lorsqu''un nÅ“ud ntSaisie est affichÃ©.');
 
         LabelErreurSaisie.Caption := AMessage;
       end;

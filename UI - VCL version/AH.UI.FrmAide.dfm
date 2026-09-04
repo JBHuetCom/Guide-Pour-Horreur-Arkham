@@ -1,4 +1,4 @@
-object FrmAide: TFrmAide
+﻿object FrmAide: TFrmAide
   Left = 0
   Top = 0
   Caption = 'Rappel des r'#232'gles de combat'
