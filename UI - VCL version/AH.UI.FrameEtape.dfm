@@ -1,4 +1,4 @@
-﻿object FrameEtape: TFrameEtape
+object FrameEtape: TFrameEtape
   Left = 0
   Top = 0
   Width = 620

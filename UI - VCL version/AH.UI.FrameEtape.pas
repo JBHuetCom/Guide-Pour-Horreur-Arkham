@@ -237,13 +237,23 @@
           FOnEtapeValidee(Self, Unassigned);
       end;
 
-    procedure TFrameEtape.GererClicBoutonChoix(ASender : TObject);
+    procedure TFrameEtape.GererClicBoutonChoix(ASender: TObject);
       var
         ValeurChoisie : Variant;
       begin
         ValeurChoisie := FValeursBranches[(ASender as TButton).Tag];
-        if Assigned(FOnEtapeValidee) then
-          FOnEtapeValidee(Self, ValeurChoisie);
+
+        // Ne jamais déclencher de façon synchrone, depuis ce gestionnaire, une suite susceptible de
+        // libérer ce bouton (ou l'un de ses frères dans PanelChoix) : le code VCL de traitement du
+        // clic (TControl.DoMouseUp) doit pouvoir se terminer sur un contrôle encore valide une fois
+        // OnClick revenu. On diffère donc la notification au prochain passage de la boucle de
+        // messages, une fois le clic entièrement traité.
+        TThread.ForceQueue(nil,
+          procedure
+            begin
+              if Assigned(FOnEtapeValidee) then
+                FOnEtapeValidee(Self, ValeurChoisie);
+            end);
       end;
 
     procedure TFrameEtape.GererClicValiderSaisie(Sender : TObject);
