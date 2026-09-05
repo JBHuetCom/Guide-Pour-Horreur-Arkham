@@ -145,9 +145,10 @@
           end;
       end;
 
-    procedure TFrameEtape.AfficherNoeud(ANoeud : TNoeudEtape);
+    procedure TFrameEtape.AfficherNoeud(ANoeud:  TNoeudEtape);
       var
         DecalageVertical : Integer;
+        LargeurDisponible : Integer;
       begin
         if not Assigned(ANoeud) then
           raise EArgumentNilException.Create('AfficherNoeud ne peut pas recevoir nil.');
@@ -160,11 +161,29 @@
         FNoeudCourant := ANoeud;
         DecalageVertical := 0;
 
-        // Détruit les boutons de choix résiduels dès qu'on quitte un ntChoix, plutôt que de se
-        // contenter de masquer le panneau — évite qu'un contenu périmé influence la géométrie
-        // calculée par la ScrollBox pour les étapes suivantes.
         if ANoeud.TypeNoeud <> ntChoix then
+        begin
+          PanelChoix.Visible := False;
           ViderBoutonsChoix;
+        end;
+
+        // Réaffirme explicitement la largeur des zones de texte à chaque appel, sur la valeur
+        // réelle du moment, plutôt que de compter sur l'ancrage pour la maintenir dans la durée.
+        // Constat en débogage : combinée à AutoSize + WordWrap, la largeur ancrée dérive d'un
+        // appel à l'autre (perte de quelques pixels à chaque réaffectation de Caption), jusqu'à
+        // devenir négative après de nombreuses navigations. Ne jamais laisser cette dérive
+        // s'accumuler : on repart d'une valeur sûre à chaque fois.
+        LargeurDisponible := ScrollBoxContenu.ClientWidth - 16;
+        if LargeurDisponible < 100 then
+          LargeurDisponible := 100; // Garde-fou sur un état transitoire (frame pas encore dimensionnée).
+
+        LabelTitre.Width := LargeurDisponible;
+        LabelTexte.Width := LargeurDisponible;
+        MemoTexteListe.Width := LargeurDisponible;
+        ImageEtape.Width := LargeurDisponible;
+        PanelInstruction.Width := LargeurDisponible;
+        PanelChoix.Width := LargeurDisponible;
+        PanelSaisie.Width := LargeurDisponible;
 
         LabelTitre.Visible := ANoeud.Titre <> EmptyStr;
         LabelTitre.Caption := ANoeud.Titre;
